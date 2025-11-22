@@ -107,7 +107,7 @@ func runService() {
 
 	schedulePool := schedules.CreateSchedulePool(
 		store,
-		&taskPool,
+		taskPool,
 		accessKeyInstallationService,
 		encryptionService,
 	)
@@ -137,7 +137,7 @@ func runService() {
 		store,
 		terraformStore,
 		ansibleTaskRepo,
-		&taskPool,
+		taskPool,
 		projectService,
 		integrationService,
 		encryptionService,
@@ -152,7 +152,7 @@ func runService() {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			r = helpers.SetContextValue(r, "store", store)
 			r = helpers.SetContextValue(r, "schedule_pool", schedulePool)
-			r = helpers.SetContextValue(r, "task_pool", &taskPool)
+			r = helpers.SetContextValue(r, "task_pool", taskPool)
 			r = helpers.SetContextValue(r, "log_writer", logWriteService)
 			next.ServeHTTP(w, r)
 		})
@@ -239,13 +239,15 @@ func createStoreWithMigrationVersion(token string, undoTo *string, applyTo *stri
 	}
 
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "Error: Database migration failed: %v\n", err)
+		os.Exit(1)
 	}
 
 	err = db.FillConfigFromDB(store)
 
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "Error: Failed to fill config from database: %v\n", err)
+		os.Exit(1)
 	}
 
 	util.LookupDefaultApps()

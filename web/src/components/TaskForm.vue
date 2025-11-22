@@ -170,7 +170,7 @@
 /* eslint-disable import/no-extraneous-dependencies,import/extensions */
 
 import ItemFormBase from '@/components/ItemFormBase';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 import ArgsPicker from '@/components/ArgsPicker.vue';
 import AppFieldsMixin from '@/components/AppFieldsMixin';
 import TaskParamsAnsibleForm from '@/components/TaskParamsAnsibleForm.vue';
@@ -352,13 +352,13 @@ export default {
         this.inventory,
       ] = await Promise.all([
 
-        this.template.type === 'deploy' ? (await axios({
+        this.template.type === 'deploy' ? (await apiClient({
           keys: 'get',
           url: `/api/project/${this.projectId}/templates/${this.template.build_template_id}/tasks?status=success&limit=20`,
           responseType: 'json',
         })).data.filter((task) => task.status === 'success') : [],
 
-        this.needInventory ? (await axios({
+        this.needInventory ? (await apiClient({
           keys: 'get',
           url: this.getInventoryUrl(),
           responseType: 'json',

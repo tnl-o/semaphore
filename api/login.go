@@ -61,7 +61,12 @@ func tryFindLDAPUser(username, password string) (*db.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer l.Close() //nolint:errcheck
+	defer func() {
+		if closeErr := l.Close(); closeErr != nil {
+			// Log error but don't fail the function if close fails
+			// This is a cleanup operation for LDAP connection
+		}
+	}()
 
 	// First bind with a read only user
 	if err = l.Bind(util.Config.LdapBindDN, util.Config.LdapBindPassword); err != nil {
@@ -140,11 +145,18 @@ func tryFindLDAPUser(username, password string) (*db.User, error) {
 	err = db.ValidateUser(ldapUser)
 	if err != nil {
 		jsonBytes, _ := json.Marshal(ldapUser)
-		log.Error("LDAP returned incorrect user data: " + string(jsonBytes))
+		log.WithError(err).WithFields(log.Fields{
+			"context": "ldap",
+			"user_data": string(jsonBytes),
+		}).Error("LDAP returned incorrect user data")
 		return nil, err
 	}
 
-	log.Info("User " + ldapUser.Name + " with email " + ldapUser.Email + " authorized via LDAP correctly")
+	log.WithFields(log.Fields{
+		"context": "ldap",
+		"user_name": ldapUser.Name,
+		"user_email": ldapUser.Email,
+	}).Info("User authorized via LDAP correctly")
 	return &ldapUser, nil
 }
 
@@ -175,7 +187,8 @@ func createSession(w http.ResponseWriter, r *http.Request, user db.User, oidc bo
 	})
 
 	if err != nil {
-		log.WithError(err).WithFields(log.Fields{
+		logger := helpers.Logger(r)
+		logger.WithError(err).WithFields(log.Fields{
 			"user_id": user.ID,
 			"context": "session",
 		}).Error("Failed to create session")
@@ -188,8 +201,10 @@ func createSession(w http.ResponseWriter, r *http.Request, user db.User, oidc bo
 		"session": newSession.ID,
 	})
 	if err != nil {
-		log.WithError(err).WithFields(log.Fields{
+		logger := helpers.Logger(r)
+		logger.WithError(err).WithFields(log.Fields{
 			"user_id": user.ID,
+			"session_id": newSession.ID,
 			"context": "session",
 		}).Error("Failed to encode session cookie")
 		helpers.WriteErrorStatus(w, "Failed to create session", http.StatusInternalServerError)
@@ -304,8 +319,8 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var login struct {
-		Auth     string `json:"auth" binding:"required"`
-		Password string `json:"password" binding:"required"`
+		Auth     string `json:"auth" validate:"required,min=1,max=255"`
+		Password string `json:"password" validate:"required,min=1"`
 	}
 	if !helpers.Bind(w, r, &login) {
 		return
@@ -329,7 +344,11 @@ func login(w http.ResponseWriter, r *http.Request) {
 	if util.Config.LdapEnable {
 		ldapUser, err = tryFindLDAPUser(login.Auth, login.Password)
 		if err != nil {
-			log.Warn(err.Error())
+			logger := helpers.Logger(r)
+			logger.WithError(err).WithFields(log.Fields{
+				"context": "ldap",
+				"auth": login.Auth,
+			}).Warn("LDAP authentication failed")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -355,9 +374,21 @@ func login(w http.ResponseWriter, r *http.Request) {
 			// TODO: Return more informative error code.
 		}
 
-		log.Error(err.Error())
+		logger := helpers.Logger(r)
+		logger.WithError(err).WithFields(log.Fields{
+			"context": "login",
+			"auth": login.Auth,
+		}).Error("Login failed")
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
+
+	logger := helpers.Logger(r)
+	logger.WithFields(log.Fields{
+		"user_id": user.ID,
+		"username": user.Username,
+		"context": "login",
+	}).Info("User logged in successfully")
 
 	createSession(w, r, user, false)
 
@@ -376,13 +407,23 @@ func login(w http.ResponseWriter, r *http.Request) {
 // - 204 No Content: Logout successful.
 // - 500 Internal Server Error: An error occurred while expiring the session.
 func logout(w http.ResponseWriter, r *http.Request) {
+	logger := helpers.Logger(r)
 	if session, ok := getSession(r); ok {
 		err := helpers.Store(r).ExpireSession(session.UserID, session.ID)
 		if err != nil {
-			log.Error(err)
+			logger.WithError(err).WithFields(log.Fields{
+				"user_id": session.UserID,
+				"session_id": session.ID,
+				"context": "logout",
+			}).Error("Failed to expire session")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+		logger.WithFields(log.Fields{
+			"user_id": session.UserID,
+			"session_id": session.ID,
+			"context": "logout",
+		}).Info("User logged out successfully")
 	}
 
 	http.SetCookie(w, &http.Cookie{
@@ -492,7 +533,11 @@ func oidcLogin(w http.ResponseWriter, r *http.Request) {
 
 	_, oauth, err := getOidcProvider(pid, ctx, redirectPath)
 	if err != nil {
-		log.Error(err.Error())
+		logger := helpers.Logger(r)
+		logger.WithError(err).WithFields(log.Fields{
+			"context": "oidc",
+			"provider": pid,
+		}).Error("Failed to get OIDC provider for login")
 		loginURL, _ := url.JoinPath(util.Config.WebHost, "auth/login")
 		http.Redirect(w, r, loginURL, http.StatusTemporaryRedirect)
 		return
@@ -508,7 +553,8 @@ func generateStateOauthCookie(w http.ResponseWriter) string {
 	b := make([]byte, 16)
 	_, err := rand.Read(b)
 	if err != nil {
-		panic(err)
+		log.WithError(err).Error("Failed to generate random bytes for OAuth state")
+		return ""
 	}
 	oauthState := base64.URLEncoding.EncodeToString(b)
 	cookie := http.Cookie{Name: "oauthstate", Value: oauthState, Expires: expiration}
@@ -643,12 +689,21 @@ func oidcRedirect(w http.ResponseWriter, r *http.Request) {
 	loginURL, _ := url.JoinPath(util.Config.WebHost, "auth/login")
 
 	if err != nil {
-		log.Error(err.Error())
+		logger := helpers.Logger(r)
+		logger.WithError(err).WithFields(log.Fields{
+			"context": "oidc",
+			"provider": pid,
+		}).Error("Failed to get OAuth state cookie")
 		http.Redirect(w, r, loginURL, http.StatusTemporaryRedirect)
 		return
 	}
 
 	if r.FormValue("state") != oauthState.Value {
+		logger := helpers.Logger(r)
+		logger.WithFields(log.Fields{
+			"context": "oidc",
+			"provider": pid,
+		}).Warn("OAuth state mismatch")
 		http.Redirect(w, r, loginURL, http.StatusTemporaryRedirect)
 		return
 	}
@@ -657,14 +712,22 @@ func oidcRedirect(w http.ResponseWriter, r *http.Request) {
 
 	_oidc, oauth, err := getOidcProvider(pid, ctx, r.URL.Path)
 	if err != nil {
-		log.Error(err.Error())
+		logger := helpers.Logger(r)
+		logger.WithError(err).WithFields(log.Fields{
+			"context": "oidc",
+			"provider": pid,
+		}).Error("Failed to get OIDC provider for redirect")
 		http.Redirect(w, r, loginURL, http.StatusTemporaryRedirect)
 		return
 	}
 
 	provider, ok := util.Config.OidcProviders[pid]
 	if !ok {
-		log.Error(fmt.Errorf("no such provider: %s", pid))
+		logger := helpers.Logger(r)
+		logger.WithError(fmt.Errorf("no such provider: %s", pid)).WithFields(log.Fields{
+			"context": "oidc",
+			"provider": pid,
+		}).Error("OIDC provider not found")
 		http.Redirect(w, r, loginURL, http.StatusTemporaryRedirect)
 		return
 	}
@@ -675,7 +738,11 @@ func oidcRedirect(w http.ResponseWriter, r *http.Request) {
 
 	oauth2Token, err := oauth.Exchange(ctx, code)
 	if err != nil {
-		log.Error(err.Error())
+		logger := helpers.Logger(r)
+		logger.WithError(err).WithFields(log.Fields{
+			"context": "oidc",
+			"provider": pid,
+		}).Error("Failed to exchange OAuth token")
 		http.Redirect(w, r, loginURL, http.StatusTemporaryRedirect)
 		return
 	}
@@ -713,7 +780,11 @@ func oidcRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		log.Error(err.Error())
+		logger := helpers.Logger(r)
+		logger.WithError(err).WithFields(log.Fields{
+			"context": "oidc",
+			"provider": pid,
+		}).Error("Failed to verify OIDC token")
 		http.Redirect(w, r, loginURL, http.StatusTemporaryRedirect)
 		return
 	}
@@ -729,14 +800,24 @@ func oidcRedirect(w http.ResponseWriter, r *http.Request) {
 		}
 		user, err = helpers.Store(r).CreateUserWithoutPassword(user)
 		if err != nil {
-			log.Error(err.Error())
+			logger := helpers.Logger(r)
+			logger.WithError(err).WithFields(log.Fields{
+				"context": "oidc",
+				"provider": pid,
+				"email": claims.email,
+			}).Error("Failed to create OIDC user")
 			http.Redirect(w, r, loginURL, http.StatusTemporaryRedirect)
 			return
 		}
 	}
 
 	if !user.External {
-		log.Error(fmt.Errorf("OIDC user '%s' conflicts with local user", user.Username))
+		logger := helpers.Logger(r)
+		logger.WithError(fmt.Errorf("OIDC user '%s' conflicts with local user", user.Username)).WithFields(log.Fields{
+			"context": "oidc",
+			"provider": pid,
+			"username": user.Username,
+		}).Error("OIDC user conflicts with local user")
 		http.Redirect(w, r, loginURL, http.StatusTemporaryRedirect)
 		return
 	}
@@ -747,7 +828,12 @@ func oidcRedirect(w http.ResponseWriter, r *http.Request) {
 
 	redirectPath, err = url.JoinPath(util.Config.WebHost, redirectPath)
 	if err != nil {
-		log.Error(err)
+		logger := helpers.Logger(r)
+		logger.WithError(err).WithFields(log.Fields{
+			"context": "oidc",
+			"provider": pid,
+			"redirect_path": mux.Vars(r)["redirect_path"],
+		}).Error("Failed to join redirect path")
 		http.Redirect(w, r, loginURL, http.StatusTemporaryRedirect)
 		return
 	}

@@ -83,7 +83,7 @@
 <script>
 import EventBus from '@/event-bus';
 import ItemListPageBase from '@/components/ItemListPageBase';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 import CopyClipboardButton from '@/components/CopyClipboardButton.vue';
 
 export default {
@@ -121,7 +121,7 @@ export default {
     },
 
     async newToken() {
-      const res = (await axios({
+      const res = (await apiClient({
         method: 'post',
         url: '/api/user/tokens',
         responseType: 'json',

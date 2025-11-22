@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/semaphoreui/semaphore/cli/setup"
 	"github.com/semaphoreui/semaphore/util"
 	"github.com/spf13/cobra"
@@ -35,7 +37,8 @@ func doRunnerSetup() int {
 		taskPool := createRunnerJobPool()
 		err := taskPool.Register(&resultConfigPath)
 		if err != nil {
-			panic(err)
+			fmt.Fprintf(os.Stderr, "Error: Failed to register runner: %v\n", err)
+			os.Exit(1)
 		}
 	}
 

@@ -1,10 +1,9 @@
-import axios from 'axios';
+import { api } from '@/lib/apiClient';
 import EventBus from '@/event-bus';
 import EditDialog from '@/components/EditDialog.vue';
 import YesNoDialog from '@/components/YesNoDialog.vue';
 import ObjectRefsDialog from '@/components/ObjectRefsDialog.vue';
 
-import { getErrorMessage } from '@/lib/error';
 import { USER_PERMISSIONS } from '@/lib/constants';
 import PermissionsCheck from '@/components/PermissionsCheck';
 import ProjectMixin from '@/components/ProjectMixin';
@@ -89,11 +88,8 @@ export default {
       this.itemId = itemId;
 
       try {
-        this.itemRefs = (await axios({
-          method: 'get',
-          url: `${this.getSingleItemUrl()}/refs`,
-          responseType: 'json',
-        })).data;
+        const refsResponse = await api.get(`${this.getSingleItemUrl()}/refs`);
+        this.itemRefs = refsResponse.data;
 
         if (this.itemRefs.templates.length > 0
           || this.itemRefs.repositories.length > 0
@@ -116,11 +112,7 @@ export default {
       try {
         const item = this.items.find((x) => x[this.IDFieldName] === itemId);
 
-        await axios({
-          method: 'delete',
-          url: this.getSingleItemUrl(),
-          responseType: 'json',
-        });
+        await api.delete(this.getSingleItemUrl());
 
         EventBus.$emit(this.getEventName(), {
           action: 'delete',
@@ -129,10 +121,8 @@ export default {
 
         await this.loadItems();
       } catch (err) {
-        EventBus.$emit('i-snackbar', {
-          color: 'error',
-          text: getErrorMessage(err),
-        });
+        const { toast } = await import('@/lib/toast');
+        toast.apiError(err);
       }
     },
 
@@ -142,11 +132,8 @@ export default {
     },
 
     async loadItems() {
-      this.items = (await axios({
-        method: 'get',
-        url: this.getItemsUrl(),
-        responseType: 'json',
-      })).data;
+      const response = await api.get(this.getItemsUrl());
+      this.items = response.data;
     },
   },
 };

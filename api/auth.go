@@ -36,8 +36,14 @@ func getSession(r *http.Request) (*db.Session, bool) {
 		return nil, false
 	}
 
-	userID := user.(int)
-	sessionID := sessionVal.(int)
+	userID, ok := user.(int)
+	if !ok {
+		return nil, false
+	}
+	sessionID, ok := sessionVal.(int)
+	if !ok {
+		return nil, false
+	}
 
 	// fetch session
 	session, err := helpers.Store(r).GetSession(userID, sessionID)
@@ -52,7 +58,12 @@ func getSession(r *http.Request) (*db.Session, bool) {
 		// destroy.
 		if err = helpers.Store(r).ExpireSession(userID, sessionID); err != nil {
 			// it is internal error, it doesn't concern the user
-			log.Error(err)
+			// Note: No request context available here, using standard logger
+			log.WithError(err).WithFields(log.Fields{
+				"context": "session",
+				"user_id": userID,
+				"session_id": sessionID,
+			}).Error("Failed to expire old session")
 		}
 
 		return nil, false
@@ -63,11 +74,11 @@ func getSession(r *http.Request) (*db.Session, bool) {
 }
 
 type totpRequestBody struct {
-	Passcode string `json:"passcode"`
+	Passcode string `json:"passcode" validate:"required,min=6,max=8,numeric"`
 }
 
 type totpRecoveryRequestBody struct {
-	RecoveryCode string `json:"recovery_code"`
+	RecoveryCode string `json:"recovery_code" validate:"required,min=10,max=20,alphanum"`
 }
 
 // recoverySession handles the recovery of a user session using a recovery code.
@@ -220,7 +231,10 @@ func authenticationHandler(w http.ResponseWriter, r *http.Request) (ok bool, req
 
 		if err != nil {
 			if !errors.Is(err, db.ErrNotFound) {
-				log.Error(err)
+				logger := helpers.Logger(r)
+				logger.WithError(err).WithFields(log.Fields{
+					"context": "api_token",
+				}).Error("Failed to get API token")
 			}
 
 			w.WriteHeader(http.StatusUnauthorized)
@@ -251,7 +265,12 @@ func authenticationHandler(w http.ResponseWriter, r *http.Request) (ok bool, req
 		userID = session.UserID
 
 		if err := helpers.Store(r).TouchSession(userID, session.ID); err != nil {
-			log.Error(err)
+			logger := helpers.Logger(r)
+			logger.WithError(err).WithFields(log.Fields{
+				"context": "session",
+				"user_id": userID,
+				"session_id": session.ID,
+			}).Error("Failed to touch session")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
@@ -261,7 +280,11 @@ func authenticationHandler(w http.ResponseWriter, r *http.Request) (ok bool, req
 	if err != nil {
 		if !errors.Is(err, db.ErrNotFound) {
 			// internal error
-			log.Error(err)
+			logger := helpers.Logger(r)
+			logger.WithError(err).WithFields(log.Fields{
+				"context": "authentication",
+				"user_id": userID,
+			}).Error("Failed to get user")
 		}
 		w.WriteHeader(http.StatusUnauthorized)
 		return

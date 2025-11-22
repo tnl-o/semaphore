@@ -52,7 +52,7 @@
 </template>
 <script>
 import IntegrationsBase from '@/views/project/IntegrationsBase';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 import CopyClipboardButton from '@/components/CopyClipboardButton.vue';
 import IntegrationExtractValue from './IntegrationExtractValue.vue';
 import IntegrationMatcher from './IntegrationMatcher.vue';
@@ -74,7 +74,7 @@ export default {
   },
 
   async created() {
-    this.integration = (await axios({
+    this.integration = (await apiClient({
       method: 'get',
       url: `/api/project/${this.projectId}/integrations/${this.integrationId}`,
       responseType: 'json',
@@ -86,7 +86,7 @@ export default {
       return true;
     },
     async updateIntegration() {
-      await axios({
+      await apiClient({
         method: 'put',
         url: `/api/project/${this.projectId}/integrations/${this.integrationId}`,
         responseType: 'json',

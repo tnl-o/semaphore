@@ -24,10 +24,17 @@ import (
 
 	"github.com/google/go-github/github"
 	"github.com/gorilla/securecookie"
+	log "github.com/sirupsen/logrus"
 )
 
 // Cookie is a runtime generated secure cookie used for authentication
 var Cookie *securecookie.SecureCookie
+
+// CookieHash and CookieEncryption allow overriding hashing/encryption secrets at runtime (mainly for tests)
+var (
+	CookieHash       string
+	CookieEncryption string
+)
 
 // WebHostURL is the public route to the semaphore server
 var WebHostURL *url.URL
@@ -191,6 +198,14 @@ type DebuggingConfig struct {
 	PprofDumpDir string `json:"pprof_dump_dir,omitempty" env:"SEMAPHORE_PPROF_DUMP_DIR"`
 }
 
+type RateLimitConfig struct {
+	Enabled       bool   `json:"enabled" env:"SEMAPHORE_RATE_LIMIT_ENABLED" default:"true"`
+	AuthLimit     int    `json:"auth_limit,omitempty" env:"SEMAPHORE_RATE_LIMIT_AUTH_LIMIT" default:"5"`
+	AuthWindow    string `json:"auth_window,omitempty" env:"SEMAPHORE_RATE_LIMIT_AUTH_WINDOW" default:"1m"`
+	GeneralLimit  int    `json:"general_limit,omitempty" env:"SEMAPHORE_RATE_LIMIT_GENERAL_LIMIT" default:"100"`
+	GeneralWindow string `json:"general_window,omitempty" env:"SEMAPHORE_RATE_LIMIT_GENERAL_WINDOW" default:"1m"`
+}
+
 type HARedisConfig struct {
 	Addr          string `json:"addr,omitempty" env:"SEMAPHORE_HA_REDIS_ADDR"`
 	DB            int    `json:"db,omitempty" env:"SEMAPHORE_HA_REDIS_DB"`
@@ -333,11 +348,14 @@ type ConfigType struct {
 	Debugging *DebuggingConfig `json:"debugging,omitempty"`
 
 	HA *HAConfig `json:"ha,omitempty"`
+
+	RateLimit *RateLimitConfig `json:"rate_limit,omitempty"`
 }
 
 func NewConfigType() *ConfigType {
 	return &ConfigType{
 		LdapMappings: &LdapMappings{},
+		RateLimit:    &RateLimitConfig{},
 	}
 }
 
@@ -355,7 +373,12 @@ func ClearDir(dir string, preserveFiles bool, prefix string) error {
 		return err
 	}
 
-	defer d.Close() //nolint:errcheck
+	defer func() {
+		if closeErr := d.Close(); closeErr != nil {
+			// Log error but don't fail the function if close fails
+			// This is a cleanup operation in a directory listing function
+		}
+	}()
 
 	files, err := d.ReadDir(0)
 	if err != nil {
@@ -416,9 +439,24 @@ func ConfigInit(configPath string, noConfigFile bool) (usedConfigPath *string) {
 
 	var encryption []byte
 
-	hash, _ := base64.StdEncoding.DecodeString(Config.CookieHash)
-	if len(Config.CookieEncryption) > 0 {
-		encryption, _ = base64.StdEncoding.DecodeString(Config.CookieEncryption)
+	hashSource := Config.CookieHash
+	if CookieHash != "" {
+		hashSource = CookieHash
+	}
+	hash, _ := base64.StdEncoding.DecodeString(hashSource)
+	if CookieHash == "" {
+		CookieHash = hashSource
+	}
+
+	encryptionSource := Config.CookieEncryption
+	if CookieEncryption != "" {
+		encryptionSource = CookieEncryption
+	}
+	if len(encryptionSource) > 0 {
+		encryption, _ = base64.StdEncoding.DecodeString(encryptionSource)
+		if CookieEncryption == "" {
+			CookieEncryption = encryptionSource
+		}
 	}
 
 	Cookie = securecookie.New(hash, encryption)
@@ -427,6 +465,7 @@ func ConfigInit(configPath string, noConfigFile bool) (usedConfigPath *string) {
 		var err error
 		WebHostURL, err = url.Parse(Config.WebHost)
 		if err != nil {
+			log.WithError(err).WithField("web_host", Config.WebHost).Error("Failed to parse WebHost URL")
 			panic(err)
 		}
 
@@ -548,6 +587,7 @@ func loadDefaultsToObject(obj any) error {
 func loadConfigDefaults() {
 	err := loadDefaultsToObject(Config)
 	if err != nil {
+		log.WithError(err).Error("Failed to load default configuration values")
 		panic(err)
 	}
 }
@@ -555,6 +595,7 @@ func loadConfigDefaults() {
 func castStringToInt(value string) int {
 	valueInt, err := strconv.Atoi(value)
 	if err != nil {
+		log.WithError(err).WithField("value", value).Error("Failed to convert config value to integer")
 		panic(err)
 	}
 	return valueInt
@@ -793,6 +834,7 @@ func setConfigValue(attribute reflect.Value, value string) {
 			var arr []string
 			err := json.Unmarshal([]byte(value), &arr)
 			if err != nil {
+				log.WithError(err).WithField("value", value).Error("Failed to unmarshal config array value")
 				panic(err)
 			}
 			attribute.Set(reflect.ValueOf(arr))
@@ -801,6 +843,7 @@ func setConfigValue(attribute reflect.Value, value string) {
 			mapValue := reflect.New(mapType)
 			err := json.Unmarshal([]byte(value), mapValue.Interface())
 			if err != nil {
+				log.WithError(err).WithField("value", value).Error("Failed to unmarshal config map value")
 				panic(err)
 			}
 			attribute.Set(mapValue.Elem())
@@ -810,7 +853,9 @@ func setConfigValue(attribute reflect.Value, value string) {
 		}
 
 	} else {
-		panic(fmt.Errorf("got non-existent config attribute"))
+		err := fmt.Errorf("got non-existent config attribute")
+		log.WithError(err).Error("Configuration error: non-existent attribute")
+		panic(err)
 	}
 }
 
@@ -823,7 +868,9 @@ func getConfigValue(path string) string {
 		lastDepth := len(nested_path) == i+1
 		if !lastDepth && attribute.Kind() != reflect.Struct && attribute.Kind() != reflect.Pointer ||
 			lastDepth && attribute.Kind() == reflect.Invalid {
-			panic(fmt.Errorf("got non-existent config attribute '%v'", path))
+			err := fmt.Errorf("got non-existent config attribute '%v'", path)
+			log.WithError(err).WithField("path", path).Error("Configuration error: non-existent attribute path")
+			panic(err)
 		}
 	}
 
@@ -882,6 +929,7 @@ func validate(value any) error {
 func validateConfig() {
 	err := validate(Config)
 	if err != nil {
+		log.WithError(err).Error("Configuration validation failed")
 		panic(err)
 	}
 }
@@ -941,6 +989,7 @@ func loadEnvironmentToObject(obj any) error {
 func loadConfigEnvironment() {
 	err := loadEnvironmentToObject(Config)
 	if err != nil {
+		log.WithError(err).Error("Failed to load configuration from environment variables")
 		panic(err)
 	}
 }
@@ -958,6 +1007,7 @@ func exitOnConfigFileError(err error) {
 
 func decodeConfig(file io.Reader) {
 	if err := json.NewDecoder(file).Decode(&Config); err != nil {
+		log.WithError(err).Error("Could not decode configuration file")
 		fmt.Println("Could not decode configuration!")
 		panic(err)
 	}
@@ -1128,6 +1178,7 @@ func (conf *ConfigType) PrintDbInfo() {
 	// Get the database dialect
 	dialect, err := conf.GetDialect()
 	if err != nil {
+		log.WithError(err).Error("Failed to get database dialect from configuration")
 		panic(err)
 	}
 
@@ -1142,7 +1193,9 @@ func (conf *ConfigType) PrintDbInfo() {
 	case DbDriverSQLite:
 		fmt.Printf("SQLite %v@%v %v\n", conf.SQLite.GetUsername(), conf.SQLite.GetHostname(), conf.SQLite.GetDbName())
 	default:
-		panic(fmt.Errorf("database configuration not found"))
+		err := fmt.Errorf("database configuration not found")
+		log.WithError(err).Error("Database configuration error: no valid database dialect found")
+		panic(err)
 	}
 }
 

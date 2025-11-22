@@ -15,16 +15,18 @@ function gptTranslate(options) {
 
   const openai = new OpenAI();
 
-  return through.obj(function (file, enc, cb) {
+  return through.obj(function gptTranslateTransform(file, enc, cb) {
     const self = this;
 
     if (file.isNull()) {
-      return cb(null, file); // Pass along if no contents
+      cb(null, file); // Pass along if no contents
+      return null;
     }
 
     if (file.isStream()) {
       self.emit('error', new PluginError(PLUGIN_NAME, 'Streaming not supported.'));
-      return cb();
+      cb();
+      return null;
     }
 
     (async () => {
@@ -44,15 +46,18 @@ function gptTranslate(options) {
           ],
         });
 
-        file.contents = Buffer.from(`${response.choices[0].message.content}\n`, enc);
+        const transformedFile = file.clone();
+        transformedFile.contents = Buffer.from(`${response.choices[0].message.content}\n`, enc);
 
-        self.push(file);
+        self.push(transformedFile);
         cb();
       } catch (err) {
         self.emit('error', new PluginError(PLUGIN_NAME, err.message));
         cb(err);
       }
     })();
+
+    return null;
   });
 }
 

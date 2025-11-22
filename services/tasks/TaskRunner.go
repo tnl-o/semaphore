@@ -270,7 +270,12 @@ func (t *TaskRunner) prepareError(err error, errMsg string) error {
 
 	if err != nil {
 		t.SetStatus(task_logger.TaskFailStatus)
-		panic(err)
+		t.Logf("Error: %v - %s", err, errMsg)
+		log.WithError(err).WithFields(log.Fields{
+			"task_id": t.Task.ID,
+			"context": "task_runner",
+		}).Error("Task preparation error")
+		return err
 	}
 
 	return nil

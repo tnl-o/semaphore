@@ -315,7 +315,7 @@
 </style>
 <script>
 
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 import TerraformInventoryForm from '@/components/TerraformInventoryForm.vue';
 import EditDialog from '@/components/EditDialog.vue';
 import { APP_INVENTORY_TITLE } from '@/lib/constants';
@@ -410,7 +410,7 @@ export default {
   methods: {
 
     async setDefaultInventory() {
-      await axios({
+      await apiClient({
         method: 'post',
         url: `/api/project/${this.template.project_id}/templates/${this.template.id}/inventory/${this.inventoryId}/set_default`,
       });
@@ -418,7 +418,7 @@ export default {
     },
 
     async detachInventory() {
-      await axios({
+      await apiClient({
         method: 'post',
         url: `/api/project/${this.template.project_id}/templates/${this.template.id}/inventory/${this.inventoryId}/detach`,
       });
@@ -426,7 +426,7 @@ export default {
     },
 
     async deleteInventory() {
-      await axios({
+      await apiClient({
         method: 'delete',
         url: `/api/project/${this.template.project_id}/inventory/${this.inventoryId}`,
       });
@@ -439,7 +439,7 @@ export default {
     },
 
     async attachInventory(inventoryId) {
-      await axios({
+      await apiClient({
         method: 'post',
         url: `/api/project/${this.template.project_id}/templates/${this.template.id}/inventory/${inventoryId}/attach`,
       });
@@ -452,11 +452,11 @@ export default {
         this.states = [];
         return;
       }
-      this.states = (await axios.get(`/api/project/${this.template.project_id}/inventory/${this.inventoryId}/terraform/states`)).data;
+      this.states = (await apiClient.get(`/api/project/${this.template.project_id}/inventory/${this.inventoryId}/terraform/states`)).data;
     },
 
     async loadInventories() {
-      this.inventories = (await axios({
+      this.inventories = (await apiClient({
         url: `/api/project/${this.template.project_id}/inventory?template_id=${this.template.id}`,
         responseType: 'json',
       })).data;
@@ -475,7 +475,7 @@ export default {
         return;
       }
       try {
-        this.aliases = (await axios({
+        this.aliases = (await apiClient({
           url: `/api/project/${this.template.project_id}/inventory/${this.inventoryId}/terraform/aliases`,
           responseType: 'json',
         })).data;
@@ -485,7 +485,7 @@ export default {
     },
 
     async deleteAlias(alias) {
-      await axios({
+      await apiClient({
         method: 'delete',
         url: `/api/project/${this.template.project_id}/inventory/${this.inventoryId}/terraform/aliases/${alias}`,
       });

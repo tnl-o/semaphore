@@ -164,6 +164,20 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-row v-if="ansibleFacts && Object.keys(ansibleFacts).length > 0">
+      <v-col cols="12">
+        <v-card
+          :color="$vuetify.theme.dark ? '#212121' : 'white'"
+          style="background: #8585850f"
+        >
+          <v-card-title>Ansible Facts</v-card-title>
+          <v-card-text>
+            <AnsibleFactsViewer :facts="ansibleFacts" />
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -182,12 +196,35 @@
 
 import ProjectMixin from '@/components/ProjectMixin';
 import AppsMixin from '@/components/AppsMixin';
+import AnsibleFactsViewer from '@/components/AnsibleFactsViewer.vue';
+import { ansibleParser } from '@/lib/ansibleParser';
 
 export default {
+  components: {
+    AnsibleFactsViewer,
+  },
   props: {
     item: Object,
     user: Object,
     projectId: Number,
+    logs: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  computed: {
+    ansibleFacts() {
+      if (!this.logs || this.logs.length === 0) {
+        return {};
+      }
+      try {
+        const parsed = ansibleParser.parse(this.logs);
+        return parsed.facts || {};
+      } catch (e) {
+        console.warn('Failed to parse Ansible facts:', e);
+        return {};
+      }
+    },
   },
 
   mixins: [ProjectMixin, AppsMixin],
@@ -205,8 +242,6 @@ export default {
       }
     },
   },
-
-  computed: {},
 
   async created() {
     await this.loadData();

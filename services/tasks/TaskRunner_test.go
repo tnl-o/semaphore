@@ -74,7 +74,7 @@ func TestTaskRunnerRun(t *testing.T) {
 
 	pool := CreateTaskPool(
 		store,
-		&MemoryTaskStateStore{},
+		NewMemoryTaskStateStore(),
 		nil,
 		&InventoryServiceMock{},
 		nil,
@@ -98,7 +98,7 @@ func TestTaskRunnerRun(t *testing.T) {
 
 	taskRunner := TaskRunner{
 		Task:         task,
-		pool:         &pool,
+		pool:         pool,
 		keyInstaller: keyInstaller,
 	}
 	taskRunner.job = &LocalJob{

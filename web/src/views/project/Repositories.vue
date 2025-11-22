@@ -80,7 +80,7 @@
 <script>
 import ItemListPageBase from '@/components/ItemListPageBase';
 import RepositoryForm from '@/components/RepositoryForm.vue';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 
 export default {
   mixins: [ItemListPageBase],
@@ -92,7 +92,7 @@ export default {
   },
 
   async created() {
-    this.keys = (await axios({
+    this.keys = (await apiClient({
       method: 'get',
       url: `/api/project/${this.projectId}/keys`,
       responseType: 'json',

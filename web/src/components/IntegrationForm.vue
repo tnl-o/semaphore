@@ -97,7 +97,7 @@
 </template>
 <script>
 import ItemFormBase from '@/components/ItemFormBase';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 import TaskParamsForm from '@/components/TaskParamsForm.vue';
 
 export default {
@@ -129,7 +129,7 @@ export default {
     };
   },
   async created() {
-    this.templates = (await axios({
+    this.templates = (await apiClient({
       templates: 'get',
       url: `/api/project/${this.projectId}/templates`,
       responseType: 'json',
@@ -170,7 +170,7 @@ export default {
     },
 
     async afterLoadData() {
-      this.keys = (await axios({
+      this.keys = (await apiClient({
         method: 'get',
         url: `/api/project/${this.projectId}/keys`,
         responseType: 'json',

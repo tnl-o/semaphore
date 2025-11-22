@@ -87,7 +87,7 @@ import ItemListPageBase from '@/components/ItemListPageBase';
 import EditTemplatePermissionDialog from '@/components/EditTemplatePermissionDialog.vue';
 import YesNoDialog from '@/components/YesNoDialog.vue';
 import TemplatePermissionsChips from '@/components/TemplatePermissionsChips.vue';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 import { USER_PERMISSIONS } from '@/lib/constants';
 
 export default {
@@ -128,7 +128,7 @@ export default {
   methods: {
     async loadRoles() {
       try {
-        const response = await axios.get(`/api/project/${this.template.project_id}/roles?mode=merge`);
+        const response = await apiClient.get(`/api/project/${this.template.project_id}/roles?mode=merge`);
         this.availableRoles = response.data;
       } catch (error) {
         // eslint-disable-next-line no-console

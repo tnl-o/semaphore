@@ -66,7 +66,7 @@
 </template>
 <script>
 import ItemFormBase from '@/components/ItemFormBase';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 import { USER_ROLES } from '@/lib/constants';
 
 export default {
@@ -95,13 +95,13 @@ export default {
   },
 
   async created() {
-    this.teamMembers = (await axios({
+    this.teamMembers = (await apiClient({
       method: 'get',
       url: this.getItemsUrl(),
       responseType: 'json',
     })).data;
 
-    this.users = (await axios({
+    this.users = (await apiClient({
       method: 'get',
       url: '/api/users',
       responseType: 'json',

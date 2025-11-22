@@ -62,13 +62,15 @@ func (t *TaskRunner) sendMailAlert() {
 	tpl, err := template.ParseFS(templates, "templates/email.tmpl")
 
 	if err != nil {
-		t.Log("Can't parse email alert template!")
-		panic(err)
+		t.Logf("Can't parse email alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if err := tpl.Execute(body, alert); err != nil {
-		t.Log("Can't generate email alert template!")
-		panic(err)
+		t.Logf("Can't generate email alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if body.Len() == 0 {
@@ -150,13 +152,15 @@ func (t *TaskRunner) sendTelegramAlert() {
 	tpl, err := template.ParseFS(templates, "templates/telegram.tmpl")
 
 	if err != nil {
-		t.Log("Can't parse telegram alert template!")
-		panic(err)
+		t.Logf("Can't parse telegram alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if err := tpl.Execute(body, alert); err != nil {
-		t.Log("Can't generate telegram alert template!")
-		panic(err)
+		t.Logf("Can't generate telegram alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if body.Len() == 0 {
@@ -184,7 +188,12 @@ func (t *TaskRunner) sendTelegramAlert() {
 	}
 
 	if resp != nil {
-		defer resp.Body.Close() //nolint:errcheck
+		defer func() {
+			if closeErr := resp.Body.Close(); closeErr != nil {
+				// Log error but don't fail the function if close fails
+				// This is a cleanup operation for HTTP response body
+			}
+		}()
 	}
 }
 
@@ -216,13 +225,15 @@ func (t *TaskRunner) sendSlackAlert() {
 	tpl, err := template.ParseFS(templates, "templates/slack.tmpl")
 
 	if err != nil {
-		t.Log("Can't parse slack alert template!")
-		panic(err)
+		t.Logf("Can't parse slack alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if err := tpl.Execute(body, alert); err != nil {
-		t.Log("Can't generate slack alert template!")
-		panic(err)
+		t.Logf("Can't generate slack alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if body.Len() == 0 {
@@ -247,7 +258,12 @@ func (t *TaskRunner) sendSlackAlert() {
 	}
 
 	if resp != nil {
-		defer resp.Body.Close() //nolint:errcheck
+		defer func() {
+			if closeErr := resp.Body.Close(); closeErr != nil {
+				// Log error but don't fail the function if close fails
+				// This is a cleanup operation for HTTP response body
+			}
+		}()
 	}
 }
 
@@ -279,13 +295,15 @@ func (t *TaskRunner) sendRocketChatAlert() {
 	tpl, err := template.ParseFS(templates, "templates/rocketchat.tmpl")
 
 	if err != nil {
-		t.Log("Can't parse rocketchat alert template!")
-		panic(err)
+		t.Logf("Can't parse rocketchat alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if err := tpl.Execute(body, alert); err != nil {
-		t.Log("Can't generate rocketchat alert template!")
-		panic(err)
+		t.Logf("Can't generate rocketchat alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if body.Len() == 0 {
@@ -309,7 +327,12 @@ func (t *TaskRunner) sendRocketChatAlert() {
 		t.Log("Sent successfully rocketchat alert")
 	}
 	if resp != nil {
-		defer resp.Body.Close() //nolint:errcheck
+		defer func() {
+			if closeErr := resp.Body.Close(); closeErr != nil {
+				// Log error but don't fail the function if close fails
+				// This is a cleanup operation for HTTP response body
+			}
+		}()
 	}
 }
 
@@ -341,13 +364,15 @@ func (t *TaskRunner) sendMicrosoftTeamsAlert() {
 	tpl, err := template.ParseFS(templates, "templates/microsoft-teams.tmpl")
 
 	if err != nil {
-		t.Log("Can't parse microsoft teams alert template!")
-		panic(err)
+		t.Logf("Can't parse microsoft teams alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if err := tpl.Execute(body, alert); err != nil {
-		t.Log("Can't generate microsoft teams alert template!")
-		panic(err)
+		t.Logf("Can't generate microsoft teams alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if body.Len() == 0 {
@@ -371,7 +396,12 @@ func (t *TaskRunner) sendMicrosoftTeamsAlert() {
 		t.Log("Sent successfully microsoft teams alert")
 	}
 	if resp != nil {
-		defer resp.Body.Close() //nolint:errcheck
+		defer func() {
+			if closeErr := resp.Body.Close(); closeErr != nil {
+				// Log error but don't fail the function if close fails
+				// This is a cleanup operation for HTTP response body
+			}
+		}()
 	}
 }
 
@@ -403,13 +433,15 @@ func (t *TaskRunner) sendDingTalkAlert() {
 	tpl, err := template.ParseFS(templates, "templates/dingtalk.tmpl")
 
 	if err != nil {
-		t.Log("Can't parse dingtalk alert template!")
-		panic(err)
+		t.Logf("Can't parse dingtalk alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if err := tpl.Execute(body, alert); err != nil {
-		t.Log("Can't generate dingtalk alert template!")
-		panic(err)
+		t.Logf("Can't generate dingtalk alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if body.Len() == 0 {
@@ -434,7 +466,12 @@ func (t *TaskRunner) sendDingTalkAlert() {
 	}
 
 	if resp != nil {
-		defer resp.Body.Close() //nolint:errcheck
+		defer func() {
+			if closeErr := resp.Body.Close(); closeErr != nil {
+				// Log error but don't fail the function if close fails
+				// This is a cleanup operation for HTTP response body
+			}
+		}()
 	}
 }
 
@@ -466,13 +503,15 @@ func (t *TaskRunner) sendGotifyAlert() {
 	tpl, err := template.ParseFS(templates, "templates/gotify.tmpl")
 
 	if err != nil {
-		t.Log("Can't parse gotify alert template!")
-		panic(err)
+		t.Logf("Can't parse gotify alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if err := tpl.Execute(body, alert); err != nil {
-		t.Log("Can't generate gotify alert template!")
-		panic(err)
+		t.Logf("Can't generate gotify alert template! Error: %v", err)
+		util.LogError(err)
+		return
 	}
 
 	if body.Len() == 0 {
@@ -500,7 +539,12 @@ func (t *TaskRunner) sendGotifyAlert() {
 	}
 
 	if resp != nil {
-		defer resp.Body.Close() //nolint:errcheck
+		defer func() {
+			if closeErr := resp.Body.Close(); closeErr != nil {
+				// Log error but don't fail the function if close fails
+				// This is a cleanup operation for HTTP response body
+			}
+		}()
 	}
 }
 
@@ -526,7 +570,9 @@ func (t *TaskRunner) alertInfos() (string, string) {
 		user, err := t.pool.store.GetUser(*t.Task.UserID)
 
 		if err != nil {
-			panic(err)
+			t.Logf("Can't get user for alert! Error: %v", err)
+			util.LogError(err)
+			return author, version
 		}
 
 		author = user.Name

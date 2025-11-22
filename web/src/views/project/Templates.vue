@@ -261,9 +261,10 @@
 }
 </style>
 <script>
+/* eslint-disable import/no-cycle */
 import ItemListPageBase from '@/components/ItemListPageBase';
 import TaskLink from '@/components/TaskLink.vue';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 import EditViewsForm from '@/components/EditViewsForm.vue';
 import TableSettingsSheet from '@/components/TableSettingsSheet.vue';
 import TaskList from '@/components/TaskList.vue';
@@ -308,6 +309,7 @@ export default {
       viewTab: null,
       apps: null,
       itemApp: '',
+      isRedirecting: false,
     };
   },
 
@@ -337,7 +339,14 @@ export default {
     },
   },
   watch: {
-    async viewId() {
+    async viewId(newVal, oldVal) {
+      if (this.isRedirecting) {
+        return;
+      }
+      // Предотвращаем вызов при первой инициализации (oldVal === undefined)
+      if (oldVal === undefined && newVal != null) {
+        return;
+      }
       try {
         this.viewItemsLoading = true;
         await this.loadItems();
@@ -359,8 +368,12 @@ export default {
 
   methods: {
     async beforeLoadItems() {
+      if (this.isRedirecting) {
+        return;
+      }
       await this.loadViews();
-      if (this.viewId == null) {
+      // Редиректим только если viewId отсутствует в URL и есть доступные views
+      if (this.viewId == null && this.views && this.views.length > 0 && !this.viewItemsLoading) {
         let viewId = localStorage.getItem(`project${this.projectId}__lastVisitedViewId`);
 
         if (viewId == null) {
@@ -368,8 +381,20 @@ export default {
         }
 
         if (viewId != null
-          && this.views.some((v) => v.id === parseInt(viewId, 10))) {
-          await this.$router.push({ path: `/project/${this.projectId}/views/${viewId}/templates` });
+          && this.views.some((v) => v.id === parseInt(viewId, 10))
+          && !this.isRedirecting) {
+          // Используем replace вместо push, чтобы избежать добавления в историю
+          this.isRedirecting = true;
+          try {
+            await this.$router.replace({ path: `/project/${this.projectId}/views/${viewId}/templates` });
+          } catch (err) {
+            console.error('Redirect error:', err);
+          } finally {
+            // Сбрасываем флаг после небольшой задержки, чтобы дать роутеру время обработать изменение
+            setTimeout(() => {
+              this.isRedirecting = false;
+            }, 100);
+          }
         }
       }
     },
@@ -386,15 +411,35 @@ export default {
     },
 
     async loadViews() {
-      this.views = (await axios({
+      if (this.isRedirecting) {
+        return;
+      }
+      this.views = (await apiClient({
         method: 'get',
         url: `/api/project/${this.projectId}/views`,
         responseType: 'json',
       })).data.filter((v) => !v.hidden || this.can(this.USER_PERMISSIONS.manageProjectResources));
       this.views.sort((v1, v2) => v1.position - v2.position);
 
-      if (this.viewId != null && !this.views.some((v) => v.id === this.viewId)) {
-        await this.$router.push({ path: `/project/${this.projectId}/templates` });
+      // Редиректим только если viewId указан в URL, но не найден в списке views
+      if (this.viewId != null
+        && this.views
+        && this.views.length > 0
+        && !this.views.some((v) => v.id === parseInt(this.viewId, 10))
+        && !this.viewItemsLoading
+        && !this.isRedirecting) {
+        // Если viewId не найден, редиректим на страницу без viewId
+        this.isRedirecting = true;
+        try {
+          await this.$router.replace({ path: `/project/${this.projectId}/templates` });
+        } catch (err) {
+          console.error('Redirect error:', err);
+        } finally {
+          // Сбрасываем флаг после небольшой задержки
+          setTimeout(() => {
+            this.isRedirecting = false;
+          }, 100);
+        }
       }
     },
 
@@ -415,7 +460,7 @@ export default {
       }
 
       if (data.task_id !== template.last_task_id) {
-        const lastTask = (await axios({
+        const lastTask = (await apiClient({
           method: 'get',
           url: `/api/project/${this.projectId}/tasks/${data.task_id}`,
           responseType: 'json',

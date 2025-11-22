@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/semaphoreui/semaphore/util"
 	"github.com/spf13/cobra"
 )
@@ -25,7 +28,8 @@ var migrateCmd = &cobra.Command{
 		var undoTo, applyTo *string
 
 		if migrationArgs.undoTo != "" && migrationArgs.applyTo != "" {
-			panic("Cannot specify both --undo-to and --apply-to")
+			fmt.Fprintf(os.Stderr, "Error: Cannot specify both --undo-to and --apply-to\n")
+			os.Exit(1)
 		}
 
 		if migrationArgs.undoTo != "" {

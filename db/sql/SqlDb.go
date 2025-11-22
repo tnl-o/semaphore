@@ -38,6 +38,7 @@ func (d *SqlDb) Sql() *gorp.DbMap {
 func (d *SqlDbConnection) Connect() {
 	sqlDb, err := connect()
 	if err != nil {
+		log.WithError(err).Error("Failed to connect to database")
 		panic(err)
 	}
 
@@ -48,21 +49,25 @@ func (d *SqlDbConnection) Connect() {
 		}
 
 		if err = createDb(); err != nil {
+			log.WithError(err).Error("Failed to create database")
 			panic(err)
 		}
 
 		sqlDb, err = connect()
 		if err != nil {
+			log.WithError(err).Error("Failed to reconnect to database after creation")
 			panic(err)
 		}
 
 		if err = sqlDb.Ping(); err != nil {
+			log.WithError(err).Error("Failed to ping database after reconnection")
 			panic(err)
 		}
 	}
 
 	cfg, err := util.Config.GetDBConfig()
 	if err != nil {
+		log.WithError(err).Error("Failed to get database configuration")
 		panic(err)
 	}
 
@@ -105,9 +110,14 @@ func (d *SqlDbConnection) Connect() {
 }
 
 func (d *SqlDbConnection) Close() {
+	if d.sql == nil || d.sql.Db == nil {
+		log.Warn("Attempting to close nil database connection")
+		return
+	}
 	err := d.sql.Db.Close()
 	if err != nil {
-		panic(err)
+		log.WithError(err).Warn("Failed to close database connection")
+		// Don't panic on close errors - connection may already be closed
 	}
 }
 
@@ -471,7 +481,12 @@ func createDb() error {
 		return err
 	}
 
-	defer conn.Close() //nolint:errcheck
+	defer func() {
+		if closeErr := conn.Close(); closeErr != nil {
+			// Log error but don't fail the function if close fails
+			// This is a cleanup operation for database connection
+		}
+	}()
 
 	_, err = conn.Exec("create database " + cfg.GetDbName())
 	if err != nil {

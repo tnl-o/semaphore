@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import axios from 'axios';
 import { AnsiUp } from 'ansi_up';
 import { Line, Bar } from 'vue-chartjs/legacy';
 
@@ -8,6 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import durationPlugin from 'dayjs/plugin/duration';
 
+import '@/lib/apiClient';
 import App from './App.vue';
 import router from './router';
 import vuetify from './plugins/vuetify';
@@ -38,7 +38,6 @@ convert.ansi_colors = [
   ],
 ];
 
-axios.defaults.baseURL = document.baseURI;
 Vue.config.productionTip = false;
 
 //

@@ -41,7 +41,8 @@ var userGetCmd = &cobra.Command{
 		}
 
 		if err != nil {
-			panic(err)
+			fmt.Fprintf(os.Stderr, "Error: Failed to get user: %v\n", err)
+			os.Exit(1)
 		}
 
 		fmt.Printf("ID: %d\n", user.ID)

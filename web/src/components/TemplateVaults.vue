@@ -108,7 +108,7 @@
 
 </style>
 <script>
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 
 export default {
   props: {
@@ -123,7 +123,7 @@ export default {
 
   async created() {
     this.modifiedVaults = (this.vaults || []).map((v) => ({ ...v }));
-    this.keys = (await axios({
+    this.keys = (await apiClient({
       keys: 'get',
       url: `/api/project/${this.projectId}/keys`,
       responseType: 'json',

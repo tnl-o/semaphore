@@ -302,7 +302,12 @@ func (p *JobPool) sendProgress() (ok bool) {
 		ok = true
 	}
 
-	defer resp.Body.Close() //nolint:errcheck
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			// Log error but don't fail the function if close fails
+			// This is a cleanup operation for HTTP response body
+		}
+	}()
 
 	return
 }
@@ -438,7 +443,12 @@ func (p *JobPool) tryRegisterRunner(configFilePath *string) (ok bool) {
 		}
 	}
 
-	defer resp.Body.Close() //nolint:errcheck
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			// Log error but don't fail the function if close fails
+			// This is a cleanup operation for HTTP response body
+		}
+	}()
 
 	ok = true
 	return
@@ -462,7 +472,12 @@ func generatePrivateKey(privateKeyFilePath string) (publicKey string, err error)
 	if err != nil {
 		return
 	}
-	defer privateKeyFile.Close() //nolint:errcheck
+	defer func() {
+		if closeErr := privateKeyFile.Close(); closeErr != nil {
+			// Log error but don't fail the function if close fails
+			// This is a cleanup operation for file writing
+		}
+	}()
 
 	return util.GeneratePrivateKey(privateKeyFile)
 }
@@ -529,7 +544,12 @@ func (p *JobPool) checkNewJobs() {
 		return
 	}
 
-	defer resp.Body.Close() //nolint:errcheck
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			// Log error but don't fail the function if close fails
+			// This is a cleanup operation for HTTP response body
+		}
+	}()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {

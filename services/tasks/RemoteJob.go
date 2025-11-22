@@ -70,7 +70,12 @@ func callRunnerWebhook(runner *db.Runner, tsk *TaskRunner, action string) (err e
 	}
 
 	if resp != nil {
-		defer resp.Body.Close() //nolint:errcheck
+		defer func() {
+			if closeErr := resp.Body.Close(); closeErr != nil {
+				// Log error but don't fail the function if close fails
+				// This is a cleanup operation for HTTP response body
+			}
+		}()
 	}
 	
 	if resp.StatusCode != 200 && resp.StatusCode != 204 {

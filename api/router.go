@@ -18,6 +18,7 @@ import (
 	taskServices "github.com/semaphoreui/semaphore/services/tasks"
 
 	"github.com/semaphoreui/semaphore/api/debug"
+	"github.com/semaphoreui/semaphore/api/middleware"
 	"github.com/semaphoreui/semaphore/api/tasks"
 	"github.com/semaphoreui/semaphore/pkg/tz"
 	log "github.com/sirupsen/logrus"
@@ -41,7 +42,6 @@ var publicAssets embed.FS
 func StoreMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		store := helpers.Store(r)
-		//var url = r.URL.String()
 
 		db.StoreSession(store, util.RandString(12), func() {
 			next.ServeHTTP(w, r)
@@ -66,8 +66,9 @@ func plainTextMiddleware(next http.Handler) http.Handler {
 }
 
 func pongHandler(w http.ResponseWriter, r *http.Request) {
-	//nolint: errcheck
-	w.Write([]byte("pong"))
+	if _, err := w.Write([]byte("pong")); err != nil {
+		log.WithError(err).Error("Failed to write pong response")
+	}
 }
 
 // DelayMiddleware adds artificial delay to simulate slow network conditions
@@ -137,17 +138,51 @@ func Route(
 	}
 
 	r.Use(mux.CORSMethodMiddleware(r))
+	r.Use(middleware.PanicRecoveryMiddleware) // Must be early to catch all panics
+	r.Use(middleware.CorrelationIDMiddleware)
+	r.Use(middleware.MetricsMiddleware)
 
 	pingRouter := r.Path(webPath + "api/ping").Subrouter()
 	pingRouter.Use(plainTextMiddleware)
 	pingRouter.Methods("GET", "HEAD").HandlerFunc(pongHandler)
 
+	// Health check endpoints (use StoreMiddleware to have access to store)
+	healthRouter := r.PathPrefix(webPath + "api/health").Subrouter()
+	healthRouter.Use(StoreMiddleware, JSONMiddleware)
+	healthRouter.Path("").HandlerFunc(healthHandler).Methods("GET", "HEAD")
+	healthRouter.Path("/live").HandlerFunc(livenessHandler).Methods("GET", "HEAD")
+	healthRouter.Path("/ready").HandlerFunc(readinessHandler).Methods("GET", "HEAD")
+
+	// Prometheus metrics endpoint
+	metricsRouter := r.Path(webPath + "api/metrics").Subrouter()
+	metricsRouter.Methods("GET").Handler(MetricsHandler())
+
 	publicAPIRouter := r.PathPrefix(webPath + "api").Subrouter()
 	publicAPIRouter.Use(StoreMiddleware, JSONMiddleware)
 
-	publicAPIRouter.HandleFunc("/auth/login", login).Methods("GET", "POST")
-	publicAPIRouter.HandleFunc("/auth/verify", verifySession).Methods("POST")
-	publicAPIRouter.HandleFunc("/auth/recovery", recoverySession).Methods("POST")
+	// Setup rate limiting for auth endpoints
+	var authRateLimiter *middleware.RateLimiter
+	if util.Config.RateLimit != nil && util.Config.RateLimit.Enabled {
+		authWindow, err := time.ParseDuration(util.Config.RateLimit.AuthWindow)
+		if err != nil {
+			log.WithError(err).Warn("Invalid rate limit auth window, using default 1m")
+			authWindow = time.Minute
+		}
+		authRateLimiter = middleware.NewRateLimiter(util.Config.RateLimit.AuthLimit, authWindow)
+		log.WithFields(log.Fields{
+			"limit":  util.Config.RateLimit.AuthLimit,
+			"window": authWindow,
+		}).Info("Rate limiting enabled for auth endpoints")
+	}
+
+	// Apply rate limiting to auth endpoints
+	authRouter := publicAPIRouter.PathPrefix("/auth").Subrouter()
+	if authRateLimiter != nil {
+		authRouter.Use(middleware.RateLimitMiddleware(authRateLimiter))
+	}
+	authRouter.HandleFunc("/login", login).Methods("GET", "POST")
+	authRouter.HandleFunc("/verify", verifySession).Methods("POST")
+	authRouter.HandleFunc("/recovery", recoverySession).Methods("POST")
 
 	publicAPIRouter.HandleFunc("/auth/logout", logout).Methods("POST")
 	publicAPIRouter.HandleFunc("/auth/oidc/{provider}/login", oidcLogin).Methods("GET")

@@ -1,0 +1,23 @@
+services:
+  semaphore:
+    build:
+      context: .
+      dockerfile: deployment/docker/server/Dockerfile
+    container_name: semaphore
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      SEMAPHORE_DB_DIALECT: bolt
+      SEMAPHORE_ADMIN_NAME: Admin
+      SEMAPHORE_ADMIN: admin
+      SEMAPHORE_ADMIN_PASSWORD: admin123
+      SEMAPHORE_ADMIN_EMAIL: admin@localhost
+      SEMAPHORE_WEB_ROOT: http://localhost:3001
+      SEMAPHORE_PORT: :3000
+    volumes:
+      - semaphore_data:/var/lib/semaphore
+
+volumes:
+  semaphore_data:
+

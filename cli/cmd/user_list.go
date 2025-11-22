@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/spf13/cobra"
 )
@@ -20,7 +22,8 @@ var userListCmd = &cobra.Command{
 		users, err := store.GetUsers(db.RetrieveQueryParams{})
 
 		if err != nil {
-			panic(err)
+			fmt.Fprintf(os.Stderr, "Error: Failed to get users: %v\n", err)
+			os.Exit(1)
 		}
 
 		for _, user := range users {

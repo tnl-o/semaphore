@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 
 export default {
   props: {
@@ -31,7 +31,7 @@ export default {
 
   async created() {
     try {
-      this.state = (await axios.get(`/api/project/${this.projectId}/inventory/${this.inventoryId}/terraform/states/${this.stateId}`)).data;
+      this.state = (await apiClient.get(`/api/project/${this.projectId}/inventory/${this.inventoryId}/terraform/states/${this.stateId}`)).data;
     } catch (e) {
       if (e.response.status === 404) {
         this.error = {

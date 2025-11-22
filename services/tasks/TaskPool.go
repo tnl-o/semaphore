@@ -75,8 +75,8 @@ func CreateTaskPool(
 	encryptionService server.AccessKeyEncryptionService,
 	keyInstallationService server.AccessKeyInstallationService,
 	logWriteService pro_interfaces.LogWriteService,
-) TaskPool {
-	p := TaskPool{
+) *TaskPool {
+	p := &TaskPool{
 		register:               make(chan *TaskRunner),      // add TaskRunner to queue
 		logger:                 make(chan logRecord, 10000), // store log records to database
 		store:                  store,
@@ -102,8 +102,8 @@ func CreateTaskPoolWithState(
 	encryptionService server.AccessKeyEncryptionService,
 	keyInstallationService server.AccessKeyInstallationService,
 	logWriteService pro_interfaces.LogWriteService,
-) TaskPool {
-	p := TaskPool{
+) *TaskPool {
+	p := &TaskPool{
 		register:               make(chan *TaskRunner),      // add TaskRunner to queue
 		logger:                 make(chan logRecord, 10000), // store log records to database
 		store:                  store,
@@ -593,7 +593,11 @@ func getNextBuildVersion(startVersion string, currentVersion string) string {
 
 	start, err := strconv.Atoi(body)
 	if err != nil {
-		panic(err)
+		log.WithError(err).WithFields(log.Fields{
+			"body":    body,
+			"context": "task_pool",
+		}).Error("Failed to parse version number from body")
+		return startVersion
 	}
 
 	var newVer int
@@ -624,7 +628,7 @@ func getNextBuildVersion(startVersion string, currentVersion string) string {
 //   - Queues the task for execution
 //
 // Returns:
-//   - The newly created task with all properties set
+//   - The newly created task runner with all properties set
 //   - An error if task creation or validation fails
 func (p *TaskPool) AddTask(
 	taskObj db.Task,
@@ -632,7 +636,7 @@ func (p *TaskPool) AddTask(
 	username string,
 	projectID int,
 	needAlias bool,
-) (newTask db.Task, err error) {
+) (taskRunner *TaskRunner, err error) {
 	taskObj.Created = tz.Now()
 	taskObj.Status = task_logger.TaskWaitingStatus
 	taskObj.UserID = userID
@@ -664,12 +668,12 @@ func (p *TaskPool) AddTask(
 		}
 	}
 
-	newTask, err = p.store.CreateTask(taskObj, util.Config.MaxTasksPerTemplate)
+	newTask, err := p.store.CreateTask(taskObj, util.Config.MaxTasksPerTemplate)
 	if err != nil {
 		return
 	}
 
-	taskRunner := NewTaskRunner(newTask, p, username, p.keyInstallationService)
+	taskRunner = NewTaskRunner(newTask, p, username, p.keyInstallationService)
 
 	if needAlias {
 		// A unique, randomly-generated identifier that persists throughout the task's lifecycle.
@@ -725,5 +729,5 @@ func (p *TaskPool) AddTask(
 
 	taskRunner.createTaskEvent()
 
-	return
+	return taskRunner, nil
 }

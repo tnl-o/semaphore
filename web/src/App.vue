@@ -635,6 +635,17 @@
     </v-navigation-drawer>
 
     <v-main>
+      <v-app-bar
+        v-if="state === 'success' && !$route.path.startsWith('/auth/')"
+        app
+        flat
+        color="transparent"
+        class="px-4"
+      >
+        <Breadcrumbs />
+        <v-spacer />
+      </v-app-bar>
+
       <router-view
         :projectId="projectId"
         :projectType="(project || {}).type || ''"
@@ -939,7 +950,7 @@
 </style>
 
 <script>
-import axios from 'axios';
+import { api } from '@/lib/apiClient';
 import { getErrorMessage } from '@/lib/error';
 import EditDialog from '@/components/EditDialog.vue';
 import ProjectForm from '@/components/ProjectForm.vue';
@@ -951,6 +962,7 @@ import SubscriptionForm from '@/components/SubscriptionForm.vue';
 import RestoreProjectForm from '@/components/RestoreProjectForm.vue';
 import YesNoDialog from '@/components/YesNoDialog.vue';
 import TaskLogDialog from '@/components/TaskLogDialog.vue';
+import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import delay from '@/lib/delay';
 
 const PROJECT_COLORS = [
@@ -1035,6 +1047,7 @@ export default {
     UserForm,
     EditDialog,
     ProjectForm,
+    Breadcrumbs,
   },
   data() {
     return {
@@ -1079,7 +1092,7 @@ export default {
 
   watch: {
     async projects(val) {
-      if (val.length === 0
+      if (Array.isArray(val) && val.length === 0
         && this.$route.path.startsWith('/project/')
         && this.$route.path !== '/project/new'
         && this.$route.path !== '/project/premium'
@@ -1138,7 +1151,7 @@ export default {
     },
 
     project() {
-      if (this.projects == null) {
+      if (this.projects == null || !Array.isArray(this.projects)) {
         return null;
       }
       return this.projects.find((x) => x.id === this.projectId);
@@ -1165,14 +1178,17 @@ export default {
       await this.loadData();
       this.state = 'success';
     } catch (err) {
-      if (err.response && err.response.status === 401) {
-        if (this.$route.path !== '/auth/login') {
-          await this.$router.push({
-            path: '/auth/login',
-            query: { redirect: this.$route.fullPath },
-          });
+      // Handle 401 - interceptor will handle redirect for non-auth pages
+      // But we still need to set state to 'success' to show the login page
+      if (err.response?.status === 401) {
+        const currentPath = this.$route.path || window.location.pathname;
+        if (currentPath.startsWith('/auth/')) {
+          // Already on auth page, just set state to success
+          this.state = 'success';
+        } else {
+          // Interceptor will redirect, but we need to set state
+          this.state = 'success';
         }
-        this.state = 'success';
         return;
       }
 
@@ -1252,7 +1268,9 @@ export default {
     EventBus.$on('i-project', async (e) => {
       let text;
 
-      const project = this.projects.find((p) => p.id === e.item.id) || e.item;
+      const project = (Array.isArray(this.projects)
+        ? this.projects.find((p) => p.id === e.item.id)
+        : null) || e.item;
       const projectName = project.name || `#${project.id}`;
 
       switch (e.action) {
@@ -1272,11 +1290,7 @@ export default {
       }
 
       if (e.action === 'restore') {
-        const emptyKeys = (await axios({
-          method: 'get',
-          url: `/api/project/${project.id}/keys`,
-          responseType: 'json',
-        })).data.filter((k) => k.empty);
+        const emptyKeys = (await api.get(`/api/project/${project.id}/keys`)).data.filter((k) => k.empty);
 
         this.restoreProjectResult = {
           projectName,
@@ -1298,7 +1312,9 @@ export default {
           await this.selectProject(e.item.id, { new_project: undefined });
           break;
         case 'delete':
-          if (this.projectId === e.item.id && this.projects.length > 0) {
+          if (this.projectId === e.item.id
+            && Array.isArray(this.projects)
+            && this.projects.length > 0) {
             await this.selectProject(this.projects[0].id);
           }
           break;
@@ -1344,8 +1360,22 @@ export default {
         socket.start();
       }
 
-      await this.loadUserInfo();
-      await this.loadProjects();
+      try {
+        await this.loadUserInfo();
+        await this.loadProjects();
+      } catch (err) {
+        // If 401 error, don't continue - interceptor will handle redirect
+        if (err.response?.status === 401) {
+          throw err;
+        }
+        // For other errors, continue but log them
+        console.error('Error loading data:', err);
+      }
+
+      // Only continue if user is authenticated (has user data)
+      if (!this.user) {
+        return;
+      }
 
       // try to find project and switch to it if URL not pointing to any project
       if (this.$route.path === '/'
@@ -1368,7 +1398,12 @@ export default {
     },
 
     async trySelectMostSuitableProject() {
-      if (this.projects.length === 0) {
+      // Don't redirect to /project/new if user is not authenticated
+      if (!this.user) {
+        return;
+      }
+
+      if (!Array.isArray(this.projects) || this.projects.length === 0) {
         if (this.$route.path !== '/project/new') {
           await this.$router.push({ path: '/project/new' });
         }
@@ -1396,11 +1431,7 @@ export default {
     },
 
     async selectProject(projectId, overriderQuery = {}) {
-      this.userRole = (await axios({
-        method: 'get',
-        url: `/api/project/${projectId}/role`,
-        responseType: 'json',
-      })).data;
+      this.userRole = (await api.get(`/api/project/${projectId}/role`)).data;
 
       localStorage.setItem('projectId', projectId);
       if (this.projectId === projectId) {
@@ -1429,28 +1460,19 @@ export default {
     },
 
     async loadProjects() {
-      this.projects = (await axios({
-        method: 'get',
-        url: '/api/projects',
-        responseType: 'json',
-      })).data;
+      this.projects = (await api.get('/api/projects')).data;
     },
 
     async loadUserInfo() {
-      this.user = (await axios({
-        method: 'get',
-        url: '/api/user',
-        responseType: 'json',
-      })).data;
+      this.user = (await api.get('/api/user')).data;
 
-      this.systemInfo = (await axios({
-        method: 'get',
-        url: '/api/info',
-        responseType: 'json',
-      })).data;
+      this.systemInfo = (await api.get('/api/info')).data;
     },
 
     getProjectColor(projectData) {
+      if (!Array.isArray(this.projects)) {
+        return PROJECT_COLORS[0];
+      }
       const projectIndex = this.projects.length
         - this.projects.findIndex((p) => p.id === projectData.id);
       return PROJECT_COLORS[projectIndex % PROJECT_COLORS.length];
@@ -1474,13 +1496,10 @@ export default {
           reader.onload = async (ev) => {
             const fileContent = ev.target.result;
             try {
-              await axios
-                .post('/api/projects/restore', fileContent)
-                .then(async (payload) => {
-                  this.$router.push({ path: `/project/${payload.data.id}/history` });
-                  this.state = 'success';
-                  await this.loadProjects();
-                });
+              const payload = await api.post('/api/projects/restore', fileContent);
+              this.$router.push({ path: `/project/${payload.data.id}/history` });
+              this.state = 'success';
+              await this.loadProjects();
             } catch (err) {
               EventBus.$emit('i-snackbar', {
                 color: 'error',
@@ -1500,11 +1519,7 @@ export default {
       this.snackbarText = '';
 
       try {
-        (await axios({
-          method: 'post',
-          url: '/api/auth/logout',
-          responseType: 'json',
-        }));
+        await api.post('/api/auth/logout');
 
         socket.stop();
 

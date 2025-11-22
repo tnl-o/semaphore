@@ -48,7 +48,7 @@
 
 <script>
 import ItemFormBase from '@/components/ItemFormBase';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 import { getErrorMessage } from '@/lib/error';
 import { ROLE_PERMISSIONS } from '@/lib/constants';
 
@@ -106,7 +106,7 @@ export default {
   methods: {
     async loadRoles() {
       try {
-        const response = await axios.get(`/api/project/${this.projectId}/roles/all`);
+        const response = await apiClient.get(`/api/project/${this.projectId}/roles/all`);
         this.availableRoles = response.data;
       } catch (error) {
         this.formError = getErrorMessage(error);

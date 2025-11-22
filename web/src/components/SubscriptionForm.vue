@@ -188,7 +188,7 @@
 <script>
 import ItemFormBase from '@/components/ItemFormBase';
 import { getErrorMessage } from '@/lib/error';
-import axios from 'axios';
+import { api } from '@/lib/apiClient';
 
 export default {
   mixins: [ItemFormBase],
@@ -220,9 +220,10 @@ export default {
   methods: {
     async makeProUser() {
       try {
-        const user = (await axios.get('/api/user')).data;
+        const userResponse = await api.get('/api/user');
+        const user = userResponse.data;
         user.pro = true;
-        await axios.put(`/api/users/${user.id}`, user);
+        await api.put(`/api/users/${user.id}`, user);
         await this.loadData();
         this.$emit('save', {
           item: this.item,
@@ -236,7 +237,8 @@ export default {
 
     async afterSave() {
       await this.loadData();
-      const user = (await axios.get('/api/user')).data;
+      const userResponse = await api.get('/api/user');
+      const user = userResponse.data;
       this.showProUser = this.item.used < this.item.users && !user.pro;
     },
 

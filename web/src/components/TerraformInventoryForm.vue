@@ -39,7 +39,7 @@
 /* eslint-disable import/no-extraneous-dependencies,import/extensions */
 
 import ItemFormBase from '@/components/ItemFormBase';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 
 export default {
   mixins: [ItemFormBase],
@@ -60,7 +60,7 @@ export default {
   },
 
   async created() {
-    this.keys = (await axios({
+    this.keys = (await apiClient({
       method: 'get',
       url: `/api/project/${this.projectId}/keys`,
       responseType: 'json',

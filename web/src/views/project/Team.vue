@@ -82,7 +82,7 @@
 <script>
 import ItemListPageBase from '@/components/ItemListPageBase';
 import EditTeamMemberDialog from '@/components/EditTeamMemberDialog.vue';
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 import { USER_PERMISSIONS, USER_ROLES } from '@/lib/constants';
 import TeamMenu from '@/components/TeamMenu.vue';
 
@@ -114,7 +114,7 @@ export default {
     },
 
     async leftProject() {
-      await axios({
+      await apiClient({
         method: 'delete',
         url: `/api/project/${this.projectId}/me`,
         responseType: 'json',
@@ -123,7 +123,7 @@ export default {
     },
 
     async updateProjectUser(user) {
-      await axios({
+      await apiClient({
         method: 'put',
         url: `/api/project/${this.projectId}/users/${user.id}`,
         responseType: 'json',

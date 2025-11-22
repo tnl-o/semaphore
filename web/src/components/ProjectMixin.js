@@ -1,4 +1,4 @@
-import axios from 'axios';
+import apiClient from '@/lib/apiClient';
 
 export default {
   props: {
@@ -7,7 +7,7 @@ export default {
 
   methods: {
     async loadEndpoint(endpoint) {
-      return (await axios({
+      return (await apiClient({
         method: 'get',
         url: endpoint,
         responseType: 'json',

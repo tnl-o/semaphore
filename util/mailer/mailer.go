@@ -220,7 +220,12 @@ func anonymous(
 		return err
 	}
 
-	defer c.Close() //nolint:errcheck
+	defer func() {
+		if closeErr := c.Close(); closeErr != nil {
+			// Log error but don't fail the function if close fails
+			// This is a cleanup operation and the email may have already been sent
+		}
+	}()
 
 	if err := c.Mail(r.Replace(from)); err != nil {
 		return err
@@ -235,7 +240,12 @@ func anonymous(
 		return err
 	}
 
-	defer w.Close() //nolint:errcheck
+	defer func() {
+		if closeErr := w.Close(); closeErr != nil {
+			// Log error but don't fail the function if close fails
+			// This is a cleanup operation and the email may have already been sent
+		}
+	}()
 
 	if _, err := body.WriteTo(w); err != nil {
 		return err
