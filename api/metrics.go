@@ -10,4 +10,3 @@ import (
 func MetricsHandler() http.Handler {
 	return promhttp.Handler()
 }
-

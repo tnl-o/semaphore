@@ -72,7 +72,7 @@ func createAPIToken(w http.ResponseWriter, r *http.Request) {
 		logger := helpers.Logger(r)
 		logger.WithError(err).WithFields(log.Fields{
 			"context": "api_token",
-			"action": "create_token",
+			"action":  "create_token",
 		}).Error("Failed to generate random token ID")
 		helpers.WriteErrorStatus(w, "Failed to generate API token", http.StatusInternalServerError)
 		return
@@ -87,7 +87,7 @@ func createAPIToken(w http.ResponseWriter, r *http.Request) {
 		logger := helpers.Logger(r)
 		logger.WithError(err).WithFields(log.Fields{
 			"context": "api_token",
-			"action": "create_token",
+			"action":  "create_token",
 		}).Error("Failed to create API token")
 		helpers.WriteError(w, err)
 		return

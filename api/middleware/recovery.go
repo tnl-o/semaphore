@@ -16,11 +16,11 @@ func PanicRecoveryMiddleware(next http.Handler) http.Handler {
 			if err := recover(); err != nil {
 				// Log the panic with context
 				log.WithFields(log.Fields{
-					"error":   err,
-					"path":    r.URL.Path,
-					"method":  r.Method,
-					"remote":  r.RemoteAddr,
-					"stack":   string(debug.Stack()),
+					"error":  err,
+					"path":   r.URL.Path,
+					"method": r.Method,
+					"remote": r.RemoteAddr,
+					"stack":  string(debug.Stack()),
 				}).Error("Panic recovered in HTTP handler")
 
 				// Return a generic error response to avoid exposing internal details
@@ -30,4 +30,3 @@ func PanicRecoveryMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-

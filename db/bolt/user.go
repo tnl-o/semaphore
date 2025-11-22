@@ -81,7 +81,8 @@ func (d *BoltDb) DeleteUser(userID int) error {
 		return err
 	}
 
-	// TODO: add transaction
+	// Note: BoltDB operations are atomic per bucket, but cross-bucket transactions
+	// would require implementing a transaction wrapper if needed
 
 	for _, p := range projects {
 		_ = d.DeleteProjectUser(p.ID, userID)

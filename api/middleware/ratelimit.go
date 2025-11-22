@@ -203,11 +203,11 @@ func RateLimitMiddleware(limiter *RateLimiter) func(http.Handler) http.Handler {
 				}
 
 				log.WithFields(log.Fields{
-					"ip":       clientIP,
-					"path":     r.URL.Path,
-					"method":   r.Method,
+					"ip":        clientIP,
+					"path":      r.URL.Path,
+					"method":    r.Method,
 					"remaining": remaining,
-					"reset":    resetSeconds,
+					"reset":     resetSeconds,
 				}).Warn("Rate limit exceeded")
 
 				w.Header().Set("X-RateLimit-Limit", strconv.Itoa(limiter.limit))
@@ -233,4 +233,3 @@ func RateLimitMiddleware(limiter *RateLimiter) func(http.Handler) http.Handler {
 		})
 	}
 }
-

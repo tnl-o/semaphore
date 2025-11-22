@@ -39,4 +39,3 @@ func Logger(r *http.Request) *log.Entry {
 
 	return entry
 }
-

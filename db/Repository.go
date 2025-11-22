@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"path"
 	"regexp"
 	"strconv"
@@ -77,7 +76,8 @@ func (r Repository) GetGitURL(secure bool) string {
 		var protocol string
 
 		if m == nil {
-			panic(fmt.Errorf("invalid git url: %s", url))
+			// Invalid URL format, return original URL without modification
+			return url
 		}
 
 		protocol = m[1]

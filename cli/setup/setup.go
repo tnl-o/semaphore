@@ -275,11 +275,11 @@ func SaveConfig(config IConfig, defaultFilename string, requiredConfigPath strin
 	// Marshal config to json
 	bytes, err := config.ToJSON()
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to marshal config to JSON: %v", err)
 	}
 
 	if err = os.WriteFile(configPath, bytes, 0644); err != nil {
-		panic(err)
+		log.Fatalf("Failed to write config file: %v", err)
 	}
 
 	fmt.Printf("Configuration written to %v..\n", configPath)

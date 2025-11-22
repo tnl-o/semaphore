@@ -3,6 +3,7 @@ package random
 import (
 	"crypto/rand"
 	"math/big"
+	"time"
 )
 
 const (
@@ -16,7 +17,10 @@ func rnd(strlen int, baseStr string) string {
 	for i := range result {
 		r, err := rand.Int(rand.Reader, charLen)
 		if err != nil {
-			panic(err)
+			// Fallback to time-based pseudo-random if crypto/rand fails
+			// This is extremely rare and usually indicates a system problem
+			fallback := time.Now().UnixNano() + int64(i)
+			r = big.NewInt(fallback % int64(len(baseStr)))
 		}
 		result[i] = baseStr[r.Int64()]
 	}

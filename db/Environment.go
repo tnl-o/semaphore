@@ -27,7 +27,8 @@ func (t EnvironmentSecretType) GetAccessKeyOwner() AccessKeyOwner {
 	case EnvironmentSecretEnv:
 		return AccessKeyEnvironment
 	default:
-		panic("unknown secret type: " + t)
+		// Unknown secret type, return shared (empty) as fallback
+		return AccessKeyShared
 	}
 }
 

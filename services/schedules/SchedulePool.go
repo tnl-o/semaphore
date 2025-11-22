@@ -134,7 +134,7 @@ func (p *SchedulePool) init() {
 	if err != nil {
 		log.WithError(err).WithFields(log.Fields{
 			"timezone": util.Config.Schedule.Timezone,
-			"context": "schedule_pool",
+			"context":  "schedule_pool",
 		}).Error("Failed to load timezone location, using UTC")
 		// Fallback to UTC if timezone is invalid
 		loc, _ = time.LoadLocation("UTC")

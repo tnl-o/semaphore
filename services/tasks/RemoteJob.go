@@ -77,7 +77,7 @@ func callRunnerWebhook(runner *db.Runner, tsk *TaskRunner, action string) (err e
 			}
 		}()
 	}
-	
+
 	if resp.StatusCode != 200 && resp.StatusCode != 204 {
 		err = fmt.Errorf("webhook returned incorrect status")
 		return

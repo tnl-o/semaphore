@@ -62,8 +62,8 @@ func getSession(r *http.Request) (*db.Session, bool) {
 			// it is internal error, it doesn't concern the user
 			// Note: No request context available here, using standard logger
 			log.WithError(err).WithFields(log.Fields{
-				"context": "session",
-				"user_id": userID,
+				"context":    "session",
+				"user_id":    userID,
 				"session_id": sessionID,
 			}).Error("Failed to expire old session")
 		}
@@ -273,8 +273,8 @@ func authenticationHandler(w http.ResponseWriter, r *http.Request) (ok bool, req
 		if err := helpers.Store(r).TouchSession(userID, session.ID); err != nil {
 			logger := helpers.Logger(r)
 			logger.WithError(err).WithFields(log.Fields{
-				"context": "session",
-				"user_id": userID,
+				"context":    "session",
+				"user_id":    userID,
 				"session_id": session.ID,
 			}).Error("Failed to touch session")
 			w.WriteHeader(http.StatusUnauthorized)

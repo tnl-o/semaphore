@@ -6,17 +6,17 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/semaphoreui/semaphore/api/helpers"
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/util"
-	"github.com/semaphoreui/semaphore/api/helpers"
 	log "github.com/sirupsen/logrus"
 )
 
 // HealthStatus represents the health status of the application
 type HealthStatus struct {
-	Status    string            `json:"status"`
-	Timestamp time.Time         `json:"timestamp"`
-	Checks    map[string]Check  `json:"checks"`
+	Status    string           `json:"status"`
+	Timestamp time.Time        `json:"timestamp"`
+	Checks    map[string]Check `json:"checks"`
 }
 
 // Check represents a health check result
@@ -126,9 +126,9 @@ func checkDatabase(r *http.Request) Check {
 func checkRedis() Check {
 	start := time.Now()
 
-	// TODO: Implement Redis health check when Redis client is available
-	// For now, return healthy if Redis is configured
-	// This should be implemented when Redis caching is added
+	// Redis health check is not implemented yet
+	// When Redis caching is added, this should check actual connectivity
+	// For now, return healthy status
 
 	return Check{
 		Status:   "healthy",
@@ -172,4 +172,3 @@ func readinessHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(health)
 }
-
