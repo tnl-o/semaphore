@@ -13,10 +13,13 @@ import (
 	"sort"
 )
 
+// validateAppID validates the application ID
+// Currently always returns nil, but can be extended with actual validation logic
 func validateAppID(str string) error {
 	return nil
 }
 
+// appMiddleware is a middleware function that validates and sets the app ID in the request context
 func appMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		appID, err := helpers.GetStrParam("app_id", w, r)
@@ -35,6 +38,7 @@ func appMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// getApps returns a list of all available applications
 func getApps(w http.ResponseWriter, r *http.Request) {
 
 	type app struct {
@@ -59,6 +63,7 @@ func getApps(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, apps)
 }
 
+// getApp returns details of a specific application by ID
 func getApp(w http.ResponseWriter, r *http.Request) {
 	appID := helpers.GetFromContext(r, "app_id").(string)
 
@@ -71,6 +76,7 @@ func getApp(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, app)
 }
 
+// deleteApp deletes an application by ID
 func deleteApp(w http.ResponseWriter, r *http.Request) {
 	appID := helpers.GetFromContext(r, "app_id").(string)
 
@@ -87,6 +93,7 @@ func deleteApp(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// setAppOption sets an option for a specific application
 func setAppOption(store db.Store, appID string, field string, val any) error {
 	key := "apps." + appID + "." + field
 
@@ -110,6 +117,7 @@ func setAppOption(store db.Store, appID string, field string, val any) error {
 	return nil
 }
 
+// setApp updates an application configuration
 func setApp(w http.ResponseWriter, r *http.Request) {
 	appID := helpers.GetFromContext(r, "app_id").(string)
 
@@ -155,6 +163,7 @@ func setApp(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// setAppActive sets the active status of an application
 func setAppActive(w http.ResponseWriter, r *http.Request) {
 	appID := helpers.GetFromContext(r, "app_id").(string)
 
