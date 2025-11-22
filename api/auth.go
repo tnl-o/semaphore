@@ -16,6 +16,8 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
+// getSession retrieves the session from the request cookie and validates it
+// Returns the session object and a boolean indicating whether the session is valid
 func getSession(r *http.Request) (*db.Session, bool) {
 	// fetch session from cookie
 	cookie, err := r.Cookie("semaphore")
@@ -163,6 +165,8 @@ func recoverySession(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// verifySession handles the verification of a user session using TOTP passcode or other verification methods
+// It validates the passcode provided by the user and, if valid, verifies the session
 func verifySession(w http.ResponseWriter, r *http.Request) {
 	session, ok := getSession(r)
 
@@ -219,6 +223,8 @@ func verifySession(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// authenticationHandler handles the authentication of a request using either API token or session
+// It returns a boolean indicating whether authentication was successful and the updated request
 func authenticationHandler(w http.ResponseWriter, r *http.Request) (ok bool, req *http.Request) {
 	var userID int
 
@@ -296,6 +302,7 @@ func authenticationHandler(w http.ResponseWriter, r *http.Request) (ok bool, req
 }
 
 // nolint: gocyclo
+// authentication middleware that handles authentication using either API token or session
 func authentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ok, r := authenticationHandler(w, r)
@@ -306,6 +313,7 @@ func authentication(next http.Handler) http.Handler {
 }
 
 // nolint: gocyclo
+// authenticationWithStore middleware that handles authentication and ensures database session is stored
 func authenticationWithStore(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		store := helpers.Store(r)
@@ -322,6 +330,7 @@ func authenticationWithStore(next http.Handler) http.Handler {
 	})
 }
 
+// adminMiddleware is a middleware function that checks if the authenticated user has admin privileges
 func adminMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user := helpers.GetFromContext(r, "user").(*db.User)
