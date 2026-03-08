@@ -1,56 +1,39 @@
-//! HTTP API на базе Axum
+//! Projects API Handlers Module
 //!
-//! Предоставляет REST API для управления Semaphore
+//! Модуль обработчиков для проектов
 
-pub mod apps;
-pub mod auth;
-pub mod auth_local;
-pub mod cache;
-pub mod events;
-pub mod extractors;
-pub mod handlers;
-pub mod integration;
-pub mod login;
-pub mod middleware;
-pub mod options;
-pub mod routes;
-pub mod runners;
-pub mod state;
-pub mod store_wrapper;
-pub mod system_info;
-pub mod user;
+pub mod keys;
+pub mod schedules;
 pub mod users;
-pub mod websocket;
+pub mod templates;
+pub mod tasks;
+pub mod inventory;
+pub mod repository;
+pub mod environment;
+pub mod integration;
+pub mod views;
+pub mod integration_alias;
+pub mod secret_storages;
+pub mod project;
+pub mod backup_restore;
+pub mod refs;
+pub mod invites;
+pub mod notifications;
 
-use axum::Router;
-use tower_http::cors::{CorsLayer, Any};
-use tower_http::trace::TraceLayer;
-use std::sync::Arc;
-
-use state::AppState;
-use websocket::WebSocketManager;
-
-/// Создаёт приложение Axum
-pub fn create_app(store: Box<dyn crate::db::Store + Send + Sync>) -> Router {
-    let ws_manager = Arc::new(WebSocketManager::new());
-
-    let state = Arc::new(AppState::new(
-        store,
-        crate::config::Config::default(),
-    ));
-
-    let cors = CorsLayer::new()
-        .allow_origin(Any)
-        .allow_methods(Any)
-        .allow_headers(Any);
-
-    Router::new()
-        // API routes (должны быть перед static для корректной обработки)
-        .merge(routes::api_routes())
-        // Static files с fallback
-        .merge(routes::static_routes())
-        // Middleware
-        .layer(TraceLayer::new_for_http())
-        .layer(cors)
-        .with_state(state)
-}
+pub use keys::*;
+pub use schedules::*;
+pub use users::*;
+pub use templates::*;
+pub use tasks::*;
+pub use inventory::*;
+pub use repository::*;
+pub use environment::*;
+pub use integration::*;
+pub use views::*;
+pub use integration_alias::*;
+pub use secret_storages::*;
+pub use project::*;
+pub use backup_restore::*;
+pub use refs::*;
+pub use invites::*;
+pub use notifications::*;
