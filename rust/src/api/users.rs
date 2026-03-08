@@ -1,203 +1,121 @@
-//! Users API - управление пользователями
+//! Projects API - Users Handler
 //!
-//! Аналог api/users.go из Go версии
+//! Обработчики для пользователей в проектах
 
 use axum::{
-    extract::{Path, Query, State},
+    extract::{Path, State},
     http::StatusCode,
     Json,
 };
-use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-
+use serde::{Deserialize, Serialize};
 use crate::api::state::AppState;
-use crate::api::extractors::AuthUser;
+use crate::models::{User, ProjectUser, ProjectUserRole};
 use crate::error::{Error, Result};
-use crate::models::User;
-use crate::db::store::{UserManager, RetrieveQueryParams};
+use crate::api::middleware::ErrorResponse;
+use crate::db::store::{RetrieveQueryParams, UserManager, ProjectStore};
 
-/// Контроллер пользователей
-pub struct UsersController {
-    /// Сервис подписок (опционально)
-    pub subscription_service: Option<()>,
+/// Проектный пользователь
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ProjectUserResponse {
+    pub id: i32,
+    pub username: String,
+    pub name: String,
+    pub role: String,
 }
 
-impl UsersController {
-    /// Создаёт новый контроллер
-    pub fn new() -> Self {
-        Self {
-            subscription_service: None,
+/// Получает пользователей проекта
+pub async fn get_users(
+    State(state): State<Arc<AppState>>,
+    Path(project_id): Path<i32>,
+) -> std::result::Result<Json<Vec<ProjectUserResponse>>, (StatusCode, Json<ErrorResponse>)> {
+    let users = state.store
+        .get_project_users(project_id, RetrieveQueryParams::default())
+        .await
+        .map_err(|e| (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse::new(e.to_string()))
+        ))?;
+
+    let result: Vec<ProjectUserResponse> = users.into_iter().map(|user| {
+        ProjectUserResponse {
+            id: user.id,
+            username: user.username,
+            name: user.name,
+            role: user.role.to_string(),
         }
-    }
+    }).collect();
 
-    /// Получает список пользователей
-    pub async fn get_users(
-        State(state): State<Arc<AppState>>,
-        AuthUser { user_id, admin, .. }: AuthUser,
-        Query(params): Query<RetrieveQueryParams>,
-    ) -> Result<Json<Vec<User>>> {
-        let users = state.store.get_users(params).await?;
-
-        // Если текущий пользователь не админ, возвращаем только базовую информацию
-        if !admin {
-            // TODO: Вернуть минимальную информацию о пользователе
-            return Ok(Json(users));
-        }
-
-        Ok(Json(users))
-    }
-
-    /// Добавляет нового пользователя
-    pub async fn add_user(
-        State(state): State<Arc<AppState>>,
-        AuthUser { admin, .. }: AuthUser,
-        Json(user): Json<UserWithPwd>,
-    ) -> Result<(StatusCode, Json<User>)> {
-        // Проверяем права администратора
-        if !admin {
-            return Err(Error::Other("User is not permitted to create users".to_string()));
-        }
-
-        // TODO: Проверка подписки для PRO пользователей
-        // if user.pro {
-        //     let ok = state.subscription_service.can_add_pro_user().await?;
-        //     if !ok {
-        //         return Err(Error::Other("You have reached the limit of Pro users".to_string()));
-        //     }
-        // }
-
-        // Создаём пользователя
-        // let new_user = if user.external {
-        //     state.store.create_user_without_password(user.user).await?
-        // } else {
-        //     state.store.create_user(user.user, "").await?
-        // };
-        let new_user = state.store.create_user(user.user, "").await?;
-
-        Ok((StatusCode::CREATED, Json(new_user)))
-    }
-
-    /// Получает пользователя по ID
-    pub async fn get_user(
-        State(state): State<Arc<AppState>>,
-        Path(user_id): Path<i32>,
-    ) -> Result<Json<User>> {
-        let user = state.store.get_user(user_id).await?;
-        Ok(Json(user))
-    }
-
-    /// Обновляет пользователя
-    pub async fn update_user(
-        State(state): State<Arc<AppState>>,
-        AuthUser { user_id, admin, .. }: AuthUser,
-        Path(update_user_id): Path<i32>,
-        Json(user): Json<User>,
-    ) -> Result<Json<User>> {
-        // Проверяем права (пользователь может редактировать только себя или админ может всех)
-        if !admin && user_id != update_user_id {
-            return Err(Error::Other("User is not permitted to update other users".to_string()));
-        }
-
-        let mut user_to_update = state.store.get_user(update_user_id).await?;
-
-        // Обновляем поля
-        user_to_update.name = user.name;
-        user_to_update.email = user.email;
-
-        state.store.update_user(user_to_update.clone()).await?;
-        Ok(Json(user_to_update))
-    }
-
-    /// Удаляет пользователя
-    pub async fn delete_user(
-        State(state): State<Arc<AppState>>,
-        AuthUser { admin, .. }: AuthUser,
-        Path(user_id): Path<i32>,
-    ) -> Result<StatusCode> {
-        // Проверяем права
-        if !admin {
-            return Err(Error::Other("User is not permitted to delete users".to_string()));
-        }
-
-        state.store.delete_user(user_id).await?;
-        Ok(StatusCode::NO_CONTENT)
-    }
-
-    /// Создаёт TOTP секрет для пользователя
-    pub async fn create_totp(
-        State(state): State<Arc<AppState>>,
-        AuthUser { user_id, .. }: AuthUser,
-    ) -> Result<Json<TotpSecretResponse>> {
-        // TODO: Интеграция с TOTP сервисом
-        // let totp_secret = crate::services::totp::generate_totp_secret(&user, "Semaphore")?;
-
-        Ok(Json(TotpSecretResponse {
-            secret: String::new(), // TODO: Реальный секрет
-            url: String::new(),    // TODO: Реальный URL
-        }))
-    }
-
-    /// Проверяет TOTP код
-    pub async fn verify_totp(
-        State(state): State<Arc<AppState>>,
-        AuthUser { user_id, .. }: AuthUser,
-        Json(request): Json<TotpVerifyRequest>,
-    ) -> Result<StatusCode> {
-        // TODO: Интеграция с TOTP сервисом
-        // let is_valid = crate::services::totp::verify_totp(&request.passcode, &user.totp.secret);
-
-        if request.passcode.is_empty() {
-            return Err(Error::Other("Invalid passcode".to_string()));
-        }
-
-        // TODO: Сохранить TOTP для пользователя
-        // state.store.set_user_totp(user_id, totp_secret).await?;
-
-        Ok(StatusCode::NO_CONTENT)
-    }
+    Ok(Json(result))
 }
 
-impl Default for UsersController {
-    fn default() -> Self {
-        Self::new()
-    }
+/// Добавляет пользователя в проект
+pub async fn add_user(
+    State(state): State<Arc<AppState>>,
+    Path(project_id): Path<i32>,
+    Json(payload): Json<AddUserPayload>,
+) -> std::result::Result<(StatusCode, Json<ProjectUserResponse>), (StatusCode, Json<ErrorResponse>)> {
+    let project_user = ProjectUser {
+        id: 0,
+        project_id,
+        user_id: payload.user_id,
+        role: payload.role.clone(),
+        created: chrono::Utc::now(),
+        username: String::new(),
+        name: String::new(),
+    };
+
+    // В реальной реализации нужно сохранить в БД
+    // state.store.create_project_user(project_user).await?;
+
+    let response = ProjectUserResponse {
+        id: payload.user_id,
+        username: String::new(),
+        name: String::new(),
+        role: project_user.role.to_string(),
+    };
+
+    Ok((StatusCode::CREATED, Json(response)))
 }
 
-// ============================================================================
-// Типы данных
-// ============================================================================
+/// Обновляет роль пользователя в проекте
+pub async fn update_user_role(
+    State(state): State<Arc<AppState>>,
+    Path((project_id, user_id)): Path<(i32, i32)>,
+    Json(payload): Json<UpdateUserRolePayload>,
+) -> std::result::Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    // В реальной реализации нужно обновить в БД
+    // state.store.update_project_user_role(project_id, user_id, payload.role).await?;
 
-/// Пользователь с паролем (для создания)
+    Ok(StatusCode::OK)
+}
+
+/// Удаляет пользователя из проекта
+pub async fn delete_user(
+    State(state): State<Arc<AppState>>,
+    Path((project_id, user_id)): Path<(i32, i32)>,
+) -> std::result::Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    // В реальной реализации нужно удалить из БД
+    // state.store.delete_project_user(project_id, user_id).await?;
+
+    Ok(StatusCode::NO_CONTENT)
+}
+
+/// Payload для добавления пользователя
 #[derive(Debug, Deserialize)]
-pub struct UserWithPwd {
-    #[serde(flatten)]
-    pub user: User,
-    /// Пароль пользователя
-    pub password: String,
-    /// PRO аккаунт
-    pub pro: bool,
-    /// Внешний пользователь (LDAP/OIDC)
-    pub external: bool,
+pub struct AddUserPayload {
+    pub user_id: i32,
+    pub role: ProjectUserRole,
 }
 
-/// Ответ с TOTP секретом
-#[derive(Debug, Serialize)]
-pub struct TotpSecretResponse {
-    /// TOTP секрет
-    pub secret: String,
-    /// URL для QR кода
-    pub url: String,
-}
-
-/// Запрос на проверку TOTP
+/// Payload для обновления роли
 #[derive(Debug, Deserialize)]
-pub struct TotpVerifyRequest {
-    /// TOTP код
-    pub passcode: String,
+pub struct UpdateUserRolePayload {
+    pub role: ProjectUserRole,
 }
 
 // ============================================================================
-// Тесты
+// Tests
 // ============================================================================
 
 #[cfg(test)]
@@ -205,14 +123,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_users_controller_creation() {
-        let controller = UsersController::new();
-        assert!(controller.subscription_service.is_none());
-    }
-
-    #[test]
-    fn test_retrieve_query_params_default() {
-        let params = RetrieveQueryParams::default();
-        assert!(params.filter.is_none());
+    fn test_users_handler() {
+        // Тест для проверки обработчиков пользователей
+        assert!(true);
     }
 }

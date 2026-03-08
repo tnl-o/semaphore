@@ -1,0 +1,9 @@
+services:
+  server:
+    build:
+      context: ../../../
+      dockerfile: deployment/docker/server/Dockerfile
+      args:
+        APP_BUILD_TYPE: pro_selfhosted
+        GH_TOKEN: ${GH_TOKEN:-}
+

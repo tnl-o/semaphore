@@ -1,0 +1,27 @@
+{
+  // Terminal settings for Cursor
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "terminal.integrated.profiles.windows": {
+    "Command Prompt": {
+      "path": [
+        "${env:windir}\\System32\\cmd.exe"
+      ],
+      "args": [],
+      "icon": "terminal-cmd"
+    },
+    "PowerShell": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass"
+      ]
+    }
+  },
+  
+  // Encoding settings
+  "files.encoding": "utf8",
+  "terminal.integrated.encoding": "utf8"
+}
+

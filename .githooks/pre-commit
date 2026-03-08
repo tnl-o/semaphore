@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# Pre-commit hook for Semaphore UI
+# This hook runs code quality checks before allowing a commit
+#
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo "${GREEN}Running pre-commit checks...${NC}"
+
+# Check if golangci-lint is installed
+if ! command -v golangci-lint &> /dev/null; then
+    echo "${YELLOW}Warning: golangci-lint is not installed. Skipping lint checks.${NC}"
+    echo "Install it with: go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.57.2"
+else
+    echo "Running golangci-lint..."
+    if ! golangci-lint run --timeout=5m; then
+        echo "${RED}Linting failed. Please fix the issues before committing.${NC}"
+        exit 1
+    fi
+fi
+
+# Check if gofmt is installed
+if ! command -v gofmt &> /dev/null; then
+    echo "${YELLOW}Warning: gofmt is not installed. Skipping format checks.${NC}"
+else
+    echo "Checking code formatting..."
+    # Check if any Go files need formatting
+    unformatted=$(gofmt -l . | grep -v vendor | grep -v ".git" || true)
+    if [ -n "$unformatted" ]; then
+        echo "${RED}The following files are not properly formatted:${NC}"
+        echo "$unformatted"
+        echo "Run 'gofmt -w .' to fix them."
+        exit 1
+    fi
+fi
+
+# Check for common issues
+echo "Checking for common issues..."
+
+# Check for TODO/FIXME comments in non-test files (optional, can be disabled)
+# if git diff --cached --name-only | grep -E '\.(go)$' | grep -v '_test\.go$' | xargs grep -l 'TODO\|FIXME' 2>/dev/null; then
+#     echo "${YELLOW}Warning: Found TODO/FIXME comments in staged files.${NC}"
+# fi
+
+echo "${GREEN}Pre-commit checks passed!${NC}"
+exit 0
+

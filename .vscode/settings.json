@@ -1,0 +1,42 @@
+﻿{
+    "terminal.integrated.defaultProfile.windows":  "Command Prompt",
+    "terminal.integrated.profiles.windows":  {
+                                                 "Command Prompt":  {
+                                                                        "path":  [
+                                                                                     "${env:windir}\\System32\\cmd.exe"
+                                                                                 ],
+                                                                        "args":  [
+
+                                                                                 ],
+                                                                        "icon":  "terminal-cmd"
+                                                                    },
+                                                 "PowerShell":  {
+                                                                    "source":  "PowerShell",
+                                                                    "icon":  "terminal-powershell",
+                                                                    "args":  [
+                                                                                 "-NoProfile",
+                                                                                 "-ExecutionPolicy",
+                                                                                 "Bypass"
+                                                                             ]
+                                                                },
+                                                 "Git Bash":  {
+                                                                  "path":  "C:\\Program Files\\Git\\bin\\bash.exe",
+                                                                  "icon":  "terminal-bash"
+                                                              }
+                                             },
+    "files.encoding":  "utf8",
+    "files.autoGuessEncoding":  true,
+    "powershell.integratedConsole.showOnStartup":  false,
+    "powershell.scriptAnalysis.enable":  true,
+    "terminal.integrated.encoding":  "utf8",
+    "terminal.integrated.shellIntegration.enabled":  true,
+    "terminal.integrated.env.windows":  {
+                                            "LANG":  "en_US.UTF-8",
+                                            "LC_ALL":  "en_US.UTF-8"
+                                        },
+    "go.toolsManagement.checkForUpdates":  "local",
+    "go.useLanguageServer":  true,
+    "files.associations":  {
+                               "*.go":  "go"
+                           }
+}

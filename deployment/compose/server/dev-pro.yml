@@ -1,0 +1,5 @@
+services:
+  server:
+    environment:
+      SEMAPHORE_DEV_MODE: "true"
+
