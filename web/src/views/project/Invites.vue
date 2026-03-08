@@ -63,7 +63,7 @@
 </template>
 <script>
 import ItemListPageBase from '@/components/ItemListPageBase';
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import { USER_PERMISSIONS, USER_ROLES } from '@/lib/constants';
 import EditTeamMemberDialog from '@/components/EditTeamMemberDialog.vue';
 import TeamMenu from '@/components/TeamMenu.vue';
@@ -84,7 +84,7 @@ export default {
 
   methods: {
     async updateProjectInvite(invite) {
-      await apiClient({
+      await axios({
         method: 'put',
         url: `/api/project/${this.projectId}/invites/${invite.id}`,
         responseType: 'json',

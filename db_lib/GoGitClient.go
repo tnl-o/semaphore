@@ -87,7 +87,7 @@ func openRepository(r GitRepository, targetDir GitRepositoryDirType) (*git.Repos
 	case GitRepositoryFullPath:
 		dir = r.GetFullPath()
 	default:
-		return nil, fmt.Errorf("unknown Repository directory type: %v", targetDir)
+		panic("unknown Repository directory type")
 	}
 
 	return git.PlainOpen(dir)

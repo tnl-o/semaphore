@@ -1,4 +1,4 @@
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import { APP_ICONS, APP_SHORT_TITLE, APP_TITLE } from '../lib/constants';
 
 export default {
@@ -30,7 +30,7 @@ export default {
 
   methods: {
     async loadAppsDataFromBackend() {
-      return (await apiClient({
+      return (await axios({
         method: 'get',
         url: '/api/apps',
         responseType: 'json',

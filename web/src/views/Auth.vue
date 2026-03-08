@@ -333,8 +333,9 @@
 }
 </style>
 <script>
-import { api } from '@/lib/apiClient';
+import axios from 'axios';
 import { getErrorMessage } from '@/lib/error';
+import EventBus from '@/event-bus';
 
 export default {
   data() {
@@ -398,30 +399,48 @@ export default {
 
       this.verificationEmailSending = true;
       try {
-        await api.post('/api/auth/login/email/resend');
-        const { toast } = await import('@/lib/toast');
-        toast.success('Verification email sent successfully.');
+        (await axios({
+          method: 'post',
+          url: '/api/auth/login/email/resend',
+          responseType: 'json',
+        }));
+        EventBus.$emit('i-snackbar', {
+          color: 'success',
+          text: 'Verification email sent successfully.',
+        });
       } catch (e) {
-        const { toast } = await import('@/lib/toast');
-        toast.apiError(e);
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(e),
+        });
       } finally {
         this.verificationEmailSending = false;
       }
     },
 
     async loadLoginData() {
-      const resp = await api.get('/api/auth/login');
-      this.oidcProviders = resp.data.oidc_providers;
-      this.loginWithPassword = resp.data.login_with_password;
-      this.authMethods = resp.data.auth_methods || {};
+      await axios({
+        method: 'get',
+        url: '/api/auth/login',
+        responseType: 'json',
+      }).then((resp) => {
+        this.oidcProviders = resp.data.oidc_providers;
+        this.loginWithPassword = resp.data.login_with_password;
+        this.authMethods = resp.data.auth_methods || {};
+      });
     },
 
     async recovery() {
       this.signInProcess = true;
 
       try {
-        await api.post('/api/auth/recovery', {
-          recovery_code: this.recoveryCode,
+        await axios({
+          method: 'post',
+          url: '/api/auth/recovery',
+          responseType: 'json',
+          data: {
+            recovery_code: this.recoveryCode,
+          },
         });
 
         const { location } = document;
@@ -435,13 +454,19 @@ export default {
 
     async signOut() {
       try {
-        await api.post('/api/auth/logout');
+        (await axios({
+          method: 'post',
+          url: '/api/auth/logout',
+          responseType: 'json',
+        }));
 
         const { location } = document;
         document.location = location;
       } catch (e) {
-        const { toast } = await import('@/lib/toast');
-        toast.apiError(e);
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(e),
+        });
       }
     },
 
@@ -457,10 +482,14 @@ export default {
 
     async getAuthenticationStatus() {
       try {
-        await api.get('/api/user');
+        await axios({
+          method: 'get',
+          url: '/api/user',
+          responseType: 'json',
+        });
       } catch (err) {
-        if (err.response?.status === 401) {
-          switch (err.response.data?.error) {
+        if (err.response.status === 401) {
+          switch (err.response.data.error) {
             case 'TOTP_REQUIRED':
               return {
                 status: 'unverified',
@@ -475,8 +504,7 @@ export default {
               return { status: 'unauthenticated' };
           }
         }
-        // For network errors or other issues, assume unauthenticated
-        return { status: 'unauthenticated' };
+        throw err;
       }
 
       return { status: 'authenticated' };
@@ -492,8 +520,13 @@ export default {
       this.signInProcess = true;
 
       try {
-        await api.post('/api/auth/verify', {
-          passcode: this.verificationCode,
+        await axios({
+          method: 'post',
+          url: '/api/auth/verify',
+          responseType: 'json',
+          data: {
+            passcode: this.verificationCode,
+          },
         });
 
         this.redirectAfterLogin();
@@ -513,15 +546,18 @@ export default {
 
       this.signInProcess = true;
       try {
-        await api.post('/api/auth/login/email', {
-          email: this.email,
+        await axios({
+          method: 'post',
+          url: '/api/auth/login/email',
+          responseType: 'json',
+          data: {
+            email: this.email,
+          },
         });
 
-        // After email login, show verification screen
-        this.screen = 'verification';
-        this.verificationMethod = 'email';
+        this.redirectAfterLogin();
       } catch (err) {
-        if (err.response?.status === 401) {
+        if (err.response.status === 401) {
           this.signInError = this.$t('incorrectEmail');
         } else {
           this.signInError = getErrorMessage(err);
@@ -540,15 +576,20 @@ export default {
 
       this.signInProcess = true;
       try {
-        await api.post('/api/auth/login', {
-          auth: this.username,
-          password: this.password,
+        await axios({
+          method: 'post',
+          url: '/api/auth/login',
+          responseType: 'json',
+          data: {
+            auth: this.username,
+            password: this.password,
+          },
         });
 
         this.redirectAfterLogin();
         // document.location = document.baseURI + window.location.search;
       } catch (err) {
-        if (err.response?.status === 401) {
+        if (err.response.status === 401) {
           this.signInError = this.$t('incorrectUsrPwd');
         } else {
           this.signInError = getErrorMessage(err);

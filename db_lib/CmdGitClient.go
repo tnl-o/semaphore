@@ -49,12 +49,7 @@ func (c CmdGitClient) makeCmd(
 	case GitRepositoryFullPath:
 		cmd.Dir = r.GetFullPath()
 	default:
-		// Unknown directory type, use current directory as fallback
-		log.WithFields(log.Fields{
-			"context":        "git",
-			"directory_type": targetDir,
-		}).Warn("unknown Repository directory type, using current directory")
-		cmd.Dir = "."
+		panic("unknown Repository directory type")
 	}
 
 	cmd.Args = append(cmd.Args, args...)

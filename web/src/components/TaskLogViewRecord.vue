@@ -3,16 +3,12 @@
     <div class="task-log-records__time">
       {{ source.time | formatTime }}
     </div>
-    <SafeLogOutput :output="source.output" />
+    <div class="task-log-records__output" v-html="$options.filters.formatLog(source.output)">
+    </div>
   </div>
 </template>
 <script>
-import SafeLogOutput from '@/components/SafeLogOutput.vue';
-
 export default {
-  components: {
-    SafeLogOutput,
-  },
   props: {
     index: { // index of current item
       type: Number,

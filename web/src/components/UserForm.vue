@@ -82,16 +82,17 @@
             </template>
           </v-text-field>
 
-          <SecurePasswordInput
+          <v-text-field
             v-if="isNew"
             v-model="item.password"
             :label="$t('password')"
+            type="password"
             :required="isNew && !item.external"
             :rules="isNew && !item.external ? [v => !!v || $t('password_required')] : []"
             :disabled="item.external || formSaving"
             outlined
             dense
-          />
+          ></v-text-field>
 
           <v-row class="pb-5 pt-2">
             <v-col cols="6">
@@ -192,20 +193,14 @@
   </div>
 </template>
 <script>
-import SecurePasswordInput from '@/components/SecurePasswordInput.vue';
 import ItemFormBase from '@/components/ItemFormBase';
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import EditDialog from '@/components/EditDialog.vue';
 import ChangePasswordForm from '@/components/ChangePasswordForm.vue';
 import CopyClipboardButton from '@/components/CopyClipboardButton.vue';
 
 export default {
-  components: {
-    CopyClipboardButton,
-    ChangePasswordForm,
-    EditDialog,
-    SecurePasswordInput,
-  },
+  components: { CopyClipboardButton, ChangePasswordForm, EditDialog },
   props: {
     isAdmin: Boolean,
     authMethods: Object,
@@ -235,7 +230,7 @@ export default {
     async totpEnabled(val) {
       if (val) {
         if (this.item.totp == null) {
-          this.item.totp = (await apiClient({
+          this.item.totp = (await axios({
             method: 'post',
             url: `/api/users/${this.itemId}/2fas/totp`,
             responseType: 'json',
@@ -249,7 +244,7 @@ export default {
           this.totpQrUrl = `${document.baseURI}api/users/${this.itemId}/2fas/totp/${this.item.totp.id}/qr`;
         }
       } else if (this.item.totp != null) {
-        await apiClient({
+        await axios({
           method: 'delete',
           url: `/api/users/${this.itemId}/2fas/totp/${this.item.totp.id}`,
           responseType: 'json',

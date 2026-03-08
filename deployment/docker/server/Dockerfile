@@ -1,7 +1,7 @@
 FROM --platform=$BUILDPLATFORM golang:1.24-alpine3.21 as builder
 
 RUN apk add --no-cache -U \
-    libc-dev curl nodejs npm git gcc zip unzip tar file
+    libc-dev curl nodejs npm git gcc zip unzip tar
 
 WORKDIR /usr/local
 # hadolint ignore=DL4006
@@ -9,6 +9,12 @@ RUN curl -sL https://taskfile.dev/install.sh | sh
 
 WORKDIR /go/src/semaphore
 COPY . /go/src/semaphore
+
+# Конвертируем server-wrapper в builder stage, чтобы избежать проблем с CRLF
+RUN if [ -f /go/src/semaphore/deployment/docker/server/server-wrapper ]; then \
+        python3 -c "import sys; data = open('/go/src/semaphore/deployment/docker/server/server-wrapper', 'rb').read(); open('/go/src/semaphore/deployment/docker/server/server-wrapper', 'wb').write(data.replace(b'\r\n', b'\n').replace(b'\r', b'\n'))" && \
+        chmod +x /go/src/semaphore/deployment/docker/server/server-wrapper; \
+    fi
 
 RUN --mount=type=cache,target=/go/pkg \
     go mod download -x
@@ -39,19 +45,9 @@ RUN wget https://github.com/opentofu/opentofu/releases/download/v${OPENTOFU_VERS
     tar xf tofu_${OPENTOFU_VERSION}_linux_${TARGETARCH}.tar.gz -C /tmp && \
     rm tofu_${OPENTOFU_VERSION}_linux_${TARGETARCH}.tar.gz
 
-RUN TERRAFORM_ARCH=$(case ${TARGETARCH} in amd64) echo "amd64" ;; arm64) echo "arm64" ;; 386) echo "386" ;; arm/v7) echo "arm" ;; *) echo "amd64" ;; esac) && \
-    (wget -q -O terraform_${TERRAFORM_VERSION}_linux_${TERRAFORM_ARCH}.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TERRAFORM_ARCH}.zip && \
-     file terraform_${TERRAFORM_VERSION}_linux_${TERRAFORM_ARCH}.zip | grep -q "Zip archive" && \
-     unzip -q terraform_${TERRAFORM_VERSION}_linux_${TERRAFORM_ARCH}.zip -d /tmp && \
-     rm terraform_${TERRAFORM_VERSION}_linux_${TERRAFORM_ARCH}.zip && \
-     chmod +x /tmp/terraform) || \
-    (echo "Warning: Failed to download Terraform ${TERRAFORM_VERSION} for ${TERRAFORM_ARCH}, trying amd64..." && \
-     wget -q -O terraform_${TERRAFORM_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
-     file terraform_${TERRAFORM_VERSION}_linux_amd64.zip | grep -q "Zip archive" && \
-     unzip -q terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /tmp && \
-     rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
-     chmod +x /tmp/terraform) || \
-    (echo "Warning: Failed to download Terraform ${TERRAFORM_VERSION}, continuing without it..." && touch /tmp/terraform && chmod +x /tmp/terraform)
+RUN wget -O terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip || \
+    (echo "Warning: Terraform ${TERRAFORM_VERSION} not found, skipping..." && touch /tmp/terraform) && \
+    (test -f terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip && unzip terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip -d /tmp && rm terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip || true)
 
 RUN wget -O /tmp/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_${TARGETARCH} && \
     chmod +x /tmp/terragrunt
@@ -65,7 +61,7 @@ ENV ANSIBLE_VERSION=${ANSIBLE_VERSION}
 ARG ANSIBLE_VENV_PATH=/opt/semaphore/apps/ansible/${ANSIBLE_VERSION}/venv
 
 RUN apk add --no-cache -U \
-    bash curl git gnupg mysql-client openssh-client-default python3 py3-pip rsync sshpass tar tini tzdata unzip wget zip jq && \
+    bash curl git gnupg mysql-client openssh-client-default python3 py3-pip rsync sshpass tar tini tzdata unzip wget zip jq dos2unix && \
     rm -rf /var/cache/apk/* && \
     adduser -D -u 1001 -G root semaphore && \
     mkdir -p /tmp/semaphore && \
@@ -81,23 +77,19 @@ RUN apk add --no-cache -U \
 RUN echo $'Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile /dev/null' > /etc/ssh/ssh_config.d/semaphore.conf
 
 COPY --chown=1001:0 ./deployment/docker/server/ansible.cfg /etc/ansible/ansible.cfg
-COPY --from=builder /go/src/semaphore/bin/semaphore /usr/local/bin/semaphore
-COPY --from=builder /tmp/tofu /usr/local/bin/tofu
-COPY --from=builder /tmp/terraform /usr/local/bin/terraform
-COPY --from=builder /tmp/terragrunt /usr/local/bin/terragrunt
+# Копируем server-wrapper из builder stage, где он уже конвертирован
+COPY --from=builder --chown=1001:0 --chmod=755 /go/src/semaphore/deployment/docker/server/server-wrapper /usr/local/bin/server-wrapper
+COPY --from=builder --chmod=755 /go/src/semaphore/bin/semaphore /usr/local/bin/semaphore
+COPY --from=builder --chmod=755 /tmp/tofu /usr/local/bin/tofu
+COPY --from=builder --chmod=755 /tmp/terraform /usr/local/bin/terraform
+COPY --from=builder --chmod=755 /tmp/terragrunt /usr/local/bin/terragrunt
 
-# Copy server-wrapper from source and ensure it has correct permissions and line endings
-COPY --chown=1001:0 ./deployment/docker/server/server-wrapper /tmp/server-wrapper
-
-RUN sed -i 's/\r$//' /tmp/server-wrapper && \
-    mv /tmp/server-wrapper /usr/local/bin/server-wrapper && \
+RUN chown semaphore:root /usr/local/bin/server-wrapper && \
+    chown semaphore:root /usr/local/bin/semaphore && \
     chmod +x /usr/local/bin/server-wrapper && \
-    chmod +x /usr/local/bin/semaphore && \
-    chown -R semaphore:0 /usr/local/bin/server-wrapper && \
-    chown -R semaphore:0 /usr/local/bin/semaphore && \
-    test -f /usr/local/bin/server-wrapper || (echo "ERROR: server-wrapper not found after copy!" && exit 1) && \
-    test -x /usr/local/bin/server-wrapper || (echo "ERROR: server-wrapper is not executable!" && exit 1) && \
-    head -1 /usr/local/bin/server-wrapper | grep -q "#!/bin/sh" || (echo "ERROR: server-wrapper has wrong shebang!" && exit 1)
+    test -f /usr/local/bin/server-wrapper && \
+    test -x /usr/local/bin/server-wrapper && \
+    head -1 /usr/local/bin/server-wrapper | grep -q '#!/bin/sh' || (echo "ERROR: Invalid shebang" && head -1 /usr/local/bin/server-wrapper && exit 1)
 
 WORKDIR /home/semaphore
 
@@ -119,4 +111,4 @@ ENV PATH="$ANSIBLE_VENV_PATH/bin:$PATH"
 
 # Preventing ansible zombie processes. Tini kills zombies.
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD [ "/usr/local/bin/server-wrapper"]
+CMD ["/bin/sh", "/usr/local/bin/server-wrapper"]

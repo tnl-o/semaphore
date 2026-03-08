@@ -37,14 +37,11 @@
       v-model="itemRefsDialog"
     />
 
-    <ConfirmActionDialog
-      v-model="deleteDialog"
-      type="error"
+    <YesNoDialog
       :title="$t('deleteTemplate')"
-      :message="$t('askDeleteTemp')"
-      warning-message="All tasks and history for this template will be permanently deleted."
-      confirm-text="Delete"
-      @confirm="remove()"
+      :text="$t('askDeleteTemp')"
+      v-model="deleteDialog"
+      @yes="remove()"
     />
 
     <YesNoDialog
@@ -93,16 +90,16 @@
         {{ $t(TEMPLATE_TYPE_ACTION_TITLES[item.type]) }}
       </v-btn>
 
-      <v-btn icon color="error" @click="askDelete()" v-if="canUpdate" aria-label="Delete template">
-        <v-icon aria-hidden="true">mdi-delete</v-icon>
+      <v-btn icon color="error" @click="askDelete()" v-if="canUpdate">
+        <v-icon>mdi-delete</v-icon>
       </v-btn>
 
-      <v-btn icon @click="copyDialog = true" v-if="canUpdate" aria-label="Copy template">
-        <v-icon aria-hidden="true">mdi-content-copy</v-icon>
+      <v-btn icon @click="copyDialog = true" v-if="canUpdate">
+        <v-icon>mdi-content-copy</v-icon>
       </v-btn>
 
-      <v-btn icon @click="editDialog = true" v-if="canUpdate" aria-label="Edit template">
-        <v-icon aria-hidden="true">mdi-pencil</v-icon>
+      <v-btn icon @click="editDialog = true" v-if="canUpdate">
+        <v-icon>mdi-pencil</v-icon>
       </v-btn>
     </v-toolbar>
 
@@ -175,10 +172,10 @@
 </style>
 
 <script>
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import EventBus from '@/event-bus';
+import { getErrorMessage } from '@/lib/error';
 import YesNoDialog from '@/components/YesNoDialog.vue';
-import ConfirmActionDialog from '@/components/ConfirmActionDialog.vue';
 import {
   TEMPLATE_TYPE_ACTION_TITLES,
   TEMPLATE_TYPE_ICONS,
@@ -196,7 +193,6 @@ export default {
   components: {
     SingleLineEditable,
     YesNoDialog,
-    ConfirmActionDialog,
     ObjectRefsDialog,
     NewTaskDialog,
     EditTemplateDialog,
@@ -291,7 +287,7 @@ export default {
 
     async stopAllTasks() {
       try {
-        await apiClient({
+        await axios({
           method: 'post',
           url: `/api/project/${this.projectId}/templates/${this.itemId}/stop_all_tasks`,
           data: {
@@ -300,11 +296,15 @@ export default {
           responseType: 'json',
         });
 
-        const { toast } = await import('@/lib/toast');
-        toast.success('All running tasks have been requested to stop');
+        EventBus.$emit('i-snackbar', {
+          color: 'success',
+          text: 'All running tasks have been requested to stop',
+        });
       } catch (err) {
-        const { toast } = await import('@/lib/toast');
-        toast.apiError(err);
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(err),
+        });
       } finally {
         this.stopAllDialog = false;
       }
@@ -312,7 +312,7 @@ export default {
 
     async askDelete() {
       this.itemRefs = (
-        await apiClient({
+        await axios({
           method: 'get',
           url: `/api/project/${this.projectId}/templates/${this.itemId}/refs`,
           responseType: 'json',
@@ -329,21 +329,25 @@ export default {
 
     async remove() {
       try {
-        await apiClient({
+        await axios({
           method: 'delete',
           url: `/api/project/${this.projectId}/templates/${this.itemId}`,
           responseType: 'json',
         });
 
-        const { toast } = await import('@/lib/toast');
-        toast.success(`Template "${this.item.name}" deleted`);
+        EventBus.$emit('i-snackbar', {
+          color: 'success',
+          text: `Template "${this.item.name}" deleted`,
+        });
 
         await this.$router.push({
           path: `/project/${this.projectId}/templates`,
         });
       } catch (err) {
-        const { toast } = await import('@/lib/toast');
-        toast.apiError(err);
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(err),
+        });
       } finally {
         this.deleteDialog = false;
       }
@@ -371,7 +375,7 @@ export default {
 
     async updateDescription() {
       try {
-        await apiClient({
+        await axios({
           method: 'put',
           url: `/api/project/${this.projectId}/templates/${this.itemId}/description`,
           responseType: 'json',
@@ -380,8 +384,10 @@ export default {
           },
         });
       } catch (err) {
-        const { toast } = await import('@/lib/toast');
-        toast.apiError(err);
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(err),
+        });
       }
     },
 

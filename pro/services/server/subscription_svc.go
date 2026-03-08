@@ -1,8 +1,6 @@
 package server
 
 import (
-	"os"
-
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/pro_interfaces"
 )
@@ -20,15 +18,11 @@ func (s *SubscriptionServiceImpl) GetToken() (res pro_interfaces.SubscriptionTok
 }
 
 func (s *SubscriptionServiceImpl) HasActiveSubscription() bool {
-	// Enable PRO features in development mode
-	devMode := os.Getenv("SEMAPHORE_DEV_MODE")
-	return devMode == "true" || devMode == "1"
+	return false
 }
 
 func (s *SubscriptionServiceImpl) CanAddProUser() (ok bool, err error) {
-	// Enable PRO features in development mode
-	devMode := os.Getenv("SEMAPHORE_DEV_MODE")
-	return devMode == "true" || devMode == "1", nil
+	return false, nil
 }
 
 func (s *SubscriptionServiceImpl) StartValidationCron() {
@@ -36,28 +30,17 @@ func (s *SubscriptionServiceImpl) StartValidationCron() {
 }
 
 func (s *SubscriptionServiceImpl) CanAddRole() (ok bool, err error) {
-	// Enable PRO features in development mode
-	devMode := os.Getenv("SEMAPHORE_DEV_MODE")
-	return devMode == "true" || devMode == "1", nil
+	return
 }
 
 func (s *SubscriptionServiceImpl) CanAddRunner() (ok bool, err error) {
-	// Enable PRO features in development mode
-	devMode := os.Getenv("SEMAPHORE_DEV_MODE")
-	return devMode == "true" || devMode == "1", nil
+	return
 }
 
 func (s *SubscriptionServiceImpl) CanAddTerraformHTTPBackend() (ok bool, err error) {
-	// Enable PRO features in development mode
-	devMode := os.Getenv("SEMAPHORE_DEV_MODE")
-	return devMode == "true" || devMode == "1", nil
+	return
 }
 
 func (s *SubscriptionServiceImpl) GetPlan() (plan string, err error) {
-	// Return dev plan in development mode
-	devMode := os.Getenv("SEMAPHORE_DEV_MODE")
-	if devMode == "true" || devMode == "1" {
-		return "dev", nil
-	}
-	return "", db.ErrNotFound
+	return
 }

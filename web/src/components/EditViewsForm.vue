@@ -136,7 +136,7 @@
 
 <script>
 import draggable from 'vuedraggable';
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 // import ArgsPicker from '@/components/ArgsPicker.vue';
 
 export default {
@@ -150,7 +150,7 @@ export default {
   },
 
   async created() {
-    this.views = (await apiClient({
+    this.views = (await axios({
       method: 'get',
       url: `/api/project/${this.projectId}/views`,
       responseType: 'json',
@@ -192,7 +192,7 @@ export default {
         };
       }, {});
 
-      await apiClient({
+      await axios({
         method: 'post',
         url: `/api/project/${this.projectId}/views/positions`,
         responseType: 'json',
@@ -220,7 +220,7 @@ export default {
       view.disabled = true;
       try {
         if (view.id < 0) {
-          const newView = (await apiClient({
+          const newView = (await axios({
             method: 'post',
             url: `/api/project/${this.projectId}/views`,
             responseType: 'json',
@@ -236,7 +236,7 @@ export default {
           })).data;
           view.id = newView.id;
         } else {
-          await apiClient({
+          await axios({
             method: 'put',
             url: `/api/project/${this.projectId}/views/${view.id}`,
             responseType: 'json',
@@ -266,7 +266,7 @@ export default {
 
       view.disabled = true;
       try {
-        const oldView = (await apiClient({
+        const oldView = (await axios({
           method: 'get',
           url: `/api/project/${this.projectId}/views/${view.id}`,
           responseType: 'json',
@@ -298,7 +298,7 @@ export default {
       if (view.id >= 0) {
         view.disabled = true;
         try {
-          await apiClient({
+          await axios({
             method: 'delete',
             url: `/api/project/${this.projectId}/views/${view.id}`,
             responseType: 'json',

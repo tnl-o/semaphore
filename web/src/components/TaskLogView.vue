@@ -42,7 +42,6 @@
 
     <v-tabs class="task-log-view__tabs" right v-model="tab">
       <v-tab>Log</v-tab>
-      <v-tab>Ansible View</v-tab>
       <v-tab :disabled="!isTaskStopped">Details</v-tab>
       <v-tab v-if="isPro" :disabled="!isTaskStopped">Summary</v-tab>
     </v-tabs>
@@ -61,7 +60,8 @@
           <div class="task-log-records__time">
             {{ record.time | formatTime }}
           </div>
-          <SafeLogOutput :output="record.output" />
+          <div class="task-log-records__output" v-html="$options.filters.formatLog(record.output)">
+          </div>
         </div>
       </VirtualList>
 
@@ -71,9 +71,8 @@
         style="right: 260px; width: 70px;"
         v-if="item.status === 'waiting_confirmation'"
         @click="confirmTask()"
-        aria-label="Confirm task"
       >
-        <v-icon aria-hidden="true">mdi-check</v-icon>
+        <v-icon>mdi-check</v-icon>
       </v-btn>
 
       <v-btn
@@ -82,9 +81,8 @@
         style="right: 180px; width: 70px;"
         v-if="item.status === 'waiting_confirmation'"
         @click="rejectTask()"
-        aria-label="Reject task"
       >
-        <v-icon aria-hidden="true">mdi-close</v-icon>
+        <v-icon>mdi-close</v-icon>
       </v-btn>
 
       <v-btn
@@ -93,7 +91,6 @@
         style="right: 20px; width: 150px;"
         v-if="canStop"
         @click="stopTask(item.status === 'stopping')"
-        :aria-label="item.status === 'stopping' ? $t('forceStop') : $t('stop')"
       >
         {{ item.status === 'stopping' ? $t('forceStop') : $t('stop') }}
       </v-btn>
@@ -111,18 +108,14 @@
     </div>
 
     <div v-else-if="tab === 1">
-      <AnsibleLogViewer :logs="output" />
-    </div>
-
-    <div v-else-if="tab === 2">
       <v-divider style="margin-top: -1px;" />
 
       <v-container fluid class="py-0 px-5 overflow-auto pt-4">
-        <TaskDetails :item="item" :user="user" :project-id="projectId" :logs="output" />
+        <TaskDetails :item="item" :user="user" :project-id="projectId" />
       </v-container>
     </div>
 
-    <div v-else-if="tab === 3">
+    <div v-else-if="tab === 2">
       <v-divider style="margin-top: -1px;" />
 
       <AnsibleStageView
@@ -232,7 +225,7 @@ $task-log-status-tab-height:
 
 </style>
 <script>
-import { api } from '@/lib/apiClient';
+import axios from 'axios';
 import TaskStatus from '@/components/TaskStatus.vue';
 import socket from '@/socket';
 import VirtualList from 'vue-virtual-scroll-list';
@@ -240,12 +233,10 @@ import TaskLogViewRecord from '@/components/TaskLogViewRecord.vue';
 import ProjectMixin from '@/components/ProjectMixin';
 import AnsibleStageView from '@/components/AnsibleStageView.vue';
 import TaskDetails from '@/components/TaskDetails.vue';
-import SafeLogOutput from '@/components/SafeLogOutput.vue';
-import AnsibleLogViewer from '@/components/AnsibleLogViewer.vue';
 
 export default {
   components: {
-    TaskDetails, AnsibleStageView, TaskStatus, VirtualList, SafeLogOutput, AnsibleLogViewer,
+    TaskDetails, AnsibleStageView, TaskStatus, VirtualList,
   },
 
   mixins: [ProjectMixin],
@@ -366,16 +357,31 @@ export default {
 
   methods: {
     async confirmTask() {
-      await api.post(`/api/project/${this.projectId}/tasks/${this.itemId}/confirm`, {});
+      await axios({
+        method: 'post',
+        url: `/api/project/${this.projectId}/tasks/${this.itemId}/confirm`,
+        responseType: 'json',
+        data: {},
+      });
     },
 
     async rejectTask() {
-      await api.post(`/api/project/${this.projectId}/tasks/${this.itemId}/reject`, {});
+      await axios({
+        method: 'post',
+        url: `/api/project/${this.projectId}/tasks/${this.itemId}/reject`,
+        responseType: 'json',
+        data: {},
+      });
     },
 
     async stopTask(force) {
-      await api.post(`/api/project/${this.projectId}/tasks/${this.itemId}/stop`, {
-        force,
+      await axios({
+        method: 'post',
+        url: `/api/project/${this.projectId}/tasks/${this.itemId}/stop`,
+        responseType: 'json',
+        data: {
+          force,
+        },
       });
     },
 
@@ -410,17 +416,26 @@ export default {
     },
 
     async loadData() {
-      const [outputResponse, userResponse] = await Promise.all([
-        api.get(`/api/project/${this.projectId}/tasks/${this.itemId}/output`),
-        this.item.user_id ? api.get(`/api/users/${this.item.user_id}`) : Promise.resolve(null),
+      [
+        this.output,
+        this.user,
+      ] = await Promise.all([
+
+        (await axios({
+          method: 'get',
+          url: `/api/project/${this.projectId}/tasks/${this.itemId}/output`,
+          responseType: 'json',
+        })).data.map((item) => ({
+          ...item,
+          id: item.time + item.output,
+        })),
+
+        this.item.user_id ? (await axios({
+          method: 'get',
+          url: `/api/users/${this.item.user_id}`,
+          responseType: 'json',
+        })).data : null,
       ]);
-
-      this.output = outputResponse.data.map((item) => ({
-        ...item,
-        id: item.time + item.output,
-      }));
-
-      this.user = userResponse?.data || null;
     },
   },
 };

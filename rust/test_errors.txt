@@ -1,0 +1,3017 @@
+﻿cargo.exe : warning: unused import: `crate::error::Result`
+C:\Users\abobn\AppData\Local\Temp\ps-script-38776b3c-fa7e-40a0-98af-e99091cb59fb.ps1:81 знак:1
++ & "$env:USERPROFILE\.cargo\bin\cargo.exe" test --manifest-path "c:\se ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warning: unused...:error::Result`:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  --> src\api\apps.rs:13:5
+   |
+13 | use crate::error::Result;
+   |     ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `crate::error::Result`
+  --> src\api\auth.rs:15:5
+   |
+15 | use crate::error::Result;
+   |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::sync::Arc`
+ --> src\api\auth_local.rs:9:5
+  |
+9 | use std::sync::Arc;
+  |     ^^^^^^^^^^^^^^
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\cache.rs:12:20
+   |
+12 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\events.rs:13:20
+   |
+13 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\keys.rs:13:27
+   |
+13 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\schedules.rs:13:27
+   |
+13 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused import: `User`
+  --> src\api\handlers\projects\users.rs:13:21
+   |
+13 | use crate::models::{User, ProjectUser, ProjectUserRole};
+   |                     ^^^^
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\handlers\projects\users.rs:14:20
+   |
+14 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused import: `ProjectStore`
+  --> src\api\handlers\projects\users.rs:16:58
+   |
+16 | use crate::db::store::{RetrieveQueryParams, UserManager, ProjectStore};
+   |                                                          ^^^^^^^^^^^^
+
+warning: unused imports: `Deserialize` and `Serialize`
+  --> src\api\handlers\projects\templates.rs:11:13
+   |
+11 | use serde::{Deserialize, Serialize};
+   |             ^^^^^^^^^^^  ^^^^^^^^^
+
+warning: unused imports: `TemplateFilter` and `TemplateWithPerms`
+  --> src\api\handlers\projects\templates.rs:13:31
+   |
+13 | use crate::models::{Template, TemplateWithPerms, TemplateFilter};
+   |                               ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\templates.rs:14:27
+   |
+14 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused import: `Serialize`
+  --> src\api\handlers\projects\tasks.rs:11:26
+   |
+11 | use serde::{Deserialize, Serialize};
+   |                          ^^^^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\tasks.rs:14:27
+   |
+14 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\inventory.rs:13:27
+   |
+13 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\repository.rs:13:27
+   |
+13 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\environment.rs:13:27
+   |
+13 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\integration.rs:13:27
+   |
+13 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\views.rs:13:27
+   |
+13 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused import: `crate::models::IntegrationAlias`
+  --> src\api\handlers\projects\integration_alias.rs:13:5
+   |
+13 | use crate::models::IntegrationAlias;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\handlers\projects\integration_alias.rs:14:20
+   |
+14 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\secret_storages.rs:13:27
+   |
+13 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused import: `Result`
+  --> src\api\handlers\projects\project.rs:13:27
+   |
+13 | use crate::error::{Error, Result};
+   |                           ^^^^^^
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\handlers\projects\backup_restore.rs:14:20
+   |
+14 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\handlers\projects\refs.rs:13:20
+   |
+13 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused import: `ProjectStore`
+  --> src\api\handlers\templates.rs:18:41
+   |
+18 | use crate::db::store::{TemplateManager, ProjectStore};
+   |                                         ^^^^^^^^^^^^
+
+warning: unused import: `ProjectStore`
+  --> src\api\handlers\access_key.rs:17:42
+   |
+17 | use crate::db::store::{AccessKeyManager, ProjectStore};
+   |                                          ^^^^^^^^^^^^
+
+warning: unused import: `crate::error::Error`
+  --> src\api\handlers\totp.rs:15:5
+   |
+15 | use crate::error::Error;
+   |     ^^^^^^^^^^^^^^^^^^^
+
+warning: ambiguous glob re-exports
+  --> src\api\handlers\mod.rs:17:9
+   |
+17 | pub use auth::*;
+   |         ^^^^^^^ the name `TotpSetupResponse` in the type namespace is first re-exported here
+...
+26 | pub use totp::*;
+   |         ------- but the name `TotpSetupResponse` in the type namespace is also re-exported here
+   |
+   = note: `#[warn(ambiguous_glob_reexports)]` on by default
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\integration.rs:13:20
+   |
+13 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\login.rs:13:20
+   |
+13 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused imports: `Deserialize` and `Serialize`
+  --> src\api\options.rs:11:13
+   |
+11 | use serde::{Deserialize, Serialize};
+   |             ^^^^^^^^^^^  ^^^^^^^^^
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\options.rs:14:20
+   |
+14 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\runners.rs:14:20
+   |
+14 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused imports: `DateTime` and `Utc`
+ --> src\api\store_wrapper.rs:8:14
+  |
+8 | use chrono::{DateTime, Utc};
+  |              ^^^^^^^^  ^^^
+
+warning: unused imports: `Error` and `Result`
+  --> src\api\system_info.rs:13:20
+   |
+13 | use crate::error::{Error, Result};
+   |                    ^^^^^  ^^^^^^
+
+warning: unused import: `Error`
+ --> src\config\config_dirs.rs:7:20
+  |
+7 | use crate::error::{Error, Result};
+  |                    ^^^^^
+
+warning: unused import: `LdapMappings`
+ --> src\config\defaults.rs:5:46
+  |
+5 | use crate::config::types::{Config, DbConfig, LdapMappings, AuthConfig, TotpConfig, HAConfig, HARedisConfig};
+  |                                              ^^^^^^^^^^^^
+
+warning: unused import: `std::collections::HashMap`
+ --> src\config\loader.rs:6:5
+  |
+6 | use std::collections::HashMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `Deserialize` and `Serialize`
+ --> src\config\loader.rs:8:13
+  |
+8 | use serde::{Deserialize, Serialize};
+  |             ^^^^^^^^^^^  ^^^^^^^^^
+
+warning: unused imports: `Error` and `Result`
+ --> src\config\validator.rs:6:20
+  |
+6 | use crate::error::{Error, Result};
+  |                    ^^^^^  ^^^^^^
+
+warning: unused import: `std::sync::Arc`
+  --> src\db\store.rs:11:5
+   |
+11 | use std::sync::Arc;
+   |     ^^^^^^^^^^^^^^
+
+warning: unused import: `sqlx::FromRow`
+ --> src\db\sql\runner.rs:5:5
+  |
+5 | use sqlx::FromRow;
+  |     ^^^^^^^^^^^^^
+
+warning: unused import: `std::sync::Arc`
+ --> src\db\sql\types.rs:6:5
+  |
+6 | use std::sync::Arc;
+  |     ^^^^^^^^^^^^^^
+
+warning: unused import: `crate::db::sql::types::SqlDb`
+ --> src\db\sql\queries.rs:8:5
+  |
+8 | use crate::db::sql::types::SqlDb;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `Error` and `Result`
+ --> src\db\sql\queries.rs:9:20
+  |
+9 | use crate::error::{Error, Result};
+  |                    ^^^^^  ^^^^^^
+
+warning: unused import: `sqlx::Row`
+ --> src\db\sql\template_crud.rs:8:5
+  |
+8 | use sqlx::Row;
+  |     ^^^^^^^^^
+
+warning: unused import: `sqlx::Row`
+ --> src\db\sql\template_vault.rs:8:5
+  |
+8 | use sqlx::Row;
+  |     ^^^^^^^^^
+
+warning: unused import: `sqlx::Row`
+ --> src\db\sql\template_roles.rs:8:5
+  |
+8 | use sqlx::Row;
+  |     ^^^^^^^^^
+
+warning: unused import: `std::path::Path`
+  --> src\db\sql\template_utils.rs:51:9
+   |
+51 |     use std::path::Path;
+   |         ^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::models::*`
+ --> src\db\sql\user_auth.rs:7:5
+  |
+7 | use crate::models::*;
+  |     ^^^^^^^^^^^^^^^^
+
+warning: unused import: `sqlx::Row`
+ --> src\db\sql\integration_crud.rs:8:5
+  |
+8 | use sqlx::Row;
+  |     ^^^^^^^^^
+
+warning: unused import: `sqlx::Row`
+ --> src\db\sql\integration_matcher.rs:8:5
+  |
+8 | use sqlx::Row;
+  |     ^^^^^^^^^
+
+warning: unused import: `sqlx::Row`
+ --> src\db\sql\integration_extract.rs:8:5
+  |
+8 | use sqlx::Row;
+  |     ^^^^^^^^^
+
+warning: unused import: `sqlx::Row`
+ --> src\db\sql\project_invite.rs:9:5
+  |
+9 | use sqlx::Row;
+  |     ^^^^^^^^^
+
+warning: unused import: `ScheduleWithTpl`
+ --> src\db\sql\schedule.rs:7:31
+  |
+7 | use crate::models::{Schedule, ScheduleWithTpl};
+  |                               ^^^^^^^^^^^^^^^
+
+warning: unused imports: `Role` and `TaskStage`
+  --> src\db\sql\mod.rs:34:67
+   |
+34 | ...t, TaskStage, Template, Inventory, Repository, Environment, AccessKey, Integration, Schedule, Session, APIToken
+, Event, Runner, View, Role, P...
+   |       ^^^^^^^^^                                                                                                   
+                       ^^^^
+
+warning: unused imports: `AccessKeyType`, `LoginPasswordData`, and `SshKeyData`
+ --> src\db_lib\access_key_installer.rs:8:43
+  |
+8 |     AccessKeyInstallation, AccessKeyRole, AccessKeyType, AccessKey,
+  |                                           ^^^^^^^^^^^^^
+9 |     SshKeyData, LoginPasswordData, KeyInstaller,
+  |     ^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Child`
+ --> src\db_lib\ansible_app.rs:9:22
+  |
+9 | use tokio::process::{Child, Command as TokioCommand};
+  |                      ^^^^^
+
+warning: unused imports: `debug`, `error`, `info`, and `warn`
+  --> src\db_lib\ansible_app.rs:11:15
+   |
+11 | use tracing::{info, warn, error, debug};
+   |               ^^^^  ^^^^  ^^^^^  ^^^^^
+
+warning: unused import: `TaskStatus`
+  --> src\db_lib\ansible_app.rs:16:48
+   |
+16 | use crate::services::task_logger::{TaskLogger, TaskStatus, TaskLoggerArc};
+   |                                                ^^^^^^^^^^
+
+warning: unused import: `Stdio`
+ --> src\db_lib\ansible_playbook.rs:5:29
+  |
+5 | use std::process::{Command, Stdio};
+  |                             ^^^^^
+
+warning: unused imports: `Read` and `Write`
+ --> src\db_lib\ansible_playbook.rs:6:15
+  |
+6 | use std::io::{Read, Write};
+  |               ^^^^  ^^^^^
+
+warning: unused import: `TaskStatus`
+  --> src\db_lib\ansible_playbook.rs:11:48
+   |
+11 | use crate::services::task_logger::{TaskLogger, TaskStatus};
+   |                                                ^^^^^^^^^^
+
+warning: unused import: `Path`
+ --> src\db_lib\cmd_git_client.rs:6:17
+  |
+6 | use std::path::{Path, PathBuf};
+  |                 ^^^^
+
+warning: unused import: `std::env`
+ --> src\db_lib\cmd_git_client.rs:8:5
+  |
+8 | use std::env;
+  |     ^^^^^^^^
+
+warning: unused import: `Stdio`
+ --> src\db_lib\shell_app.rs:5:29
+  |
+5 | use std::process::{Command, Stdio};
+  |                             ^^^^^
+
+warning: unused import: `tokio::io::AsyncReadExt`
+ --> src\db_lib\shell_app.rs:7:5
+  |
+7 | use tokio::io::AsyncReadExt;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `TaskStatus`
+  --> src\db_lib\shell_app.rs:12:48
+   |
+12 | use crate::services::task_logger::{TaskLogger, TaskStatus};
+   |                                                ^^^^^^^^^^
+
+warning: unused import: `Path`
+ --> src\db_lib\terraform_app.rs:6:17
+  |
+6 | use std::path::{Path, PathBuf};
+  |                 ^^^^
+
+warning: unused imports: `debug`, `error`, `info`, and `warn`
+  --> src\db_lib\terraform_app.rs:10:15
+   |
+10 | use tracing::{info, warn, error, debug};
+   |               ^^^^  ^^^^  ^^^^^  ^^^^^
+
+warning: unused import: `TaskStatus`
+  --> src\db_lib\terraform_app.rs:14:48
+   |
+14 | use crate::services::task_logger::{TaskLogger, TaskStatus, TaskLoggerArc};
+   |                                                ^^^^^^^^^^
+
+warning: unused imports: `c_int` and `c_void`
+ --> src\ffi\mod.rs:6:28
+  |
+6 | use std::os::raw::{c_char, c_int, c_void};
+  |                            ^^^^^  ^^^^^^
+
+warning: unused imports: `AccessKeyType`, `LoginPasswordData`, and `SshKeyData`
+  --> src\ffi\mod.rs:10:43
+   |
+10 |     AccessKeyInstallation, AccessKeyRole, AccessKeyType, AccessKey,
+   |                                           ^^^^^^^^^^^^^
+11 |     SshKeyData, LoginPasswordData, KeyInstaller,
+   |     ^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+
+warning: type `C_Logger` should have an upper camel case name
+  --> src\ffi\mod.rs:76:12
+   |
+76 | pub struct C_Logger {
+   |            ^^^^^^^^ help: convert the identifier to upper camel case: `CLogger`
+   |
+   = note: `#[warn(non_camel_case_types)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: unused import: `extract::State`
+ --> src\pro\api\controllers.rs:6:5
+  |
+6 |     extract::State,
+  |     ^^^^^^^^^^^^^^
+
+warning: unused import: `std::sync::Arc`
+  --> src\pro\api\controllers.rs:10:5
+   |
+10 | use std::sync::Arc;
+   |     ^^^^^^^^^^^^^^
+
+warning: unused import: `crate::api::state::AppState`
+  --> src\pro\api\controllers.rs:11:5
+   |
+11 | use crate::api::state::AppState;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Error`
+ --> src\services\access_key_installation_service.rs:7:20
+  |
+7 | use crate::error::{Error, Result};
+  |                    ^^^^^
+
+warning: unused import: `Path`
+  --> src\services\access_key_installer.rs:11:17
+   |
+11 | use std::path::{Path, PathBuf};
+   |                 ^^^^
+
+warning: unused import: `warn`
+  --> src\services\access_key_installer.rs:12:21
+   |
+12 | use tracing::{info, warn, debug};
+   |                     ^^^^
+
+warning: unused import: `warn`
+ --> src\services\alert.rs:8:21
+  |
+8 | use tracing::{info, warn, error};
+  |                     ^^^^
+
+warning: unused import: `crate::services::task_logger::TaskLogger`
+  --> src\services\alert.rs:13:5
+   |
+13 | use crate::services::task_logger::TaskLogger;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `error`, `info`, and `warn`
+ --> src\services\backup.rs:8:15
+  |
+8 | use tracing::{info, warn, error};
+  |               ^^^^  ^^^^  ^^^^^
+
+warning: unused import: `Error`
+  --> src\services\backup.rs:10:20
+   |
+10 | use crate::error::{Error, Result};
+   |                    ^^^^^
+
+warning: unused imports: `error` and `warn`
+ --> src\services\exporter.rs:6:21
+  |
+6 | use tracing::{info, warn, error};
+  |                     ^^^^  ^^^^^
+
+warning: unused import: `std::sync::Arc`
+ --> src\services\exporter_main.rs:6:5
+  |
+6 | use std::sync::Arc;
+  |     ^^^^^^^^^^^^^^
+
+warning: unused imports: `Deserialize` and `Serialize`
+ --> src\services\exporter_main.rs:7:13
+  |
+7 | use serde::{Serialize, Deserialize};
+  |             ^^^^^^^^^  ^^^^^^^^^^^
+
+warning: unused import: `Path`
+ --> src\services\git_repository.rs:8:17
+  |
+8 | use std::path::{Path, PathBuf};
+  |                 ^^^^
+
+warning: unused import: `Path`
+ --> src\services\job.rs:6:17
+  |
+6 | use std::path::{Path, PathBuf};
+  |                 ^^^^
+
+warning: unused import: `error`
+  --> src\services\job.rs:10:27
+   |
+10 | use tracing::{info, warn, error, debug};
+   |                           ^^^^^
+
+warning: unused imports: `error`, `info`, and `warn`
+ --> src\services\local_job\types.rs:8:15
+  |
+8 | use tracing::{info, warn, error};
+  |               ^^^^  ^^^^  ^^^^^
+
+warning: unused import: `crate::db_lib::DbAccessKeyRole`
+ --> src\services\local_job\ssh.rs:7:5
+  |
+7 | use crate::db_lib::DbAccessKeyRole;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `error`
+ --> src\services\restore.rs:6:27
+  |
+6 | use tracing::{info, warn, error};
+  |                           ^^^^^
+
+warning: unused import: `async_trait::async_trait`
+  --> src\services\restore.rs:12:5
+   |
+12 | use async_trait::async_trait;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `warn`
+  --> src\services\task_pool.rs:10:21
+   |
+10 | use tracing::{info, warn, error, debug};
+   |                     ^^^^
+
+warning: unused import: `crate::services::task_logger::TaskStatus`
+  --> src\services\task_pool.rs:14:5
+   |
+14 | use crate::services::task_logger::TaskStatus;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::sync::Arc`
+ --> src\services\task_pool_queue.rs:5:5
+  |
+5 | use std::sync::Arc;
+  |     ^^^^^^^^^^^^^^
+
+warning: unused import: `tokio::sync::Mutex`
+ --> src\services\task_pool_queue.rs:6:5
+  |
+6 | use tokio::sync::Mutex;
+  |     ^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `error` and `warn`
+ --> src\services\task_pool_queue.rs:7:21
+  |
+7 | use tracing::{info, warn, error};
+  |                     ^^^^  ^^^^^
+
+warning: unused imports: `Mutex` and `RwLock`
+ --> src\services\task_pool_runner.rs:6:19
+  |
+6 | use tokio::sync::{RwLock, Mutex};
+  |                   ^^^^^^  ^^^^^
+
+warning: unused import: `warn`
+ --> src\services\task_pool_runner.rs:7:21
+  |
+7 | use tracing::{info, warn, error};
+  |                     ^^^^
+
+warning: unused import: `TaskLogger`
+  --> src\services\task_pool_runner.rs:12:36
+   |
+12 | use crate::services::task_logger::{TaskLogger, BasicLogger};
+   |                                    ^^^^^^^^^^
+
+warning: unused import: `std::sync::Arc`
+ --> src\services\task_pool_status.rs:5:5
+  |
+5 | use std::sync::Arc;
+  |     ^^^^^^^^^^^^^^
+
+warning: unused import: `tokio::sync::RwLock`
+ --> src\services\task_pool_status.rs:6:5
+  |
+6 | use tokio::sync::RwLock;
+  |     ^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `warn`
+ --> src\services\task_pool_status.rs:7:21
+  |
+7 | use tracing::{info, warn, error};
+  |                     ^^^^
+
+warning: unused imports: `TaskLogger` and `TaskStatus`
+ --> src\services\task_runner\types.rs:8:36
+  |
+8 | use crate::services::task_logger::{TaskLogger, TaskStatus, StatusListener, LogListener};
+  |                                    ^^^^^^^^^^  ^^^^^^^^^^
+
+warning: unused import: `info`
+ --> src\services\task_runner\lifecycle.rs:6:15
+  |
+6 | use tracing::{info, error};
+  |               ^^^^
+
+warning: unused import: `crate::db_lib::AccessKeyInstallerImpl`
+  --> src\services\task_runner\lifecycle.rs:11:5
+   |
+11 | use crate::db_lib::AccessKeyInstallerImpl;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::error::Result`
+ --> src\services\task_runner\logging.rs:6:5
+  |
+6 | use crate::error::Result;
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `chrono::Utc`
+ --> src\utils\mailer.rs:6:5
+  |
+6 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+
+warning: unused import: `std::error::Error`
+  --> src\utils\mailer.rs:15:5
+   |
+15 | use std::error::Error;
+   |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `RsaPublicKey`
+ --> src\utils\encryption.rs:7:81
+  |
+7 | use rsa::{pkcs1::EncodeRsaPrivateKey, pkcs1::EncodeRsaPublicKey, RsaPrivateKey, RsaPublicKey};
+  |                                                                                 ^^^^^^^^^^^^
+
+warning: use of deprecated function `base64::encode`: Use Engine::encode
+  --> src\api\user.rs:76:32
+   |
+76 |         let token_id = base64::encode(&token_bytes);
+   |                                ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: variable does not need to be mutable
+  --> src\db\sql\terraform_inventory.rs:11:58
+   |
+11 |     pub async fn create_terraform_inventory_alias(&self, mut alias: TerraformInventoryAlias) -> Result<TerraformIn
+ventoryAlias> {
+   |                                                          ----^^^^^
+   |                                                          |
+   |                                                          help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src\services\restore.rs:430:13
+    |
+430 |         let mut project = Project {
+    |             ----^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: unused import: `TaskLogger`
+  --> src\db_lib\ansible_app.rs:16:36
+   |
+16 | use crate::services::task_logger::{TaskLogger, TaskStatus, TaskLoggerArc};
+   |                                    ^^^^^^^^^^
+
+warning: unused import: `TaskLogger`
+  --> src\db_lib\terraform_app.rs:14:36
+   |
+14 | use crate::services::task_logger::{TaskLogger, TaskStatus, TaskLoggerArc};
+   |                                    ^^^^^^^^^^
+
+warning: unused import: `crate::services::task_logger::TaskLogger`
+  --> src\services\task_runner\lifecycle.rs:10:5
+   |
+10 | use crate::services::task_logger::TaskLogger;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused variable: `state`
+  --> src\api\apps.rs:31:11
+   |
+31 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `state`
+  --> src\api\apps.rs:52:11
+   |
+52 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `state`
+  --> src\api\apps.rs:72:11
+   |
+72 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `app_id`
+  --> src\api\apps.rs:73:10
+   |
+73 |     Path(app_id): Path<String>,
+   |          ^^^^^^ help: if this is intentional, prefix it with an underscore: `_app_id`
+
+warning: unused variable: `state`
+  --> src\api\auth.rs:28:11
+   |
+28 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `state`
+  --> src\api\auth.rs:42:11
+   |
+42 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `state`
+  --> src\api\cache.rs:18:11
+   |
+18 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\users.rs:54:11
+   |
+54 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\users.rs:83:11
+   |
+83 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\users.rs:84:11
+   |
+84 |     Path((project_id, user_id)): Path<(i32, i32)>,
+   |           ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `user_id`
+  --> src\api\handlers\projects\users.rs:84:23
+   |
+84 |     Path((project_id, user_id)): Path<(i32, i32)>,
+   |                       ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_user_id`
+
+warning: unused variable: `payload`
+  --> src\api\handlers\projects\users.rs:85:10
+   |
+85 |     Json(payload): Json<UpdateUserRolePayload>,
+   |          ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_payload`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\users.rs:95:11
+   |
+95 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\users.rs:96:11
+   |
+96 |     Path((project_id, user_id)): Path<(i32, i32)>,
+   |           ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `user_id`
+  --> src\api\handlers\projects\users.rs:96:23
+   |
+96 |     Path((project_id, user_id)): Path<(i32, i32)>,
+   |                       ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_user_id`
+
+warning: unused variable: `state`
+   --> src\api\handlers\projects\tasks.rs:101:11
+    |
+101 |     State(state): State<Arc<AppState>>,
+    |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+   --> src\api\handlers\projects\tasks.rs:102:11
+    |
+102 |     Path((project_id, task_id)): Path<(i32, i32)>,
+    |           ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `task_id`
+   --> src\api\handlers\projects\tasks.rs:102:23
+    |
+102 |     Path((project_id, task_id)): Path<(i32, i32)>,
+    |                       ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_task_id`
+
+warning: unused variable: `params`
+  --> src\api\handlers\projects\integration.rs:21:11
+   |
+21 |     Query(params): Query<RetrieveQueryParams>,
+   |           ^^^^^^ help: if this is intentional, prefix it with an underscore: `_params`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\integration_alias.rs:26:11
+   |
+26 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\integration_alias.rs:27:10
+   |
+27 |     Path(project_id): Path<i32>,
+   |          ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\integration_alias.rs:37:11
+   |
+37 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\integration_alias.rs:38:10
+   |
+38 |     Path(project_id): Path<i32>,
+   |          ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\integration_alias.rs:53:11
+   |
+53 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\integration_alias.rs:54:11
+   |
+54 |     Path((project_id, alias_id)): Path<(i32, i32)>,
+   |           ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `alias_id`
+  --> src\api\handlers\projects\integration_alias.rs:54:23
+   |
+54 |     Path((project_id, alias_id)): Path<(i32, i32)>,
+   |                       ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_alias_id`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\backup_restore.rs:35:11
+   |
+35 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\backup_restore.rs:69:11
+   |
+69 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\backup_restore.rs:70:10
+   |
+70 |     Path(project_id): Path<i32>,
+   |          ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `payload`
+  --> src\api\handlers\projects\backup_restore.rs:82:10
+   |
+82 |     Json(payload): Json<BackupFormat>,
+   |          ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_payload`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\refs.rs:26:11
+   |
+26 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\refs.rs:27:11
+   |
+27 |     Path((project_id, key_id)): Path<(i32, i32)>,
+   |           ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `key_id`
+  --> src\api\handlers\projects\refs.rs:27:23
+   |
+27 |     Path((project_id, key_id)): Path<(i32, i32)>,
+   |                       ^^^^^^ help: if this is intentional, prefix it with an underscore: `_key_id`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\refs.rs:43:11
+   |
+43 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\refs.rs:44:11
+   |
+44 |     Path((project_id, repository_id)): Path<(i32, i32)>,
+   |           ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `repository_id`
+  --> src\api\handlers\projects\refs.rs:44:23
+   |
+44 |     Path((project_id, repository_id)): Path<(i32, i32)>,
+   |                       ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_repository_id`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\refs.rs:60:11
+   |
+60 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\refs.rs:61:11
+   |
+61 |     Path((project_id, inventory_id)): Path<(i32, i32)>,
+   |           ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `inventory_id`
+  --> src\api\handlers\projects\refs.rs:61:23
+   |
+61 |     Path((project_id, inventory_id)): Path<(i32, i32)>,
+   |                       ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_inventory_id`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\refs.rs:77:11
+   |
+77 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\refs.rs:78:11
+   |
+78 |     Path((project_id, template_id)): Path<(i32, i32)>,
+   |           ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `template_id`
+  --> src\api\handlers\projects\refs.rs:78:23
+   |
+78 |     Path((project_id, template_id)): Path<(i32, i32)>,
+   |                       ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_template_id`
+
+warning: unused variable: `state`
+  --> src\api\handlers\projects\refs.rs:94:11
+   |
+94 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `project_id`
+  --> src\api\handlers\projects\refs.rs:95:11
+   |
+95 |     Path((project_id, integration_id)): Path<(i32, i32)>,
+   |           ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_project_id`
+
+warning: unused variable: `integration_id`
+  --> src\api\handlers\projects\refs.rs:95:23
+   |
+95 |     Path((project_id, integration_id)): Path<(i32, i32)>,
+   |                       ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_integration_id`
+
+warning: unused variable: `state`
+  --> src\api\integration.rs:19:11
+   |
+19 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `state`
+  --> src\api\integration.rs:28:11
+   |
+28 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `integration_id`
+  --> src\api\integration.rs:29:10
+   |
+29 |     Path(integration_id): Path<i32>,
+   |          ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_integration_id`
+
+warning: unused variable: `state`
+  --> src\api\login.rs:34:11
+   |
+34 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `payload`
+  --> src\api\login.rs:35:10
+   |
+35 |     Json(payload): Json<LoginPayload>,
+   |          ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_payload`
+
+warning: unused variable: `state`
+  --> src\api\system_info.rs:60:11
+   |
+60 |     State(state): State<Arc<AppState>>,
+   |           ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `auth_user`
+  --> src\api\system_info.rs:61:5
+   |
+61 |     auth_user: AuthUser,
+   |     ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_auth_user`
+
+warning: unused variable: `user_id`
+  --> src\api\users.rs:36:20
+   |
+36 |         AuthUser { user_id, admin, .. }: AuthUser,
+   |                    ^^^^^^^ help: try ignoring the field: `user_id: _`
+
+warning: unused variable: `state`
+   --> src\api\users.rs:128:15
+    |
+128 |         State(state): State<Arc<AppState>>,
+    |               ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `user_id`
+   --> src\api\users.rs:129:20
+    |
+129 |         AuthUser { user_id, .. }: AuthUser,
+    |                    ^^^^^^^ help: try ignoring the field: `user_id: _`
+
+warning: unused variable: `state`
+   --> src\api\users.rs:142:15
+    |
+142 |         State(state): State<Arc<AppState>>,
+    |               ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+
+warning: unused variable: `user_id`
+   --> src\api\users.rs:143:20
+    |
+143 |         AuthUser { user_id, .. }: AuthUser,
+    |                    ^^^^^^^ help: try ignoring the field: `user_id: _`
+
+warning: unused variable: `ws_manager`
+  --> src\api\mod.rs:35:9
+   |
+35 |     let ws_manager = Arc::new(WebSocketManager::new());
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_ws_manager`
+
+warning: unused variable: `scope`
+  --> src\config\config_helpers.rs:93:29
+   |
+93 | pub fn get_public_alias_url(scope: &str, alias: &str) -> String {
+   |                             ^^^^^ help: if this is intentional, prefix it with an underscore: `_scope`
+
+warning: unused variable: `prefix`
+   --> src\config\config_oidc.rs:138:17
+    |
+138 |             let prefix = format!("SEMAPHORE_OIDC_{}_{}", 
+    |                 ^^^^^^ help: if this is intentional, prefix it with an underscore: `_prefix`
+
+warning: unused variable: `cmd`
+  --> src\config\config_sysproc.rs:89:38
+   |
+89 |     pub fn configure_process_command(cmd: &mut Command, _config: &ProcessConfig) -> std::io::Result<()> {
+   |                                      ^^^ help: if this is intentional, prefix it with an underscore: `_cmd`
+
+warning: unused variable: `token`
+  --> src\db\sql\project_invite.rs:80:53
+   |
+80 |     pub async fn get_project_invite_by_token(&self, token: &str) -> Result<ProjectInvite> {
+   |                                                     ^^^^^ help: if this is intentional, prefix it with an undersco
+re: `_token`
+
+warning: unused variable: `result`
+  --> src\db\sql\terraform_inventory.rs:14:21
+   |
+14 |                 let result = sqlx::query(
+   |                     ^^^^^^ help: if this is intentional, prefix it with an underscore: `_result`
+
+warning: unused variable: `inventory`
+  --> src\db_lib\app_factory.rs:17:5
+   |
+17 |     inventory: Inventory,
+   |     ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_inventory`
+
+warning: unused variable: `logger`
+  --> src\db_lib\app_factory.rs:18:5
+   |
+18 |     logger: Arc<dyn TaskLogger>,
+   |     ^^^^^^ help: if this is intentional, prefix it with an underscore: `_logger`
+
+warning: unused variable: `repo`
+  --> src\db_lib\go_git_client.rs:22:31
+   |
+22 |     fn get_auth_method(&self, repo: &GitRepository) -> Result<Option<RemoteCallbacks<'_>>> {
+   |                               ^^^^ help: if this is intentional, prefix it with an underscore: `_repo`
+
+warning: variable does not need to be mutable
+  --> src\db_lib\go_git_client.rs:49:13
+   |
+49 |         let mut git_repo = Repository::open(repo.get_full_path())?;
+   |             ----^^^^^^^^
+   |             |
+   |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+  --> src\db_lib\go_git_client.rs:53:21
+   |
+53 |         if let Some(mut callbacks) = auth_callbacks {
+   |                     ----^^^^^^^^^
+   |                     |
+   |                     help: remove this `mut`
+
+warning: unused variable: `git_repo`
+  --> src\db_lib\go_git_client.rs:49:13
+   |
+49 |         let mut git_repo = Repository::open(repo.get_full_path())?;
+   |             ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_git_repo`
+
+warning: unused variable: `repo`
+   --> src\db_lib\go_git_client.rs:111:49
+    |
+111 |     async fn get_last_remote_commit_hash(&self, repo: &GitRepository) -> Result<String> {
+    |                                                 ^^^^ help: if this is intentional, prefix it with an underscore: 
+`_repo`
+
+warning: unused variable: `status`
+  --> src\db_lib\shell_app.rs:85:46
+   |
+85 |         logger.add_status_listener(Box::new(|status| {
+   |                                              ^^^^^^ help: if this is intentional, prefix it with an underscore: `_
+status`
+
+warning: unused variable: `environment_vars`
+   --> src\db_lib\terraform_app.rs:135:30
+    |
+135 |     pub async fn init(&self, environment_vars: Vec<String>, params: &TerraformTaskParams, extra_args: Vec<String>
+) -> Result<()> {
+    |                              ^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_envir
+onment_vars`
+
+warning: unused variable: `inputs`
+   --> src\db_lib\terraform_app.rs:206:80
+    |
+206 | ...vironment_vars: Vec<String>, inputs: HashMap<String, String>, cb: Option<Box<dyn Fn(&Child) + Send>>) -> Resul
+t<bool> {
+    |                                 ^^^^^^ help: if this is intentional, prefix it with an underscore: `_inputs`
+
+warning: unused variable: `status`
+   --> src\db_lib\terraform_app.rs:227:13
+    |
+227 |         let status = child.wait().await?;
+    |             ^^^^^^ help: if this is intentional, prefix it with an underscore: `_status`
+
+warning: unused variable: `environment_vars`
+   --> src\db_lib\terraform_app.rs:236:50
+    |
+236 | ...args: Vec<String>, environment_vars: Vec<String>, inputs: HashMap<String, String>, cb: Option<Box<dyn Fn(&Chil
+d) + Send>>) -> Result<(...
+    |                       ^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_environment_
+vars`
+
+warning: unused variable: `inputs`
+   --> src\db_lib\terraform_app.rs:236:81
+    |
+236 | ...vironment_vars: Vec<String>, inputs: HashMap<String, String>, cb: Option<Box<dyn Fn(&Child) + Send>>) -> Resul
+t<()> {
+    |                                 ^^^^^^ help: if this is intentional, prefix it with an underscore: `_inputs`
+
+warning: unused variable: `cb`
+   --> src\db_lib\terraform_app.rs:236:114
+    |
+236 | ...inputs: HashMap<String, String>, cb: Option<Box<dyn Fn(&Child) + Send>>) -> Result<()> {
+    |                                     ^^ help: if this is intentional, prefix it with an underscore: `_cb`
+
+warning: unused variable: `environment_vars`
+   --> src\db_lib\terraform_app.rs:255:52
+    |
+255 |     pub async fn destroy(&self, args: Vec<String>, environment_vars: Vec<String>) -> Result<()> {
+    |                                                    ^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with 
+an underscore: `_environment_vars`
+
+warning: unused variable: `args`
+   --> src\db_lib\terraform_app.rs:274:46
+    |
+274 |     pub async fn install_requirements(&self, args: crate::db_lib::LocalAppInstallingArgs) -> Result<()> {
+    |                                              ^^^^ help: if this is intentional, prefix it with an underscore: `_a
+rgs`
+
+warning: unused variable: `args`
+   --> src\db_lib\terraform_app.rs:292:29
+    |
+292 |     pub async fn run(&self, args: crate::db_lib::LocalAppRunningArgs) -> Result<()> {
+    |                             ^^^^ help: if this is intentional, prefix it with an underscore: `_args`
+
+warning: unused variable: `user`
+  --> src\pro\features.rs:31:21
+   |
+31 | pub fn get_features(user: &User, plan: &str) -> ProjectFeatures {
+   |                     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+
+warning: unused variable: `plan`
+  --> src\pro\features.rs:31:34
+   |
+31 | pub fn get_features(user: &User, plan: &str) -> ProjectFeatures {
+   |                                  ^^^^ help: if this is intentional, prefix it with an underscore: `_plan`
+
+warning: unused variable: `key`
+   --> src\services\access_key_installation_service.rs:179:22
+    |
+179 |     fn update(&self, key: &DbAccessKey) -> Result<()> {
+    |                      ^^^ help: if this is intentional, prefix it with an underscore: `_key`
+
+warning: unused variable: `role`
+   --> src\services\access_key_installer.rs:139:9
+    |
+139 |         role: AccessKeyRole,
+    |         ^^^^ help: if this is intentional, prefix it with an underscore: `_role`
+
+warning: unused variable: `pub_key`
+   --> src\services\access_key_installer.rs:193:43
+    |
+193 |         let public_key_path = if let Some(ref pub_key) = key.ssh_key {
+    |                                           ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore:
+ `_pub_key`
+
+warning: variable does not need to be mutable
+   --> src\services\backup.rs:260:17
+    |
+260 |             let mut backup_key = BackupAccessKey {
+    |                 ----^^^^^^^^^^
+    |                 |
+    |                 help: remove this `mut`
+
+warning: unused variable: `name`
+   --> src\services\exporter.rs:265:37
+    |
+265 |     fn get_type_exporter(&mut self, name: &str) -> &mut dyn TypeExporter {
+    |                                     ^^^^ help: if this is intentional, prefix it with an underscore: `_name`
+
+warning: unused variable: `exporter`
+   --> src\services\exporter.rs:345:25
+    |
+345 |             if let Some(exporter) = self.exporters.get_mut(key) {
+    |                         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_exporter`
+
+warning: variable does not need to be mutable
+   --> src\services\exporter.rs:365:21
+    |
+365 |                 let mut progress = ProgressBar::new(0.0);
+    |                     ----^^^^^^^^
+    |                     |
+    |                     help: remove this `mut`
+
+warning: unused variable: `exporter`
+   --> src\services\exporter.rs:363:25
+    |
+363 |             if let Some(exporter) = self.exporters.get_mut(&key) {
+    |                         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_exporter`
+
+warning: unused variable: `mapper`
+   --> src\services\exporter.rs:403:31
+    |
+403 | pub fn init_project_exporters(mapper: &mut dyn KeyMapper, skip_task_output: bool) -> ExporterChain {
+    |                               ^^^^^^ help: if this is intentional, prefix it with an underscore: `_mapper`
+
+warning: unused variable: `name`
+  --> src\services\exporter_main.rs:78:37
+   |
+78 |     fn get_type_exporter(&mut self, name: &str) -> Option<&mut dyn TypeExporter> {
+   |                                     ^^^^ help: if this is intentional, prefix it with an underscore: `_name`
+
+warning: unused variable: `mapper`
+   --> src\services\exporter_main.rs:323:31
+    |
+323 | pub fn init_project_exporters(mapper: &mut TypeKeyMapper, skip_task_output: bool) -> ExporterChain {
+    |                               ^^^^^^ help: if this is intentional, prefix it with an underscore: `_mapper`
+
+warning: unused variable: `repo_path`
+   --> src\services\git_repository.rs:253:13
+    |
+253 |         let repo_path = self.get_full_path();
+    |             ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_repo_path`
+
+warning: unused variable: `username`
+  --> src\services\local_job\run.rs:66:37
+   |
+66 |     async fn prepare_run(&mut self, username: &str, incoming_version: Option<&str>, alias: &str) -> Result<()> {
+   |                                     ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_usernam
+e`
+
+warning: unused variable: `incoming_version`
+  --> src\services\local_job\run.rs:66:53
+   |
+66 |     async fn prepare_run(&mut self, username: &str, incoming_version: Option<&str>, alias: &str) -> Result<()> {
+   |                                                     ^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with 
+an underscore: `_incoming_version`
+
+warning: unused variable: `alias`
+  --> src\services\local_job\run.rs:66:85
+   |
+66 |     async fn prepare_run(&mut self, username: &str, incoming_version: Option<&str>, alias: &str) -> Result<()> {
+   |                                                                                     ^^^^^ help: if this is intenti
+onal, prefix it with an underscore: `_alias`
+
+warning: variable does not need to be mutable
+  --> src\services\local_job\args.rs:83:13
+   |
+83 |         let mut secret_args = Vec::new();
+   |             ----^^^^^^^^^^^
+   |             |
+   |             help: remove this `mut`
+
+warning: unused variable: `user`
+   --> src\services\restore.rs:426:33
+    |
+426 |     pub async fn restore(&self, user: &User, store: &dyn crate::db::Store) -> Result<Project> {
+    |                                 ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+
+warning: variable does not need to be mutable
+   --> src\services\ssh_agent.rs:549:17
+    |
+549 |             let mut ssh_cmd = "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null".to_string();
+    |                 ----^^^^^^^
+    |                 |
+    |                 help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> src\services\ssh_agent.rs:723:33
+    |
+723 | ...                   let mut agent = SshAgent::simple(
+    |                           ----^^^^^
+    |                           |
+    |                           help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> src\services\ssh_agent.rs:793:33
+    |
+793 | ...                   let mut agent = SshAgent::simple(
+    |                           ----^^^^^
+    |                           |
+    |                           help: remove this `mut`
+
+warning: unused variable: `format`
+   --> src\services\task_logger.rs:266:20
+    |
+266 |     fn logf(&self, format: &str, args: fmt::Arguments<'_>) {
+    |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_format`
+
+warning: unused variable: `format`
+   --> src\services\task_logger.rs:276:51
+    |
+276 |     fn logf_with_time(&self, time: DateTime<Utc>, format: &str, args: fmt::Arguments<'_>) {
+    |                                                   ^^^^^^ help: if this is intentional, prefix it with an undersco
+re: `_format`
+
+warning: unused variable: `store_clone`
+   --> src\services\task_pool.rs:108:13
+    |
+108 |         let store_clone = store.clone();
+    |             ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_store_clone`
+
+warning: unused variable: `status`
+   --> src\services\task_pool_status.rs:100:52
+    |
+100 |     async fn notify_websocket(&self, task_id: i32, status: TaskStatus) {
+    |                                                    ^^^^^^ help: if this is intentional, prefix it with an undersc
+ore: `_status`
+
+warning: unused variable: `json`
+   --> src\services\task_pool_status.rs:112:13
+    |
+112 |         let json = message.to_json();
+    |             ^^^^ help: if this is intentional, prefix it with an underscore: `_json`
+
+warning: unused variable: `params`
+   --> src\services\task_pool_status.rs:146:13
+    |
+146 |         let params = RetrieveQueryParams {
+    |             ^^^^^^ help: if this is intentional, prefix it with an underscore: `_params`
+
+warning: unused variable: `message`
+  --> src\services\task_runner\logging.rs:16:13
+   |
+16 |         let message = json!({
+   |             ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_message`
+
+warning: unused variable: `user_id`
+  --> src\services\task_runner\logging.rs:28:14
+   |
+28 |         for &user_id in &self.users {
+   |              ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_user_id`
+
+warning: unused variable: `task_output`
+  --> src\services\task_runner\logging.rs:46:13
+   |
+46 |         let task_output = crate::models::TaskOutput {
+   |             ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_task_output`
+
+warning: unused variable: `message`
+  --> src\services\task_runner\websocket.rs:13:13
+   |
+13 |         let message = json!({
+   |             ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_message`
+
+warning: unused variable: `user_id`
+  --> src\services\task_runner\websocket.rs:22:14
+   |
+22 |         for &user_id in &self.users {
+   |              ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_user_id`
+
+warning: unused variable: `message`
+  --> src\services\task_runner\websocket.rs:47:13
+   |
+47 |         let message = json!({
+   |             ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_message`
+
+warning: unused variable: `user_id`
+  --> src\services\task_runner\websocket.rs:53:14
+   |
+53 |         for &user_id in &self.users {
+   |              ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_user_id`
+
+warning: unused variable: `event_type`
+  --> src\services\task_runner\hooks.rs:10:35
+   |
+10 |     pub async fn run_hooks(&self, event_type: &str) -> Result<()> {
+   |                                   ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_event_t
+ype`
+
+warning: function `cmd_server` is never used
+   --> src\cli\mod.rs:358:4
+    |
+358 | fn cmd_server(args: ServerArgs, config: Config) -> anyhow::Result<()> {
+    |    ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `cmd_runner` is never used
+   --> src\cli\mod.rs:392:4
+    |
+392 | fn cmd_runner(args: RunnerArgs, config: Config) -> anyhow::Result<()> {
+    |    ^^^^^^^^^^
+
+warning: function `cmd_migrate` is never used
+   --> src\cli\mod.rs:401:4
+    |
+401 | fn cmd_migrate(args: MigrateArgs, config: Config) -> anyhow::Result<()> {
+    |    ^^^^^^^^^^^
+
+warning: function `cmd_user` is never used
+   --> src\cli\mod.rs:427:4
+    |
+427 | fn cmd_user(args: UserArgs, config: Config) -> anyhow::Result<()> {
+    |    ^^^^^^^^
+
+warning: function `cmd_user_add` is never used
+   --> src\cli\mod.rs:439:4
+    |
+439 | fn cmd_user_add(args: UserAddArgs, config: Config) -> anyhow::Result<()> {
+    |    ^^^^^^^^^^^^
+
+warning: function `cmd_user_list` is never used
+   --> src\cli\mod.rs:477:4
+    |
+477 | fn cmd_user_list(config: Config) -> anyhow::Result<()> {
+    |    ^^^^^^^^^^^^^
+
+warning: function `cmd_project` is never used
+   --> src\cli\mod.rs:502:4
+    |
+502 | fn cmd_project(args: ProjectArgs, config: Config) -> anyhow::Result<()> {
+    |    ^^^^^^^^^^^
+
+warning: function `cmd_setup` is never used
+   --> src\cli\mod.rs:513:4
+    |
+513 | fn cmd_setup(args: SetupArgs, config: Config) -> anyhow::Result<()> {
+    |    ^^^^^^^^^
+
+warning: function `cmd_version` is never used
+   --> src\cli\mod.rs:522:4
+    |
+522 | fn cmd_version() -> anyhow::Result<()> {
+    |    ^^^^^^^^^^^
+
+warning: function `create_store` is never used
+   --> src\cli\mod.rs:528:4
+    |
+528 | fn create_store(config: &Config) -> anyhow::Result<Box<dyn crate::db::Store + Send + Sync>> {
+    |    ^^^^^^^^^^^^
+
+warning: method `run_cmd` is never used
+   --> src\db_lib\ansible_app.rs:104:14
+    |
+ 58 | impl AnsiblePlaybook {
+    | -------------------- method in this implementation
+...
+104 |     async fn run_cmd(&self, command: &str, args: Vec<String>) -> Result<()> {
+    |              ^^^^^^^
+
+warning: field `key_installer` is never read
+   --> src\db_lib\cmd_git_client.rs:148:5
+    |
+147 | pub struct CmdGitClient {
+    |            ------------ field in this struct
+148 |     key_installer: Box<dyn AccessKeyInstallerTrait>,
+    |     ^^^^^^^^^^^^^
+
+warning: methods `run` and `output` are never used
+   --> src\db_lib\cmd_git_client.rs:248:8
+    |
+151 | impl CmdGitClient {
+    | ----------------- methods in this implementation
+...
+248 |     fn run(
+    |        ^^^
+...
+274 |     fn output(
+    |        ^^^^^^
+
+warning: field `key_installer` is never read
+  --> src\db_lib\go_git_client.rs:12:5
+   |
+10 | pub struct GoGitClient {
+   |            ----------- field in this struct
+11 |     /// ╨г╤Б╤В╨░╨╜╨╛╨▓╤Й╨╕╨║ ╨║╨╗╤О╤З╨╡╨╣ ╨┤╨╛╤Б╤В╤Г╨┐╨░
+12 |     key_installer: Box<dyn AccessKeyInstallerTrait>,
+   |     ^^^^^^^^^^^^^
+
+warning: method `execute_hook` is never used
+  --> src\services\task_runner\hooks.rs:33:14
+   |
+ 8 | impl TaskRunner {
+   | --------------- method in this implementation
+...
+33 |     async fn execute_hook(&self, hook: &crate::models::Hook) -> Result<()> {
+   |              ^^^^^^^^^^^^
+
+warning: `semaphore` (lib) generated 251 warnings (run `cargo fix --lib -p semaphore` to apply 230 suggestions)
+   Compiling semaphore v0.1.0 (C:\semaphore_ui_rust\semaphore\rust)
+warning: unused import: `super::*`
+  --> src\api\apps.rs:85:9
+   |
+85 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `super::*`
+  --> src\api\auth.rs:54:9
+   |
+54 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `super::*`
+  --> src\api\cache.rs:41:9
+   |
+41 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `super::*`
+  --> src\api\events.rs:73:9
+   |
+73 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\keys.rs:113:9
+    |
+113 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\schedules.rs:113:9
+    |
+113 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\users.rs:123:9
+    |
+123 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\templates.rs:115:9
+    |
+115 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\tasks.rs:147:9
+    |
+147 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\inventory.rs:114:9
+    |
+114 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\repository.rs:114:9
+    |
+114 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\environment.rs:114:9
+    |
+114 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\integration.rs:114:9
+    |
+114 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\views.rs:113:9
+    |
+113 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+  --> src\api\handlers\projects\integration_alias.rs:68:9
+   |
+68 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\secret_storages.rs:113:9
+    |
+113 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\handlers\projects\project.rs:108:9
+    |
+108 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+  --> src\api\integration.rs:44:9
+   |
+44 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `super::*`
+  --> src\api\options.rs:77:9
+   |
+77 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\api\runners.rs:107:9
+    |
+107 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `chrono::Utc`
+   --> src\db\sql\task_crud.rs:257:9
+    |
+257 |     use chrono::Utc;
+    |         ^^^^^^^^^^^
+
+warning: unused import: `chrono::Utc`
+ --> src\db\mock.rs:8:5
+  |
+8 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+
+warning: unused imports: `LoginPasswordData` and `SshKeyData`
+ --> src\db_lib\access_key_installer.rs:9:5
+  |
+9 |     SshKeyData, LoginPasswordData, KeyInstaller,
+  |     ^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::fs`
+   --> src\db_lib\ansible_app.rs:446:13
+    |
+446 |         use std::fs;
+    |             ^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\db_lib\ansible_playbook.rs:127:9
+    |
+127 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+  --> src\db_lib\app_factory.rs:44:9
+   |
+44 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `super::*`
+  --> src\db_lib\git_client_factory.rs:49:9
+   |
+49 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\db_lib\go_git_client.rs:138:9
+    |
+138 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src\db_lib\shell_app.rs:147:9
+    |
+147 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused imports: `LoginPasswordData` and `SshKeyData`
+  --> src\ffi\mod.rs:11:5
+   |
+11 |     SshKeyData, LoginPasswordData, KeyInstaller,
+   |     ^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `super::*`
+  --> src\pro\db\factory.rs:26:9
+   |
+26 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `super::*`
+  --> src\pro\pkg\stage_parsers.rs:30:9
+   |
+30 |     use super::*;
+   |         ^^^^^^^^
+
+warning: unused import: `TaskLogger`
+ --> src\services\task_runner\types.rs:8:36
+  |
+8 | use crate::services::task_logger::{TaskLogger, TaskStatus, StatusListener, LogListener};
+  |                                    ^^^^^^^^^^
+
+warning: unused import: `Project`
+  --> src\services\task_runner\details.rs:61:31
+   |
+61 |     use crate::models::{Task, Project};
+   |                               ^^^^^^^
+
+warning: unused import: `Project`
+  --> src\services\task_runner\logging.rs:82:31
+   |
+82 |     use crate::models::{Task, Project};
+   |                               ^^^^^^^
+
+warning: unused import: `Project`
+  --> src\services\task_runner\websocket.rs:92:31
+   |
+92 |     use crate::models::{Task, Project};
+   |                               ^^^^^^^
+
+warning: unused import: `Project`
+  --> src\services\task_runner\hooks.rs:71:31
+   |
+71 |     use crate::models::{Task, Project};
+   |                               ^^^^^^^
+
+warning: unused import: `crate::services::task_logger::TaskStatus`
+  --> src\services\task_runner\errors.rs:79:9
+   |
+79 |     use crate::services::task_logger::TaskStatus;
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:191:28
+    |
+191 |             template_type: TemplateType::Task,
+    |                            ^^^^^^^^^^^^^^^^^^ expected `Option<TemplateType>`, found `TemplateType`
+    |
+    = note: expected enum `std::option::Option<template::TemplateType>`
+               found enum `template::TemplateType`
+help: try wrapping the expression in `Some`
+    |
+191 |             template_type: Some(TemplateType::Task),
+    |                            +++++                  +
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:192:27
+    |
+192 |             inventory_id: None,
+    |                           ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:193:28
+    |
+193 |             repository_id: None,
+    |                            ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:194:29
+    |
+194 |             environment_id: None,
+    |                             ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:197:26
+    |
+197 |             description: None,
+    |                          ^^^^ expected `String`, found `Option<_>`
+    |
+    = note: expected struct `std::string::String`
+                 found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:199:21
+    |
+199 |             vaults: Vec::new(),
+    |                     ^^^^^^^^^^ expected `Option<String>`, found `Vec<_>`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `Vec<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:200:20
+    |
+200 |             tasks: 0,
+    |                    ^ expected `Option<i32>`, found integer
+    |
+    = note: expected enum `std::option::Option<i32>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+200 |             tasks: Some(0),
+    |                    +++++ +
+
+error[E0063]: missing fields `app`, `become_key_id`, `deleted` and 3 other fields in initializer of `template::Template
+`
+   --> src\db\sql\template_crud.rs:185:24
+    |
+185 |         let template = Template {
+    |                        ^^^^^^^^ missing `app`, `become_key_id`, `deleted` and 3 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:227:32
+    |
+227 |                 template_type: TemplateType::Task,
+    |                                ^^^^^^^^^^^^^^^^^^ expected `Option<TemplateType>`, found `TemplateType`
+    |
+    = note: expected enum `std::option::Option<template::TemplateType>`
+               found enum `template::TemplateType`
+help: try wrapping the expression in `Some`
+    |
+227 |                 template_type: Some(TemplateType::Task),
+    |                                +++++                  +
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:228:31
+    |
+228 |                 inventory_id: None,
+    |                               ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:229:32
+    |
+229 |                 repository_id: None,
+    |                                ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:230:33
+    |
+230 |                 environment_id: None,
+    |                                 ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:233:30
+    |
+233 |                 description: None,
+    |                              ^^^^ expected `String`, found `Option<_>`
+    |
+    = note: expected struct `std::string::String`
+                 found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:235:25
+    |
+235 |                 vaults: Vec::new(),
+    |                         ^^^^^^^^^^ expected `Option<String>`, found `Vec<_>`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `Vec<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:236:24
+    |
+236 |                 tasks: 0,
+    |                        ^ expected `Option<i32>`, found integer
+    |
+    = note: expected enum `std::option::Option<i32>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+236 |                 tasks: Some(0),
+    |                        +++++ +
+
+error[E0063]: missing fields `app`, `become_key_id`, `deleted` and 3 other fields in initializer of `template::Template
+`
+   --> src\db\sql\template_crud.rs:221:28
+    |
+221 |             let template = Template {
+    |                            ^^^^^^^^ missing `app`, `become_key_id`, `deleted` and 3 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:259:28
+    |
+259 |             template_type: TemplateType::Task,
+    |                            ^^^^^^^^^^^^^^^^^^ expected `Option<TemplateType>`, found `TemplateType`
+    |
+    = note: expected enum `std::option::Option<template::TemplateType>`
+               found enum `template::TemplateType`
+help: try wrapping the expression in `Some`
+    |
+259 |             template_type: Some(TemplateType::Task),
+    |                            +++++                  +
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:260:27
+    |
+260 |             inventory_id: None,
+    |                           ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:261:28
+    |
+261 |             repository_id: None,
+    |                            ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:262:29
+    |
+262 |             environment_id: None,
+    |                             ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:265:26
+    |
+265 |             description: None,
+    |                          ^^^^ expected `String`, found `Option<_>`
+    |
+    = note: expected struct `std::string::String`
+                 found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:267:21
+    |
+267 |             vaults: Vec::new(),
+    |                     ^^^^^^^^^^ expected `Option<String>`, found `Vec<_>`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `Vec<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:268:20
+    |
+268 |             tasks: 0,
+    |                    ^ expected `Option<i32>`, found integer
+    |
+    = note: expected enum `std::option::Option<i32>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+268 |             tasks: Some(0),
+    |                    +++++ +
+
+error[E0063]: missing fields `app`, `become_key_id`, `deleted` and 3 other fields in initializer of `template::Template
+`
+   --> src\db\sql\template_crud.rs:253:24
+    |
+253 |         let template = Template {
+    |                        ^^^^^^^^ missing `app`, `become_key_id`, `deleted` and 3 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:298:28
+    |
+298 |             template_type: TemplateType::Task,
+    |                            ^^^^^^^^^^^^^^^^^^ expected `Option<TemplateType>`, found `TemplateType`
+    |
+    = note: expected enum `std::option::Option<template::TemplateType>`
+               found enum `template::TemplateType`
+help: try wrapping the expression in `Some`
+    |
+298 |             template_type: Some(TemplateType::Task),
+    |                            +++++                  +
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:299:27
+    |
+299 |             inventory_id: None,
+    |                           ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:300:28
+    |
+300 |             repository_id: None,
+    |                            ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:301:29
+    |
+301 |             environment_id: None,
+    |                             ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:304:26
+    |
+304 |             description: None,
+    |                          ^^^^ expected `String`, found `Option<_>`
+    |
+    = note: expected struct `std::string::String`
+                 found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:306:21
+    |
+306 |             vaults: Vec::new(),
+    |                     ^^^^^^^^^^ expected `Option<String>`, found `Vec<_>`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `Vec<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_crud.rs:307:20
+    |
+307 |             tasks: 0,
+    |                    ^ expected `Option<i32>`, found integer
+    |
+    = note: expected enum `std::option::Option<i32>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+307 |             tasks: Some(0),
+    |                    +++++ +
+
+error[E0063]: missing fields `app`, `become_key_id`, `deleted` and 3 other fields in initializer of `template::Template
+`
+   --> src\db\sql\template_crud.rs:292:24
+    |
+292 |         let template = Template {
+    |                        ^^^^^^^^ missing `app`, `become_key_id`, `deleted` and 3 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_vault.rs:159:27
+    |
+159 |             vault_key_id: None,
+    |                           ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_vault.rs:183:27
+    |
+183 |             vault_key_id: None,
+    |                           ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_vault.rs:210:27
+    |
+210 |             vault_key_id: None,
+    |                           ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_vault.rs:236:31
+    |
+236 |                 vault_key_id: None,
+    |                               ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_vault.rs:244:31
+    |
+244 |                 vault_key_id: None,
+    |                               ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0063]: missing field `role_slug` in initializer of `template::TemplateRolePerm`
+   --> src\db\sql\template_roles.rs:124:20
+    |
+124 |         let role = TemplateRolePerm {
+    |                    ^^^^^^^^^^^^^^^^ missing `role_slug`
+
+error[E0063]: missing field `role_slug` in initializer of `template::TemplateRolePerm`
+   --> src\db\sql\template_roles.rs:146:20
+    |
+146 |         let role = TemplateRolePerm {
+    |                    ^^^^^^^^^^^^^^^^ missing `role_slug`
+
+error[E0063]: missing field `role_slug` in initializer of `template::TemplateRolePerm`
+   --> src\db\sql\template_roles.rs:171:20
+    |
+171 |         let role = TemplateRolePerm {
+    |                    ^^^^^^^^^^^^^^^^ missing `role_slug`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:143:28
+    |
+143 |             template_type: TemplateType::Task,
+    |                            ^^^^^^^^^^^^^^^^^^ expected `Option<TemplateType>`, found `TemplateType`
+    |
+    = note: expected enum `std::option::Option<template::TemplateType>`
+               found enum `template::TemplateType`
+help: try wrapping the expression in `Some`
+    |
+143 |             template_type: Some(TemplateType::Task),
+    |                            +++++                  +
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:144:27
+    |
+144 |             inventory_id: None,
+    |                           ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:145:28
+    |
+145 |             repository_id: None,
+    |                            ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:146:29
+    |
+146 |             environment_id: None,
+    |                             ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:149:26
+    |
+149 |             description: None,
+    |                          ^^^^ expected `String`, found `Option<_>`
+    |
+    = note: expected struct `std::string::String`
+                 found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:151:21
+    |
+151 |             vaults: Vec::new(),
+    |                     ^^^^^^^^^^ expected `Option<String>`, found `Vec<_>`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `Vec<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:152:20
+    |
+152 |             tasks: 0,
+    |                    ^ expected `Option<i32>`, found integer
+    |
+    = note: expected enum `std::option::Option<i32>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+152 |             tasks: Some(0),
+    |                    +++++ +
+
+error[E0063]: missing fields `app`, `become_key_id`, `deleted` and 3 other fields in initializer of `template::Template
+`
+   --> src\db\sql\template_utils.rs:137:24
+    |
+137 |         let template = Template {
+    |                        ^^^^^^^^ missing `app`, `become_key_id`, `deleted` and 3 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:168:28
+    |
+168 |             template_type: TemplateType::Task,
+    |                            ^^^^^^^^^^^^^^^^^^ expected `Option<TemplateType>`, found `TemplateType`
+    |
+    = note: expected enum `std::option::Option<template::TemplateType>`
+               found enum `template::TemplateType`
+help: try wrapping the expression in `Some`
+    |
+168 |             template_type: Some(TemplateType::Task),
+    |                            +++++                  +
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:169:27
+    |
+169 |             inventory_id: None,
+    |                           ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:170:28
+    |
+170 |             repository_id: None,
+    |                            ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:171:29
+    |
+171 |             environment_id: None,
+    |                             ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:174:26
+    |
+174 |             description: None,
+    |                          ^^^^ expected `String`, found `Option<_>`
+    |
+    = note: expected struct `std::string::String`
+                 found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:176:21
+    |
+176 |             vaults: Vec::new(),
+    |                     ^^^^^^^^^^ expected `Option<String>`, found `Vec<_>`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `Vec<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:177:20
+    |
+177 |             tasks: 0,
+    |                    ^ expected `Option<i32>`, found integer
+    |
+    = note: expected enum `std::option::Option<i32>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+177 |             tasks: Some(0),
+    |                    +++++ +
+
+error[E0063]: missing fields `app`, `become_key_id`, `deleted` and 3 other fields in initializer of `template::Template
+`
+   --> src\db\sql\template_utils.rs:162:24
+    |
+162 |         let template = Template {
+    |                        ^^^^^^^^ missing `app`, `become_key_id`, `deleted` and 3 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:194:28
+    |
+194 |             template_type: TemplateType::Task,
+    |                            ^^^^^^^^^^^^^^^^^^ expected `Option<TemplateType>`, found `TemplateType`
+    |
+    = note: expected enum `std::option::Option<template::TemplateType>`
+               found enum `template::TemplateType`
+help: try wrapping the expression in `Some`
+    |
+194 |             template_type: Some(TemplateType::Task),
+    |                            +++++                  +
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:195:27
+    |
+195 |             inventory_id: None,
+    |                           ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:196:28
+    |
+196 |             repository_id: None,
+    |                            ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:197:29
+    |
+197 |             environment_id: None,
+    |                             ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:200:26
+    |
+200 |             description: None,
+    |                          ^^^^ expected `String`, found `Option<_>`
+    |
+    = note: expected struct `std::string::String`
+                 found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:202:21
+    |
+202 |             vaults: Vec::new(),
+    |                     ^^^^^^^^^^ expected `Option<String>`, found `Vec<_>`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `Vec<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:203:20
+    |
+203 |             tasks: 0,
+    |                    ^ expected `Option<i32>`, found integer
+    |
+    = note: expected enum `std::option::Option<i32>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+203 |             tasks: Some(0),
+    |                    +++++ +
+
+error[E0063]: missing fields `app`, `become_key_id`, `deleted` and 3 other fields in initializer of `template::Template
+`
+   --> src\db\sql\template_utils.rs:188:24
+    |
+188 |         let template = Template {
+    |                        ^^^^^^^^ missing `app`, `become_key_id`, `deleted` and 3 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:220:28
+    |
+220 |             template_type: TemplateType::Task,
+    |                            ^^^^^^^^^^^^^^^^^^ expected `Option<TemplateType>`, found `TemplateType`
+    |
+    = note: expected enum `std::option::Option<template::TemplateType>`
+               found enum `template::TemplateType`
+help: try wrapping the expression in `Some`
+    |
+220 |             template_type: Some(TemplateType::Task),
+    |                            +++++                  +
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:221:27
+    |
+221 |             inventory_id: None,
+    |                           ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:222:28
+    |
+222 |             repository_id: None,
+    |                            ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:223:29
+    |
+223 |             environment_id: None,
+    |                             ^^^^ expected `i32`, found `Option<_>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:226:26
+    |
+226 |             description: None,
+    |                          ^^^^ expected `String`, found `Option<_>`
+    |
+    = note: expected struct `std::string::String`
+                 found enum `std::option::Option<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:228:21
+    |
+228 |             vaults: Vec::new(),
+    |                     ^^^^^^^^^^ expected `Option<String>`, found `Vec<_>`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `Vec<_>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\template_utils.rs:229:20
+    |
+229 |             tasks: 0,
+    |                    ^ expected `Option<i32>`, found integer
+    |
+    = note: expected enum `std::option::Option<i32>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+229 |             tasks: Some(0),
+    |                    +++++ +
+
+error[E0063]: missing fields `app`, `become_key_id`, `deleted` and 3 other fields in initializer of `template::Template
+`
+   --> src\db\sql\template_utils.rs:214:24
+    |
+214 |         let template = Template {
+    |                        ^^^^^^^^ missing `app`, `become_key_id`, `deleted` and 3 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\user_crud.rs:364:20
+    |
+364 |             count: 10,
+    |                    ^^ expected `Option<usize>`, found integer
+    |
+    = note: expected enum `std::option::Option<usize>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+364 |             count: Some(10),
+    |                    +++++  +
+
+error[E0063]: missing fields `sort_by` and `sort_inverted` in initializer of `store::RetrieveQueryParams`
+   --> src\db\sql\user_crud.rs:362:22
+    |
+362 |         let params = RetrieveQueryParams {
+    |                      ^^^^^^^^^^^^^^^^^^^ missing `sort_by` and `sort_inverted`
+
+error[E0063]: missing field `recovery_codes` in initializer of `totp_verification::TotpVerification`
+   --> src\db\sql\user_totp.rs:158:20
+    |
+158 |         let totp = TotpVerification {
+    |                    ^^^^^^^^^^^^^^^^ missing `recovery_codes`
+
+error[E0063]: missing field `recovery_codes` in initializer of `totp_verification::TotpVerification`
+   --> src\db\sql\user_totp.rs:196:20
+    |
+196 |         let totp = TotpVerification {
+    |                    ^^^^^^^^^^^^^^^^ missing `recovery_codes`
+
+error[E0308]: mismatched types
+   --> src\db\sql\user_totp.rs:254:13
+    |
+254 |         let (code, hash) = totp::generate_recovery_code();
+    |             ^^^^^^^^^^^^   ------------------------------ this expression has type `std::result::Result<(std::str
+ing::String, std::string::String), error::Error>`
+    |             |
+    |             expected `Result<(String, String), Error>`, found `(_, _)`
+    |
+    = note: expected enum `std::result::Result<(std::string::String, std::string::String), error::Error>`
+              found tuple `(_, _)`
+help: try wrapping the pattern in `Ok`
+    |
+254 |         let Ok((code, hash)) = totp::generate_recovery_code();
+    |             +++            +
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:314:22
+    |
+314 |             message: "Test task".to_string(),
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^ expected `Option<String>`, found `String`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `std::string::String`
+help: try wrapping the expression in `Some`
+    |
+314 |             message: Some("Test task".to_string()),
+    |                      +++++                       +
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:322:21
+    |
+322 |             params: String::new(),
+    |                     ^^^^^^^^^^^^^ expected `Option<Value>`, found `String`
+    |
+    = note: expected enum `std::option::Option<JsonValue>`
+             found struct `std::string::String`
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:323:23
+    |
+323 |             playbook: String::new(),
+    |                       ^^^^^^^^^^^^^ expected `Option<String>`, found `String`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `std::string::String`
+help: try wrapping the expression in `Some`
+    |
+323 |             playbook: Some(String::new()),
+    |                       +++++             +
+
+error[E0063]: missing fields `build_task_id`, `created`, `environment` and 5 other fields in initializer of `models::ta
+sk::Task`
+   --> src\db\sql\task_crud.rs:309:20
+    |
+309 |         let task = Task {
+    |                    ^^^^ missing `build_task_id`, `created`, `environment` and 5 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:332:39
+    |
+332 |         assert_eq!(retrieved.message, "Test task");
+    |                                       ^^^^^^^^^^^ expected `Option<String>`, found `&str`
+    |
+    = note:   expected enum `std::option::Option<std::string::String>`
+            found reference `&str`
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:349:26
+    |
+349 |                 message: format!("Task {}", i),
+    |                          ^^^^^^^^^^^^^^^^^^^^^ expected `Option<String>`, found `String`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `std::string::String`
+    = note: this error originates in the macro `format` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: call `Into::into` on this expression to convert `std::string::String` into `std::option::Option<std::string::Stri
+ng>`
+    |
+349 |                 message: format!("Task {}", i).into(),
+    |                                               +++++++
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:357:25
+    |
+357 |                 params: String::new(),
+    |                         ^^^^^^^^^^^^^ expected `Option<Value>`, found `String`
+    |
+    = note: expected enum `std::option::Option<JsonValue>`
+             found struct `std::string::String`
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:358:27
+    |
+358 |                 playbook: String::new(),
+    |                           ^^^^^^^^^^^^^ expected `Option<String>`, found `String`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `std::string::String`
+help: try wrapping the expression in `Some`
+    |
+358 |                 playbook: Some(String::new()),
+    |                           +++++             +
+
+error[E0063]: missing fields `build_task_id`, `created`, `environment` and 5 other fields in initializer of `models::ta
+sk::Task`
+   --> src\db\sql\task_crud.rs:344:24
+    |
+344 |             let task = Task {
+    |                        ^^^^ missing `build_task_id`, `created`, `environment` and 5 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:381:22
+    |
+381 |             message: "Test task".to_string(),
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^ expected `Option<String>`, found `String`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `std::string::String`
+help: try wrapping the expression in `Some`
+    |
+381 |             message: Some("Test task".to_string()),
+    |                      +++++                       +
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:389:21
+    |
+389 |             params: String::new(),
+    |                     ^^^^^^^^^^^^^ expected `Option<Value>`, found `String`
+    |
+    = note: expected enum `std::option::Option<JsonValue>`
+             found struct `std::string::String`
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:390:23
+    |
+390 |             playbook: String::new(),
+    |                       ^^^^^^^^^^^^^ expected `Option<String>`, found `String`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `std::string::String`
+help: try wrapping the expression in `Some`
+    |
+390 |             playbook: Some(String::new()),
+    |                       +++++             +
+
+error[E0063]: missing fields `build_task_id`, `created`, `environment` and 5 other fields in initializer of `models::ta
+sk::Task`
+   --> src\db\sql\task_crud.rs:376:20
+    |
+376 |         let task = Task {
+    |                    ^^^^ missing `build_task_id`, `created`, `environment` and 5 other fields
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:415:22
+    |
+415 |             message: "Test task".to_string(),
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^ expected `Option<String>`, found `String`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `std::string::String`
+help: try wrapping the expression in `Some`
+    |
+415 |             message: Some("Test task".to_string()),
+    |                      +++++                       +
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:423:21
+    |
+423 |             params: String::new(),
+    |                     ^^^^^^^^^^^^^ expected `Option<Value>`, found `String`
+    |
+    = note: expected enum `std::option::Option<JsonValue>`
+             found struct `std::string::String`
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_crud.rs:424:23
+    |
+424 |             playbook: String::new(),
+    |                       ^^^^^^^^^^^^^ expected `Option<String>`, found `String`
+    |
+    = note: expected enum `std::option::Option<std::string::String>`
+             found struct `std::string::String`
+help: try wrapping the expression in `Some`
+    |
+424 |             playbook: Some(String::new()),
+    |                       +++++             +
+
+error[E0063]: missing fields `build_task_id`, `created`, `environment` and 5 other fields in initializer of `models::ta
+sk::Task`
+   --> src\db\sql\task_crud.rs:410:20
+    |
+410 |         let task = Task {
+    |                    ^^^^ missing `build_task_id`, `created`, `environment` and 5 other fields
+
+error[E0063]: missing field `stage_id` in initializer of `models::task::TaskOutput`
+   --> src\db\sql\task_output.rs:134:22
+    |
+134 |         let output = TaskOutput {
+    |                      ^^^^^^^^^^ missing `stage_id`
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_output.rs:147:20
+    |
+147 |             count: 10,
+    |                    ^^ expected `Option<usize>`, found integer
+    |
+    = note: expected enum `std::option::Option<usize>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+147 |             count: Some(10),
+    |                    +++++  +
+
+error[E0063]: missing fields `sort_by` and `sort_inverted` in initializer of `store::RetrieveQueryParams`
+   --> src\db\sql\task_output.rs:145:22
+    |
+145 |         let params = RetrieveQueryParams {
+    |                      ^^^^^^^^^^^^^^^^^^^ missing `sort_by` and `sort_inverted`
+
+error[E0063]: missing field `stage_id` in initializer of `models::task::TaskOutput`
+   --> src\db\sql\task_output.rs:164:13
+    |
+164 |             TaskOutput {
+    |             ^^^^^^^^^^ missing `stage_id`
+
+error[E0063]: missing field `stage_id` in initializer of `models::task::TaskOutput`
+   --> src\db\sql\task_output.rs:171:13
+    |
+171 |             TaskOutput {
+    |             ^^^^^^^^^^ missing `stage_id`
+
+error[E0063]: missing field `stage_id` in initializer of `models::task::TaskOutput`
+   --> src\db\sql\task_output.rs:178:13
+    |
+178 |             TaskOutput {
+    |             ^^^^^^^^^^ missing `stage_id`
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_output.rs:191:20
+    |
+191 |             count: 10,
+    |                    ^^ expected `Option<usize>`, found integer
+    |
+    = note: expected enum `std::option::Option<usize>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+191 |             count: Some(10),
+    |                    +++++  +
+
+error[E0063]: missing fields `sort_by` and `sort_inverted` in initializer of `store::RetrieveQueryParams`
+   --> src\db\sql\task_output.rs:189:22
+    |
+189 |         let params = RetrieveQueryParams {
+    |                      ^^^^^^^^^^^^^^^^^^^ missing `sort_by` and `sort_inverted`
+
+error[E0063]: missing field `stage_id` in initializer of `models::task::TaskOutput`
+   --> src\db\sql\task_output.rs:206:22
+    |
+206 |         let output = TaskOutput {
+    |                      ^^^^^^^^^^ missing `stage_id`
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_output.rs:220:20
+    |
+220 |             count: 10,
+    |                    ^^ expected `Option<usize>`, found integer
+    |
+    = note: expected enum `std::option::Option<usize>`
+               found type `{integer}`
+help: try wrapping the expression in `Some`
+    |
+220 |             count: Some(10),
+    |                    +++++  +
+
+error[E0063]: missing fields `sort_by` and `sort_inverted` in initializer of `store::RetrieveQueryParams`
+   --> src\db\sql\task_output.rs:218:22
+    |
+218 |         let params = RetrieveQueryParams {
+    |                      ^^^^^^^^^^^^^^^^^^^ missing `sort_by` and `sort_inverted`
+
+error[E0063]: missing field `stage_id` in initializer of `models::task::TaskOutput`
+   --> src\db\sql\task_output.rs:236:13
+    |
+236 |             TaskOutput {
+    |             ^^^^^^^^^^ missing `stage_id`
+
+error[E0063]: missing field `stage_id` in initializer of `models::task::TaskOutput`
+   --> src\db\sql\task_output.rs:243:13
+    |
+243 |             TaskOutput {
+    |             ^^^^^^^^^^ missing `stage_id`
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_stage.rs:251:21
+    |
+251 |             result: Some("Success".to_string()),
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `String`, found `Option<String>`
+    |
+    = note: expected struct `std::string::String`
+                 found enum `std::option::Option<std::string::String>`
+
+error[E0277]: can't compare `std::string::String` with `std::option::Option<std::string::String>`
+   --> src\db\sql\task_stage.rs:259:9
+    |
+259 |         assert_eq!(retrieved.unwrap().result, Some("Success".to_string()));
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no implementation for `std::string::St
+ring == std::option::Option<std::string::String>`
+    |
+    = help: the trait `PartialEq<std::option::Option<std::string::String>>` is not implemented for `std::string::String
+`
+    = help: the following other types implement trait `PartialEq<Rhs>`:
+              `&std::string::String` implements `PartialEq<windows_strings::hstring::HSTRING>`
+              `std::string::String` implements `PartialEq<&str>`
+              `std::string::String` implements `PartialEq<&windows_strings::hstring::HSTRING>`
+              `std::string::String` implements `PartialEq<Authority>`
+              `std::string::String` implements `PartialEq<ByteStr>`
+              `std::string::String` implements `PartialEq<ByteString>`
+              `std::string::String` implements `PartialEq<Cow<'_, str>>`
+              `std::string::String` implements `PartialEq<JsonValue>`
+            and 21 others
+    = note: this error originates in the macro `assert_eq` (in Nightly builds, run with -Z macro-backtrace for more inf
+o)
+
+error[E0308]: mismatched types
+   --> src\db\sql\task_stage.rs:274:21
+    |
+274 |             result: Some("Success".to_string()),
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `String`, found `Option<String>`
+    |
+    = note: expected struct `std::string::String`
+                 found enum `std::option::Option<std::string::String>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\integration_crud.rs:143:26
+    |
+143 |             template_id: Some(1),
+    |                          ^^^^^^^ expected `i32`, found `Option<{integer}>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<{integer}>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\integration_crud.rs:166:30
+    |
+166 |                 template_id: Some(1),
+    |                              ^^^^^^^ expected `i32`, found `Option<{integer}>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<{integer}>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\integration_crud.rs:186:26
+    |
+186 |             template_id: Some(1),
+    |                          ^^^^^^^ expected `i32`, found `Option<{integer}>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<{integer}>`
+
+error[E0308]: mismatched types
+   --> src\db\sql\integration_crud.rs:211:26
+    |
+211 |             template_id: Some(1),
+    |                          ^^^^^^^ expected `i32`, found `Option<{integer}>`
+    |
+    = note: expected type `i32`
+               found enum `std::option::Option<{integer}>`
+
+error[E0063]: missing fields `body_data_type`, `key`, `method` and 1 other field in initializer of `models::integration
+::IntegrationMatcher`
+   --> src\db\sql\integration_matcher.rs:125:23
+    |
+125 |         let matcher = IntegrationMatcher {
+    |                       ^^^^^^^^^^^^^^^^^^ missing `body_data_type`, `key`, `method` and 1 other field
+
+error[E0063]: missing fields `body_data_type`, `key`, `method` and 1 other field in initializer of `models::integration
+::IntegrationMatcher`
+   --> src\db\sql\integration_matcher.rs:148:23
+    |
+148 |         let matcher = IntegrationMatcher {
+    |                       ^^^^^^^^^^^^^^^^^^ missing `body_data_type`, `key`, `method` and 1 other field
+
+error[E0063]: missing fields `body_data_type`, `key`, `method` and 1 other field in initializer of `models::integration
+::IntegrationMatcher`
+   --> src\db\sql\integration_matcher.rs:174:23
+    |
+174 |         let matcher = IntegrationMatcher {
+    |                       ^^^^^^^^^^^^^^^^^^ missing `body_data_type`, `key`, `method` and 1 other field
+
+error[E0063]: missing fields `body_data_type`, `key`, `name` and 1 other field in initializer of `models::integration::
+IntegrationExtractValue`
+   --> src\db\sql\integration_extract.rs:128:21
+    |
+128 |         let value = IntegrationExtractValue {
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^ missing `body_data_type`, `key`, `name` and 1 other field
+
+error[E0063]: missing fields `body_data_type`, `key`, `name` and 1 other field in initializer of `models::integration::
+IntegrationExtractValue`
+   --> src\db\sql\integration_extract.rs:152:21
+    |
+152 |         let value = IntegrationExtractValue {
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^ missing `body_data_type`, `key`, `name` and 1 other field
+
+error[E0063]: missing fields `body_data_type`, `key`, `name` and 1 other field in initializer of `models::integration::
+IntegrationExtractValue`
+   --> src\db\sql\integration_extract.rs:179:21
+    |
+179 |         let value = IntegrationExtractValue {
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^ missing `body_data_type`, `key`, `name` and 1 other field
+
+error[E0063]: missing fields `inviter_user_id` and `token` in initializer of `models::project_invite::ProjectInvite`
+   --> src\db\sql\project_invite.rs:131:22
+    |
+131 |         let invite = ProjectInvite {
+    |                      ^^^^^^^^^^^^^ missing `inviter_user_id` and `token`
+
+error[E0609]: no field `inventory` on type `models::inventory::Inventory`
+  --> src\models\tests.rs:69:30
+   |
+69 |         assert_eq!(inventory.inventory, InventoryType::Static);
+   |                              ^^^^^^^^^ unknown field
+   |
+   = note: available fields are: `id`, `project_id`, `name`, `inventory_type`, `inventory_data` ... and 8 others
+
+error[E0063]: missing fields `environment_id` and `owner` in initializer of `models::access_key::AccessKey`
+   --> src\services\access_key_installer.rs:246:9
+    |
+246 |         AccessKey {
+    |         ^^^^^^^^^ missing `environment_id` and `owner`
+
+error[E0063]: missing fields `environment_id` and `owner` in initializer of `models::access_key::AccessKey`
+   --> src\services\access_key_installer.rs:324:19
+    |
+324 |         let key = AccessKey {
+    |                   ^^^^^^^^^ missing `environment_id` and `owner`
+
+warning: unused variable: `controller`
+   --> src\api\user.rs:196:13
+    |
+196 |         let controller = UserController::new();
+    |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_controller`
+
+warning: unused variable: `controller`
+   --> src\pro\api\controllers.rs:188:13
+    |
+188 |         let controller = RolesController::new();
+    |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_controller`
+
+warning: unused variable: `controller`
+   --> src\pro\api\controllers.rs:194:13
+    |
+194 |         let controller = SubscriptionController::new();
+    |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_controller`
+
+warning: unused variable: `controller`
+   --> src\pro\api\controllers.rs:200:13
+    |
+200 |         let controller = TerraformController::new();
+    |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_controller`
+
+warning: unused variable: `controller`
+   --> src\pro\api\controllers.rs:206:13
+    |
+206 |         let controller = RolesController::default();
+    |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_controller`
+
+warning: unused variable: `result`
+   --> src\utils\encryption.rs:125:13
+    |
+125 |         let result = generate_private_key(&mut buffer).unwrap();
+    |             ^^^^^^ help: if this is intentional, prefix it with an underscore: `_result`
+
+Some errors have detailed explanations: E0063, E0277, E0308, E0609.
+For more information about an error, try `rustc --explain E0063`.
+warning: `semaphore` (lib test) generated 272 warnings (228 duplicates)
+error: could not compile `semaphore` (lib test) due to 124 previous errors; 272 warnings emitted

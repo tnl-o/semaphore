@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -26,13 +25,11 @@ func initRunnerRegistrationToken() {
 
 	tokenBytes, err := io.ReadAll(os.Stdin)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: Failed to read token from stdin: %v\n", err)
-		os.Exit(1)
+		panic(err)
 	}
 
 	if len(tokenBytes) == 0 {
-		fmt.Fprintf(os.Stderr, "Error: Empty token\n")
-		os.Exit(1)
+		panic("Empty token")
 	}
 
 	util.Config.Runner.RegistrationToken = strings.TrimSpace(string(tokenBytes))
@@ -49,8 +46,7 @@ func registerRunner() {
 	err := taskPool.Register(configFile)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: Failed to register runner: %v\n", err)
-		os.Exit(1)
+		panic(err)
 	}
 }
 

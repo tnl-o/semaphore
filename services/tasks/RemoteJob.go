@@ -70,14 +70,9 @@ func callRunnerWebhook(runner *db.Runner, tsk *TaskRunner, action string) (err e
 	}
 
 	if resp != nil {
-		defer func() {
-			if closeErr := resp.Body.Close(); closeErr != nil {
-				// Log error but don't fail the function if close fails
-				// This is a cleanup operation for HTTP response body
-			}
-		}()
+		defer resp.Body.Close() //nolint:errcheck
 	}
-
+	
 	if resp.StatusCode != 200 && resp.StatusCode != 204 {
 		err = fmt.Errorf("webhook returned incorrect status")
 		return

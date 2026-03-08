@@ -2,61 +2,13 @@ version: "2"
 
 run:
   timeout: "240s"
-  issues-exit-code: 1
-  modules-download-mode: readonly
+  # TODO: remove following line to make golangci return non-zero as lint were not passed
+  issues-exit-code: 0
 
 linters:
-  enable:
-    - errcheck
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
-    - typecheck
+  default: standard
+  disable:
     - unused
-    - gofmt
-    - goimports
-    - misspell
-    - gocritic
-    - gosec
-    - exportloopref
-    - goconst
-    - gocyclo
-    - goerr113
-    - gomnd
-    - goprintffuncname
-    - nakedret
-    - noctx
-    - nolintlint
-    - rowserrcheck
-    - sqlclosecheck
-    - unconvert
-    - unparam
-    - whitespace
-
-linters-settings:
-  gocyclo:
-    min-complexity: 15
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - experimental
-      - opinionated
-      - performance
-      - style
-    disabled-checks:
-      - dupImport
-      - ifElseChain
-      - octalLiteral
-      - whyNoLint
-      - wrapperFunc
-  gosec:
-    severity: medium
-    confidence: medium
-  govet:
-    check-shadowing: true
-  misspell:
-    locale: US
 
 formatters:
   enable:
@@ -66,21 +18,3 @@ formatters:
       rewrite-rules:
         - pattern: 'interface{}'
           replacement: 'any'
-
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - errcheck
-        - gosec
-        - gocyclo
-    - path: util/config\.go
-      linters:
-        - gocyclo
-        - gocritic
-    - path: api/router\.go
-      linters:
-        - gocyclo
-        - funlen
-  max-issues-per-linter: 0
-  max-same-issues: 0

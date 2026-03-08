@@ -8,8 +8,6 @@ import (
 	"net/http"
 )
 
-// clearCache handles the clearing of the application cache
-// Only admin users are allowed to perform this operation
 func clearCache(w http.ResponseWriter, r *http.Request) {
 	currentUser := helpers.GetFromContext(r, "user").(*db.User)
 

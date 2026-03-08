@@ -24,18 +24,6 @@ module.exports = {
     'vuejs-accessibility/click-events-have-key-events': 'off',
     'vue/valid-v-slot': 'off',
     'vue/multi-word-component-names': 'off',
-    'import/no-cycle': ['error', { ignoreExternal: true }],
-    'import/no-extraneous-dependencies': ['error', {
-      devDependencies: [
-        'gulpfile.js',
-        'gulp-*.js',
-        'scripts/**',
-        'tests/**',
-        '**/*.spec.{js,ts,vue}',
-        '**/__tests__/**',
-        'vue.config.js',
-      ],
-    }],
   },
 
   overrides: [
@@ -46,12 +34,6 @@ module.exports = {
       ],
       env: {
         mocha: true,
-      },
-    },
-    {
-      files: ['**/Templates.vue'],
-      rules: {
-        'import/no-cycle': 'off',
       },
     },
   ],

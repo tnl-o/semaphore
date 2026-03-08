@@ -79,8 +79,7 @@ func (d *SqlDb) DeleteProject(projectID int) error {
 	//if err != nil {
 	//	return err
 	//}
-	// Projects are returned in database order
-	// If sorting is needed, it should be implemented here
+	// TODO: sort projects
 
 	tx, err := d.Sql().Begin()
 

@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
@@ -26,8 +23,7 @@ var vaultRekeyCmd = &cobra.Command{
 		err := store.RekeyAccessKeys(targetVaultArgs.oldKey)
 
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to rekey access keys: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 	},

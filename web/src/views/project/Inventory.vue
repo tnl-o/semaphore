@@ -151,7 +151,7 @@ import ItemListPageBase from '@/components/ItemListPageBase';
 import InventoryForm from '@/components/InventoryForm.vue';
 import { APP_INVENTORY_TITLE } from '@/lib/constants';
 import AppsMixin from '@/components/AppsMixin';
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import TemplateSelectForm from '@/components/TemplateSelectForm.vue';
 
 export default {
@@ -177,7 +177,7 @@ export default {
 
   methods: {
     async attachInventory(templateId) {
-      await apiClient({
+      await axios({
         method: 'post',
         url: `/api/project/${this.projectId}/templates/${templateId}/inventory/${this.itemId}/attach`,
       });

@@ -18,7 +18,6 @@ import (
 	taskServices "github.com/semaphoreui/semaphore/services/tasks"
 
 	"github.com/semaphoreui/semaphore/api/debug"
-	"github.com/semaphoreui/semaphore/api/middleware"
 	"github.com/semaphoreui/semaphore/api/tasks"
 	"github.com/semaphoreui/semaphore/pkg/tz"
 	log "github.com/sirupsen/logrus"
@@ -31,6 +30,16 @@ import (
 	"github.com/semaphoreui/semaphore/api/sockets"
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/util"
+
+	// Импортируем плагины для их регистрации
+	"github.com/semaphoreui/semaphore/plugins"
+	pluginsAPI "github.com/semaphoreui/semaphore/plugins/api"
+	_ "github.com/semaphoreui/semaphore/plugins/modules/example"
+
+	// Metrics plugin requires prometheus - uncomment when prometheus is available
+	// _ "github.com/semaphoreui/semaphore/plugins/modules/metrics"
+	_ "github.com/semaphoreui/semaphore/plugins/modules/api-client"
+	_ "github.com/semaphoreui/semaphore/plugins/modules/websocket"
 )
 
 var startTime = tz.Now()
@@ -42,6 +51,7 @@ var publicAssets embed.FS
 func StoreMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		store := helpers.Store(r)
+		//var url = r.URL.String()
 
 		db.StoreSession(store, util.RandString(12), func() {
 			next.ServeHTTP(w, r)
@@ -66,9 +76,8 @@ func plainTextMiddleware(next http.Handler) http.Handler {
 }
 
 func pongHandler(w http.ResponseWriter, r *http.Request) {
-	if _, err := w.Write([]byte("pong")); err != nil {
-		log.WithError(err).Error("Failed to write pong response")
-	}
+	//nolint: errcheck
+	w.Write([]byte("pong"))
 }
 
 // DelayMiddleware adds artificial delay to simulate slow network conditions
@@ -129,6 +138,13 @@ func Route(
 		r.Use(DelayMiddleware(delay))
 	}
 
+	// Применяем middleware из плагинов
+	for _, plugin := range plugins.GetAll() {
+		if middleware := plugin.GetMiddleware(); middleware != nil {
+			r.Use(middleware)
+		}
+	}
+
 	webPath := "/"
 	if util.WebHostURL != nil {
 		webPath = util.WebHostURL.Path
@@ -138,51 +154,17 @@ func Route(
 	}
 
 	r.Use(mux.CORSMethodMiddleware(r))
-	r.Use(middleware.PanicRecoveryMiddleware) // Must be early to catch all panics
-	r.Use(middleware.CorrelationIDMiddleware)
-	r.Use(middleware.MetricsMiddleware)
 
 	pingRouter := r.Path(webPath + "api/ping").Subrouter()
 	pingRouter.Use(plainTextMiddleware)
 	pingRouter.Methods("GET", "HEAD").HandlerFunc(pongHandler)
 
-	// Health check endpoints (use StoreMiddleware to have access to store)
-	healthRouter := r.PathPrefix(webPath + "api/health").Subrouter()
-	healthRouter.Use(StoreMiddleware, JSONMiddleware)
-	healthRouter.Path("").HandlerFunc(healthHandler).Methods("GET", "HEAD")
-	healthRouter.Path("/live").HandlerFunc(livenessHandler).Methods("GET", "HEAD")
-	healthRouter.Path("/ready").HandlerFunc(readinessHandler).Methods("GET", "HEAD")
-
-	// Prometheus metrics endpoint
-	metricsRouter := r.Path(webPath + "api/metrics").Subrouter()
-	metricsRouter.Methods("GET").Handler(MetricsHandler())
-
 	publicAPIRouter := r.PathPrefix(webPath + "api").Subrouter()
 	publicAPIRouter.Use(StoreMiddleware, JSONMiddleware)
 
-	// Setup rate limiting for auth endpoints
-	var authRateLimiter *middleware.RateLimiter
-	if util.Config.RateLimit != nil && util.Config.RateLimit.Enabled {
-		authWindow, err := time.ParseDuration(util.Config.RateLimit.AuthWindow)
-		if err != nil {
-			log.WithError(err).Warn("Invalid rate limit auth window, using default 1m")
-			authWindow = time.Minute
-		}
-		authRateLimiter = middleware.NewRateLimiter(util.Config.RateLimit.AuthLimit, authWindow)
-		log.WithFields(log.Fields{
-			"limit":  util.Config.RateLimit.AuthLimit,
-			"window": authWindow,
-		}).Info("Rate limiting enabled for auth endpoints")
-	}
-
-	// Apply rate limiting to auth endpoints
-	authRouter := publicAPIRouter.PathPrefix("/auth").Subrouter()
-	if authRateLimiter != nil {
-		authRouter.Use(middleware.RateLimitMiddleware(authRateLimiter))
-	}
-	authRouter.HandleFunc("/login", login).Methods("GET", "POST")
-	authRouter.HandleFunc("/verify", verifySession).Methods("POST")
-	authRouter.HandleFunc("/recovery", recoverySession).Methods("POST")
+	publicAPIRouter.HandleFunc("/auth/login", login).Methods("GET", "POST")
+	publicAPIRouter.HandleFunc("/auth/verify", verifySession).Methods("POST")
+	publicAPIRouter.HandleFunc("/auth/recovery", recoverySession).Methods("POST")
 
 	publicAPIRouter.HandleFunc("/auth/logout", logout).Methods("POST")
 	publicAPIRouter.HandleFunc("/auth/oidc/{provider}/login", oidcLogin).Methods("GET")
@@ -226,7 +208,19 @@ func Route(
 	authenticatedAPI.Path("/projects").HandlerFunc(projectsController.AddProject).Methods("POST")
 	authenticatedAPI.Path("/projects/restore").HandlerFunc(projects.Restore).Methods("POST")
 	authenticatedAPI.Path("/events").HandlerFunc(getAllEvents).Methods("GET", "HEAD")
-	authenticatedAPI.HandleFunc("/events/last", getLastEvents).Methods("GET", "HEAD")
+
+	// Plugin API endpoints
+	authenticatedAPI.Path("/plugins").HandlerFunc(pluginsAPI.GetPlugins).Methods("GET", "HEAD")
+	authenticatedAPI.Path("/plugins/menu").HandlerFunc(pluginsAPI.GetPluginMenuItems).Methods("GET", "HEAD")
+
+	// Регистрируем API endpoints из плагинов
+	for _, plugin := range plugins.GetAll() {
+		if err := plugin.RegisterAPI(r); err != nil {
+			log.WithError(err).WithFields(log.Fields{
+				"plugin": plugin.Name(),
+			}).Error("Failed to register plugin API")
+		}
+	}
 
 	authenticatedAPI.Path("/users").HandlerFunc(usersController.GetUsers).Methods("GET", "HEAD")
 	authenticatedAPI.Path("/users").HandlerFunc(usersController.AddUser).Methods("POST")

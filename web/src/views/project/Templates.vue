@@ -261,10 +261,9 @@
 }
 </style>
 <script>
-/* eslint-disable import/no-cycle */
 import ItemListPageBase from '@/components/ItemListPageBase';
 import TaskLink from '@/components/TaskLink.vue';
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import EditViewsForm from '@/components/EditViewsForm.vue';
 import TableSettingsSheet from '@/components/TableSettingsSheet.vue';
 import TaskList from '@/components/TaskList.vue';
@@ -309,7 +308,6 @@ export default {
       viewTab: null,
       apps: null,
       itemApp: '',
-      isRedirecting: false,
     };
   },
 
@@ -339,14 +337,7 @@ export default {
     },
   },
   watch: {
-    async viewId(newVal, oldVal) {
-      if (this.isRedirecting) {
-        return;
-      }
-      // Предотвращаем вызов при первой инициализации (oldVal === undefined)
-      if (oldVal === undefined && newVal != null) {
-        return;
-      }
+    async viewId() {
       try {
         this.viewItemsLoading = true;
         await this.loadItems();
@@ -368,12 +359,8 @@ export default {
 
   methods: {
     async beforeLoadItems() {
-      if (this.isRedirecting) {
-        return;
-      }
       await this.loadViews();
-      // Редиректим только если viewId отсутствует в URL и есть доступные views
-      if (this.viewId == null && this.views && this.views.length > 0 && !this.viewItemsLoading) {
+      if (this.viewId == null) {
         let viewId = localStorage.getItem(`project${this.projectId}__lastVisitedViewId`);
 
         if (viewId == null) {
@@ -381,20 +368,8 @@ export default {
         }
 
         if (viewId != null
-          && this.views.some((v) => v.id === parseInt(viewId, 10))
-          && !this.isRedirecting) {
-          // Используем replace вместо push, чтобы избежать добавления в историю
-          this.isRedirecting = true;
-          try {
-            await this.$router.replace({ path: `/project/${this.projectId}/views/${viewId}/templates` });
-          } catch (err) {
-            console.error('Redirect error:', err);
-          } finally {
-            // Сбрасываем флаг после небольшой задержки, чтобы дать роутеру время обработать изменение
-            setTimeout(() => {
-              this.isRedirecting = false;
-            }, 100);
-          }
+          && this.views.some((v) => v.id === parseInt(viewId, 10))) {
+          await this.$router.push({ path: `/project/${this.projectId}/views/${viewId}/templates` });
         }
       }
     },
@@ -411,35 +386,15 @@ export default {
     },
 
     async loadViews() {
-      if (this.isRedirecting) {
-        return;
-      }
-      this.views = (await apiClient({
+      this.views = (await axios({
         method: 'get',
         url: `/api/project/${this.projectId}/views`,
         responseType: 'json',
       })).data.filter((v) => !v.hidden || this.can(this.USER_PERMISSIONS.manageProjectResources));
       this.views.sort((v1, v2) => v1.position - v2.position);
 
-      // Редиректим только если viewId указан в URL, но не найден в списке views
-      if (this.viewId != null
-        && this.views
-        && this.views.length > 0
-        && !this.views.some((v) => v.id === parseInt(this.viewId, 10))
-        && !this.viewItemsLoading
-        && !this.isRedirecting) {
-        // Если viewId не найден, редиректим на страницу без viewId
-        this.isRedirecting = true;
-        try {
-          await this.$router.replace({ path: `/project/${this.projectId}/templates` });
-        } catch (err) {
-          console.error('Redirect error:', err);
-        } finally {
-          // Сбрасываем флаг после небольшой задержки
-          setTimeout(() => {
-            this.isRedirecting = false;
-          }, 100);
-        }
+      if (this.viewId != null && !this.views.some((v) => v.id === this.viewId)) {
+        await this.$router.push({ path: `/project/${this.projectId}/templates` });
       }
     },
 
@@ -460,7 +415,7 @@ export default {
       }
 
       if (data.task_id !== template.last_task_id) {
-        const lastTask = (await apiClient({
+        const lastTask = (await axios({
           method: 'get',
           url: `/api/project/${this.projectId}/tasks/${data.task_id}`,
           responseType: 'json',

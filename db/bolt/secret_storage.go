@@ -1,29 +1,28 @@
 package bolt
 
-import (
-	"fmt"
-
-	"github.com/semaphoreui/semaphore/db"
-)
+import "github.com/semaphoreui/semaphore/db"
 
 func (d *BoltDb) GetSecretStorages(projectID int) ([]db.SecretStorage, error) {
 	return []db.SecretStorage{}, nil
 }
 
 func (d *BoltDb) CreateSecretStorage(storage db.SecretStorage) (db.SecretStorage, error) {
-	return db.SecretStorage{}, fmt.Errorf("secret storage is not supported in BoltDB, please use SQL database")
+	//TODO implement me
+	panic("implement me")
 }
 
 func (d *BoltDb) GetSecretStorage(projectID int, storageID int) (db.SecretStorage, error) {
-	return db.SecretStorage{}, fmt.Errorf("secret storage is not supported in BoltDB, please use SQL database")
+	//TODO implement me
+	panic("implement me")
 }
 
 func (d *BoltDb) DeleteSecretStorage(projectID int, storageID int) error {
-	return fmt.Errorf("secret storage is not supported in BoltDB, please use SQL database")
+	panic("implement me")
 }
 
 func (d *BoltDb) UpdateSecretStorage(storage db.SecretStorage) error {
-	return fmt.Errorf("secret storage is not supported in BoltDB, please use SQL database")
+	//TODO implement me
+	panic("implement me")
 }
 
 func (d *BoltDb) GetSecretStorageRefs(projectID int, storageID int) (db.ObjectReferrers, error) {

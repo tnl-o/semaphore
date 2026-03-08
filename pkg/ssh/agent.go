@@ -86,12 +86,7 @@ func (a *Agent) Listen() error {
 			}
 
 			go func(conn net.Conn) {
-				defer func() {
-					if closeErr := conn.Close(); closeErr != nil {
-						// Log error but don't fail the function if close fails
-						// This is a cleanup operation for SSH agent connection
-					}
-				}()
+				defer conn.Close() //nolint:errcheck
 
 				if err := agent.ServeAgent(keyring, conn); err != nil && err != io.EOF {
 					a.Logger.Logf("error serving SSH agent listener: %w", err)

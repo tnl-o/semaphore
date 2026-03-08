@@ -65,6 +65,7 @@ func (t *LocalJob) SetStatus(status task_logger.TaskStatus) {
 }
 
 func (t *LocalJob) SetCommit(hash, message string) {
+	// TODO: is this the correct place to do?
 	t.Task.CommitHash = &hash
 	t.Task.CommitMessage = message
 	t.Logger.SetCommit(hash, message)

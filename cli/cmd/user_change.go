@@ -43,8 +43,7 @@ func applyChangeUserArgsForUser(user db.User, store db.Store) {
 		User: user,
 		Pwd:  targetUserArgs.password,
 	}); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: Failed to update user: %v\n", err)
-		os.Exit(1)
+		panic(err)
 	}
 
 	fmt.Printf("User %s <%s> changed!\n", user.Username, user.Email)
@@ -73,8 +72,7 @@ var userChangeByLoginCmd = &cobra.Command{
 		user, err := store.GetUserByLoginOrEmail(targetUserArgs.login, "")
 
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to get user: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		applyChangeUserArgsForUser(user, store)
@@ -103,8 +101,7 @@ var userChangeByEmailCmd = &cobra.Command{
 
 		user, err := store.GetUserByLoginOrEmail("", targetUserArgs.email)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to get user: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		applyChangeUserArgsForUser(user, store)

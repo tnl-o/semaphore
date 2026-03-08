@@ -10,7 +10,6 @@
  */
 
 import axios from 'axios';
-import router from '@/router';
 import { getErrorMessage } from '@/lib/error';
 import { apiCache } from '@/lib/apiCache';
 
@@ -68,14 +67,35 @@ function setupAxiosInstance(instance) {
       const requestConfig = config;
       const method = (requestConfig.method || 'get').toLowerCase();
 
-      if (method === 'get' && !requestConfig.skipCache) {
+      // Отключаем кэш для запросов, которые требуют авторизации
+      // если мы находимся на странице авторизации или запрос к auth endpoint
+      const isAuthRequest = requestConfig.url?.includes('/api/auth/');
+      const isOnAuthPage = window.location.pathname?.startsWith('/auth/');
+
+      if (method === 'get' && !requestConfig.skipCache && !isAuthRequest && !isOnAuthPage) {
         const cached = apiCache.get(requestConfig.url);
         if (cached) {
-          const cachedError = new Error('Cached response');
-          cachedError.cached = true;
-          cachedError.data = cached;
-          cachedError.config = requestConfig;
-          return Promise.reject(cachedError);
+          // Проверяем, что кэшированные данные валидны
+          // Пропускаем кэш если:
+          // 1. Данные не являются объектом или массивом
+          // 2. Данные содержат ошибку
+          // 3. Данные пустые или null
+          // 4. Данные содержат поле error или message (ошибка API)
+          const isValid = cached !== null
+            && cached !== undefined
+            && (Array.isArray(cached) || (typeof cached === 'object' && !cached.error && !cached.message));
+
+          if (isValid) {
+            // Возвращаем кэшированные данные через специальную ошибку
+            // которая будет обработана следующим interceptor'ом
+            const cachedError = new Error('Cached response');
+            cachedError.cached = true;
+            cachedError.data = cached;
+            cachedError.config = requestConfig;
+            return Promise.reject(cachedError);
+          }
+          // Удаляем невалидные данные из кэша
+          apiCache.invalidate(requestConfig.url);
         }
       }
 
@@ -120,7 +140,8 @@ function setupAxiosInstance(instance) {
   instance.interceptors.response.use(
     (response) => {
       const method = (response.config?.method || 'get').toLowerCase();
-      if (method === 'get' && !response.config.skipCache) {
+      // Кэшируем только успешные ответы (200-299)
+      if (method === 'get' && !response.config.skipCache && response.status >= 200 && response.status < 300) {
         apiCache.set(response.config.url, response.data);
       }
 
@@ -140,12 +161,19 @@ function setupAxiosInstance(instance) {
       if (error.response?.status === 401 && !originalRequest.retry) {
         originalRequest.retry = true;
 
-        const currentPath = router.currentRoute?.path || window.location.pathname;
+        // Очищаем кэш при ошибке авторизации, так как данные могут быть невалидными
+        // Очищаем весь кэш, чтобы избежать использования невалидных данных
+        apiCache.clear();
+
+        // Также очищаем кэш для всех API запросов
+        apiCache.invalidate(/^\/api\//);
+
+        const currentPath = window.location.pathname;
         const isOnAuthPage = currentPath.startsWith('/auth/');
         const isAuthEndpoint = originalRequest.url?.includes('/api/auth/');
 
         if (!isOnAuthPage && !isAuthEndpoint) {
-          const returnPath = router.currentRoute?.fullPath || window.location.pathname;
+          const returnPath = window.location.pathname + window.location.search;
           if (returnPath !== '/auth/login') {
             const redirectUrl = `/auth/login?redirect=${encodeURIComponent(returnPath)}`;
             setTimeout(() => {

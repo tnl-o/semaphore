@@ -34,13 +34,11 @@ var userDeleteCmd = &cobra.Command{
 
 		user, err := store.GetUserByLoginOrEmail(targetUserArgs.login, targetUserArgs.email)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to get user: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		if err := store.DeleteUser(user.ID); err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to delete user: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		fmt.Printf("User %s <%s> deleted!\n", user.Username, user.Email)

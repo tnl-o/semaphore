@@ -359,7 +359,7 @@ import YesNoDialog from '@/components/YesNoDialog.vue';
 import ItemListPageBase from '@/components/ItemListPageBase';
 import EditDialog from '@/components/EditDialog.vue';
 import RunnerForm from '@/components/RunnerForm.vue';
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import DashboardMenu from '@/components/DashboardMenu.vue';
 import delay from '@/lib/delay';
 import CopyClipboardButton from '@/components/CopyClipboardButton.vue';
@@ -452,15 +452,17 @@ semaphore runner start --no-config`;
         : `/api/runners/${runner.id}/cache`;
 
       try {
-        await apiClient({
+        await axios({
           method: 'delete',
           url,
           responseType: 'json',
         });
         await this.loadItems();
       } catch (e) {
-        const { toast } = await import('@/lib/toast');
-        toast.error(`Cannot clear cache: ${e.message}`);
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: `Cannot clear cache: ${e.message}`,
+        });
       }
     },
 
@@ -520,7 +522,7 @@ semaphore runner start --no-config`;
         ? `/api/project/${projectId}/runners/${runnerId}/active`
         : `/api/runners/${runnerId}/active`;
 
-      await apiClient({
+      await axios({
         method: 'post',
         url,
         responseType: 'json',

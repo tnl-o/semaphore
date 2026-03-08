@@ -104,7 +104,7 @@
   </v-form>
 </template>
 <script>
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import ItemFormBase from '@/components/ItemFormBase';
 
 export default {
@@ -128,7 +128,7 @@ export default {
     };
   },
   async created() {
-    this.keys = (await apiClient({
+    this.keys = (await axios({
       keys: 'get',
       url: `/api/project/${this.projectId}/keys`,
       responseType: 'json',

@@ -1,0 +1,166 @@
+[package]
+name = "semaphore"
+version = "0.1.0"
+edition = "2021"
+authors = ["Alexander Vashurin <alexandervashurin@yandex.ru>"]
+description = "Rust-реализация Semaphore UI - современный веб-интерфейс для управления DevOps-инструментами (Ansible, Terraform, PowerShell и др.)"
+license = "MIT"
+repository = "https://github.com/alexandervashurin/semaphore"
+
+[lib]
+name = "semaphore_ffi"
+crate-type = ["cdylib", "staticlib", "rlib"]
+path = "src/lib.rs"
+
+[dependencies]
+# Веб-фреймворк и HTTP
+axum = { version = "0.8", features = ["macros", "ws"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace", "fs"] }
+hyper = { version = "1", features = ["full"] }
+hyper-util = { version = "0.1", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json"] }
+
+# Сериализация
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# once_cell
+once_cell = "1.21"
+
+# JWT
+jsonwebtoken = "9.3"
+
+# Работа с временем
+chrono = { version = "0.4", features = ["serde"] }
+
+# Логирование
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Ошибки
+thiserror = "2"
+anyhow = "1.0"
+
+# Валидация
+validator = { version = "0.20", features = ["derive"] }
+
+# Утилиты
+uuid = { version = "1", features = ["v4", "serde"] }
+bcrypt = "0.17"
+dotenvy = "0.15"
+rand = "0.8"  # Для rsa crate
+
+# Email (mailer)
+lettre = { version = "0.11", features = ["tokio1-native-tls", "builder", "smtp-transport"] }
+rustls = "0.23"
+
+# Encryption (RSA)
+rsa = "0.9"
+pkcs1 = "0.7"
+pem = "3.0"
+
+# Shell escaping
+shlex = "1.3"
+
+# Асинхронные утилиты
+futures = "0.3"
+async-trait = "0.1"
+
+# Регулярные выражения
+regex = "1"
+
+# Парсинг Cron
+cron = "0.15"
+
+# OIDC / OAuth2
+oauth2 = "5.0"
+
+# Git2 (для работы с Git)
+git2 = { version = "0.20", features = ["ssh"] }
+
+# SSH (для подключений и агента)
+ssh2 = "0.9"
+# ssh2-agent = "0.1"  # Опционально для SSH agent forwarding
+
+# Сжатие
+flate2 = "1.1"
+
+# Хэширование
+sha2 = "0.10"
+sha1 = "0.10"
+hex = "0.4"
+md-5 = "0.10"
+
+# HMAC для TOTP
+hmac = "0.12"
+
+# OTP (TOTP/HOTP)
+base32 = "0.5"
+base64 = "0.22"
+
+# LDAP (опционально, для аутентификации)
+# ldap3 = "0.11"
+
+# OIDC (опционально, для OAuth)
+# oidc = "0.18"
+
+# WebSocket
+tokio-tungstenite = "0.27"
+axum-extra = { version = "0.10", features = ["typed-header", "cookie"] }
+
+[dependencies.sqlx]
+version = "0.8"
+features = [
+    "runtime-tokio",
+    "tls-native-tls",
+    "sqlite",
+    "mysql",
+    "postgres",
+    "chrono",
+    "uuid"
+]
+
+# BoltDB-подобное хранилище (ключ-значение)
+[dependencies.sled]
+version = "0.34"
+
+# CLI
+[dependencies.clap]
+version = "4.5"
+features = ["derive", "env"]
+
+# System
+[dependencies.libc]
+version = "0.2"
+
+[dependencies.which]
+version = "4"
+
+[dependencies.nix]
+version = "0.29"
+features = ["user", "fs"]
+
+# Тестирование
+[dev-dependencies]
+tokio-test = "0.4"
+fake = { version = "4", features = ["derive", "chrono"] }
+tempfile = "3"
+
+# Профилирование
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+
+[profile.dev]
+debug = true
+
+# Флаги для разных баз данных
+[features]
+default = ["sqlite", "mysql", "postgres"]
+sqlite = ["sqlx/sqlite"]
+mysql = ["sqlx/mysql"]
+postgres = ["sqlx/postgres"]
+bolt = []  # Sled для BoltDB-подобного режима

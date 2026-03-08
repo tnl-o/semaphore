@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
 	"reflect"
 	"sort"
 	"strings"
@@ -1014,8 +1012,7 @@ func CreateTestStore() *BoltDb {
 		},
 	}
 
-	tempDir := os.TempDir()
-	fn := filepath.Join(tempDir, "test_semaphore_db_"+util.RandString(5))
+	fn := "/tmp/test_semaphore_db_" + util.RandString(5)
 	store := CreateBoltDB()
 
 	store.Filename = fn

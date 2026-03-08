@@ -1,4 +1,4 @@
-import { api } from '@/lib/apiClient';
+import axios from 'axios';
 import { getErrorMessage } from '@/lib/error';
 
 export default {
@@ -24,14 +24,18 @@ export default {
       try {
         await this.beforeSave();
 
-        const method = this.isNew ? 'post' : 'put';
-        const url = this.isNew ? this.getItemsUrl() : this.getSingleItemUrl();
-        const response = await api[method](url, {
-          ...this.item,
-          integration_id: this.integrationId,
-          ...(this.getRequestOptions().data || {}),
-        });
-        item = response.data;
+        item = (await axios({
+          method: this.isNew ? 'post' : 'put',
+          url: this.isNew
+            ? this.getItemsUrl()
+            : this.getSingleItemUrl(),
+          responseType: 'json',
+          data: {
+            ...this.item,
+            integration_id: this.integrationId,
+          },
+          ...(this.getRequestOptions()),
+        })).data;
 
         await this.afterSave(item);
 

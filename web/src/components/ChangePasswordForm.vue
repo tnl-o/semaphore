@@ -10,24 +10,30 @@
       class="pb-2"
     >{{ formError }}</v-alert>
 
-    <SecurePasswordInput
+    <v-text-field
       v-model="item.password"
       :label="$t('password2')"
+      :type="showPassword ? 'text' : 'password'"
+      :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+      @click:append="showPassword = !showPassword"
       :rules="[v => !!v || $t('password_required')]"
       required
       :disabled="formSaving"
-    />
+    ></v-text-field>
   </v-form>
 </template>
 <script>
 import ItemFormBase from '@/components/ItemFormBase';
-import SecurePasswordInput from '@/components/SecurePasswordInput.vue';
 
 export default {
   mixins: [ItemFormBase],
-  components: {
-    SecurePasswordInput,
+
+  data() {
+    return {
+      showPassword: false,
+    };
   },
+
   methods: {
     async loadData() {
       this.item = {};

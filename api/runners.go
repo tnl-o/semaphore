@@ -14,13 +14,7 @@ func getAllRunners(w http.ResponseWriter, r *http.Request) {
 	runners, err := helpers.Store(r).GetAllRunners(false, false)
 
 	if err != nil {
-		logger := helpers.Logger(r)
-		logger.WithError(err).WithFields(log.Fields{
-			"context": "runner",
-			"action":  "get_all_runners",
-		}).Error("Failed to get all runners")
-		helpers.WriteError(w, err)
-		return
+		panic(err)
 	}
 
 	var result = make([]db.Runner, 0)
@@ -70,11 +64,7 @@ func addGlobalRunner(w http.ResponseWriter, r *http.Request) {
 	newRunner, err := helpers.Store(r).CreateRunner(runner)
 
 	if err != nil {
-		logger := helpers.Logger(r)
-		logger.WithError(err).WithFields(log.Fields{
-			"context": "runner",
-			"action":  "create_runner",
-		}).Warn("Failed to create runner")
+		log.Warn("Runner is not created: " + err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

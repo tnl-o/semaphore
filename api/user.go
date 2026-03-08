@@ -12,7 +12,6 @@ import (
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/pro_interfaces"
 	"github.com/semaphoreui/semaphore/util"
-	log "github.com/sirupsen/logrus"
 )
 
 type UserController struct {
@@ -69,13 +68,7 @@ func createAPIToken(w http.ResponseWriter, r *http.Request) {
 	user := helpers.GetFromContext(r, "user").(*db.User)
 	tokenID := make([]byte, 32)
 	if _, err := io.ReadFull(rand.Reader, tokenID); err != nil {
-		logger := helpers.Logger(r)
-		logger.WithError(err).WithFields(log.Fields{
-			"context": "api_token",
-			"action":  "create_token",
-		}).Error("Failed to generate random token ID")
-		helpers.WriteErrorStatus(w, "Failed to generate API token", http.StatusInternalServerError)
-		return
+		panic(err)
 	}
 
 	token, err := helpers.Store(r).CreateAPIToken(db.APIToken{
@@ -84,13 +77,7 @@ func createAPIToken(w http.ResponseWriter, r *http.Request) {
 		Expired: false,
 	})
 	if err != nil {
-		logger := helpers.Logger(r)
-		logger.WithError(err).WithFields(log.Fields{
-			"context": "api_token",
-			"action":  "create_token",
-		}).Error("Failed to create API token")
-		helpers.WriteError(w, err)
-		return
+		panic(err)
 	}
 
 	helpers.WriteJSON(w, http.StatusCreated, token)

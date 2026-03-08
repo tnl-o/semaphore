@@ -224,9 +224,9 @@ func (d *SqlDb) getTemplates(projectID int, userID *int, filter db.TemplateFilte
 		case db.ViewTypeCustom:
 			q = q.Where("pt.view_id=?", *filter.ViewID)
 		case db.ViewTypeAll:
-			// Filter for "All" view type is not implemented yet
-			// This would require parsing and applying the filter condition
-			_ = view.Filter
+			if view.Filter != nil {
+				// TODO: implement filter
+			}
 		}
 	}
 

@@ -1,4 +1,4 @@
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 
 export default {
 
@@ -31,7 +31,7 @@ export default {
   methods: {
 
     async loadAliases() {
-      this.aliases = (await apiClient({
+      this.aliases = (await axios({
         method: 'get',
         url: this.aliasPath,
         responseType: 'json',
@@ -39,7 +39,7 @@ export default {
     },
 
     async deleteAlias(id) {
-      await apiClient({
+      await axios({
         method: 'delete',
         url: `${this.aliasPath}/${id}`,
       });
@@ -47,7 +47,7 @@ export default {
     },
 
     async addAlias() {
-      await apiClient({
+      await axios({
         method: 'post',
         url: this.aliasPath,
         responseType: 'json',

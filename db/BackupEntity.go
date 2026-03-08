@@ -71,8 +71,7 @@ func (e SecretStorage) GetName() string {
 }
 
 func (e Role) GetID() int {
-	// Role doesn't have an ID field, return 0 as it's not used for backup
-	return 0
+	panic("Role does not implement GetID")
 }
 
 func (e Role) GetSlug() string {

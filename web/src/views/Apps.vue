@@ -97,7 +97,7 @@
   </div>
 </template>
 <script>
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import EventBus from '@/event-bus';
 import YesNoDialog from '@/components/YesNoDialog.vue';
 import ItemListPageBase from '@/components/ItemListPageBase';
@@ -162,7 +162,7 @@ export default {
     },
 
     async setActive(appId, active) {
-      await apiClient({
+      await axios({
         method: 'post',
         url: `/api/apps/${appId}/active`,
         responseType: 'json',

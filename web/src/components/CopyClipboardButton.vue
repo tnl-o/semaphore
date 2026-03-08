@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import EventBus from '@/event-bus';
+
 export default {
   props: {
     text: String,
@@ -28,7 +30,7 @@ export default {
     color: String,
   },
   methods: {
-    async copy() {
+    copy() {
       try {
         const el = this.$refs.copy_to_clipboard_textarea;
         el.value = this.text;
@@ -40,11 +42,15 @@ export default {
           throw new Error('Fallback copy failed');
         }
 
-        const { toast } = await import('@/lib/toast');
-        toast.success(this.successMessage);
+        EventBus.$emit('i-snackbar', {
+          color: 'success',
+          text: this.successMessage,
+        });
       } catch (e) {
-        const { toast } = await import('@/lib/toast');
-        toast.error(`Can't copy to clipboard: ${e.message}`);
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: `Can't copy to clipboard: ${e.message}`,
+        });
       }
     },
   },

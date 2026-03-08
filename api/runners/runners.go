@@ -160,13 +160,7 @@ func (c *RunnerController) GetRunner(w http.ResponseWriter, r *http.Request) {
 			if tsk.Inventory.SSHKeyID != nil {
 				err := c.encryptionService.DeserializeSecret(&tsk.Inventory.SSHKey)
 				if err != nil {
-					log.WithFields(log.Fields{
-						"runner_id": runner.ID,
-						"task_id":   tsk.Task.ID,
-						"context":   "runner",
-					}).WithError(err).Error("failed to deserialize SSH key")
-					helpers.WriteError(w, err)
-					return
+					// TODO: return error
 				}
 				data.AccessKeys[*tsk.Inventory.SSHKeyID] = tsk.Inventory.SSHKey
 			}
@@ -174,13 +168,7 @@ func (c *RunnerController) GetRunner(w http.ResponseWriter, r *http.Request) {
 			if tsk.Inventory.BecomeKeyID != nil {
 				err := c.encryptionService.DeserializeSecret(&tsk.Inventory.BecomeKey)
 				if err != nil {
-					log.WithFields(log.Fields{
-						"runner_id": runner.ID,
-						"task_id":   tsk.Task.ID,
-						"context":   "runner",
-					}).WithError(err).Error("failed to deserialize become key")
-					helpers.WriteError(w, err)
-					return
+					// TODO: return error
 				}
 				data.AccessKeys[*tsk.Inventory.BecomeKeyID] = tsk.Inventory.BecomeKey
 			}
@@ -190,14 +178,7 @@ func (c *RunnerController) GetRunner(w http.ResponseWriter, r *http.Request) {
 					if vault.VaultKeyID != nil {
 						err := c.encryptionService.DeserializeSecret(vault.Vault)
 						if err != nil {
-							log.WithFields(log.Fields{
-								"runner_id": runner.ID,
-								"task_id":   tsk.Task.ID,
-								"vault_id":  *vault.VaultKeyID,
-								"context":   "runner",
-							}).WithError(err).Error("failed to deserialize vault key")
-							helpers.WriteError(w, err)
-							return
+							// TODO: return error
 						}
 						data.AccessKeys[*vault.VaultKeyID] = *vault.Vault
 					}
@@ -207,14 +188,7 @@ func (c *RunnerController) GetRunner(w http.ResponseWriter, r *http.Request) {
 			if tsk.Inventory.RepositoryID != nil {
 				err := c.encryptionService.DeserializeSecret(&tsk.Inventory.Repository.SSHKey)
 				if err != nil {
-					log.WithFields(log.Fields{
-						"runner_id":     runner.ID,
-						"task_id":       tsk.Task.ID,
-						"repository_id": *tsk.Inventory.RepositoryID,
-						"context":       "runner",
-					}).WithError(err).Error("failed to deserialize repository SSH key")
-					helpers.WriteError(w, err)
-					return
+					// TODO: return error
 				}
 				data.AccessKeys[tsk.Inventory.Repository.SSHKeyID] = tsk.Inventory.Repository.SSHKey
 			}

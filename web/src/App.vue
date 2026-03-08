@@ -587,6 +587,19 @@
                 </v-list-item-content>
               </v-list-item>
 
+              <!-- Plugin menu items -->
+              <template v-for="item in pluginMenuItems">
+                <v-divider v-if="item.order >= 1000" :key="`divider-${item.id}`"></v-divider>
+                <v-list-item :to="item.path" :key="item.id">
+                  <v-list-item-icon>
+                    <v-icon>{{ item.icon || 'mdi-puzzle' }}</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+
               <v-list-item key="edit" @click="userDialog = true">
                 <v-list-item-icon>
                   <v-icon>mdi-pencil</v-icon>
@@ -635,17 +648,6 @@
     </v-navigation-drawer>
 
     <v-main>
-      <v-app-bar
-        v-if="state === 'success' && !$route.path.startsWith('/auth/')"
-        app
-        flat
-        color="transparent"
-        class="px-4"
-      >
-        <Breadcrumbs />
-        <v-spacer />
-      </v-app-bar>
-
       <router-view
         :projectId="projectId"
         :projectType="(project || {}).type || ''"
@@ -950,7 +952,7 @@
 </style>
 
 <script>
-import { api } from '@/lib/apiClient';
+import axios from 'axios';
 import { getErrorMessage } from '@/lib/error';
 import EditDialog from '@/components/EditDialog.vue';
 import ProjectForm from '@/components/ProjectForm.vue';
@@ -962,7 +964,6 @@ import SubscriptionForm from '@/components/SubscriptionForm.vue';
 import RestoreProjectForm from '@/components/RestoreProjectForm.vue';
 import YesNoDialog from '@/components/YesNoDialog.vue';
 import TaskLogDialog from '@/components/TaskLogDialog.vue';
-import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import delay from '@/lib/delay';
 
 const PROJECT_COLORS = [
@@ -1047,7 +1048,6 @@ export default {
     UserForm,
     EditDialog,
     ProjectForm,
-    Breadcrumbs,
   },
   data() {
     return {
@@ -1075,6 +1075,7 @@ export default {
       taskId: null,
       template: null,
       darkMode: false,
+      pluginMenuItems: [],
       languages: [
         {
           id: '',
@@ -1092,7 +1093,7 @@ export default {
 
   watch: {
     async projects(val) {
-      if (Array.isArray(val) && val.length === 0
+      if (val.length === 0
         && this.$route.path.startsWith('/project/')
         && this.$route.path !== '/project/new'
         && this.$route.path !== '/project/premium'
@@ -1151,7 +1152,7 @@ export default {
     },
 
     project() {
-      if (this.projects == null || !Array.isArray(this.projects)) {
+      if (this.projects == null) {
         return null;
       }
       return this.projects.find((x) => x.id === this.projectId);
@@ -1178,17 +1179,14 @@ export default {
       await this.loadData();
       this.state = 'success';
     } catch (err) {
-      // Handle 401 - interceptor will handle redirect for non-auth pages
-      // But we still need to set state to 'success' to show the login page
-      if (err.response?.status === 401) {
-        const currentPath = this.$route.path || window.location.pathname;
-        if (currentPath.startsWith('/auth/')) {
-          // Already on auth page, just set state to success
-          this.state = 'success';
-        } else {
-          // Interceptor will redirect, but we need to set state
-          this.state = 'success';
+      if (err.response && err.response.status === 401) {
+        if (this.$route.path !== '/auth/login') {
+          await this.$router.push({
+            path: '/auth/login',
+            query: { redirect: this.$route.fullPath },
+          });
         }
+        this.state = 'success';
         return;
       }
 
@@ -1268,9 +1266,7 @@ export default {
     EventBus.$on('i-project', async (e) => {
       let text;
 
-      const project = (Array.isArray(this.projects)
-        ? this.projects.find((p) => p.id === e.item.id)
-        : null) || e.item;
+      const project = this.projects.find((p) => p.id === e.item.id) || e.item;
       const projectName = project.name || `#${project.id}`;
 
       switch (e.action) {
@@ -1290,7 +1286,11 @@ export default {
       }
 
       if (e.action === 'restore') {
-        const emptyKeys = (await api.get(`/api/project/${project.id}/keys`)).data.filter((k) => k.empty);
+        const emptyKeys = (await axios({
+          method: 'get',
+          url: `/api/project/${project.id}/keys`,
+          responseType: 'json',
+        })).data.filter((k) => k.empty);
 
         this.restoreProjectResult = {
           projectName,
@@ -1312,9 +1312,7 @@ export default {
           await this.selectProject(e.item.id, { new_project: undefined });
           break;
         case 'delete':
-          if (this.projectId === e.item.id
-            && Array.isArray(this.projects)
-            && this.projects.length > 0) {
+          if (this.projectId === e.item.id && this.projects.length > 0) {
             await this.selectProject(this.projects[0].id);
           }
           break;
@@ -1360,22 +1358,9 @@ export default {
         socket.start();
       }
 
-      try {
-        await this.loadUserInfo();
-        await this.loadProjects();
-      } catch (err) {
-        // If 401 error, don't continue - interceptor will handle redirect
-        if (err.response?.status === 401) {
-          throw err;
-        }
-        // For other errors, continue but log them
-        console.error('Error loading data:', err);
-      }
-
-      // Only continue if user is authenticated (has user data)
-      if (!this.user) {
-        return;
-      }
+      await this.loadUserInfo();
+      await this.loadProjects();
+      await this.loadPluginMenuItems();
 
       // try to find project and switch to it if URL not pointing to any project
       if (this.$route.path === '/'
@@ -1398,12 +1383,7 @@ export default {
     },
 
     async trySelectMostSuitableProject() {
-      // Don't redirect to /project/new if user is not authenticated
-      if (!this.user) {
-        return;
-      }
-
-      if (!Array.isArray(this.projects) || this.projects.length === 0) {
+      if (this.projects.length === 0) {
         if (this.$route.path !== '/project/new') {
           await this.$router.push({ path: '/project/new' });
         }
@@ -1430,8 +1410,27 @@ export default {
       }
     },
 
+    async loadPluginMenuItems() {
+      try {
+        const { loadPluginMenuItems } = await import('@/lib/plugins');
+        const items = await loadPluginMenuItems();
+        console.log('[Plugins] Loaded menu items:', items);
+        this.pluginMenuItems = items || [];
+        // Сортируем по Order
+        this.pluginMenuItems.sort((a, b) => (a.order || 0) - (b.order || 0));
+        console.log('[Plugins] Sorted menu items:', this.pluginMenuItems);
+      } catch (err) {
+        console.error('[Plugins] Failed to load plugin menu items:', err);
+        this.pluginMenuItems = [];
+      }
+    },
+
     async selectProject(projectId, overriderQuery = {}) {
-      this.userRole = (await api.get(`/api/project/${projectId}/role`)).data;
+      this.userRole = (await axios({
+        method: 'get',
+        url: `/api/project/${projectId}/role`,
+        responseType: 'json',
+      })).data;
 
       localStorage.setItem('projectId', projectId);
       if (this.projectId === projectId) {
@@ -1460,19 +1459,28 @@ export default {
     },
 
     async loadProjects() {
-      this.projects = (await api.get('/api/projects')).data;
+      this.projects = (await axios({
+        method: 'get',
+        url: '/api/projects',
+        responseType: 'json',
+      })).data;
     },
 
     async loadUserInfo() {
-      this.user = (await api.get('/api/user')).data;
+      this.user = (await axios({
+        method: 'get',
+        url: '/api/user',
+        responseType: 'json',
+      })).data;
 
-      this.systemInfo = (await api.get('/api/info')).data;
+      this.systemInfo = (await axios({
+        method: 'get',
+        url: '/api/info',
+        responseType: 'json',
+      })).data;
     },
 
     getProjectColor(projectData) {
-      if (!Array.isArray(this.projects)) {
-        return PROJECT_COLORS[0];
-      }
       const projectIndex = this.projects.length
         - this.projects.findIndex((p) => p.id === projectData.id);
       return PROJECT_COLORS[projectIndex % PROJECT_COLORS.length];
@@ -1496,10 +1504,13 @@ export default {
           reader.onload = async (ev) => {
             const fileContent = ev.target.result;
             try {
-              const payload = await api.post('/api/projects/restore', fileContent);
-              this.$router.push({ path: `/project/${payload.data.id}/history` });
-              this.state = 'success';
-              await this.loadProjects();
+              await axios
+                .post('/api/projects/restore', fileContent)
+                .then(async (payload) => {
+                  this.$router.push({ path: `/project/${payload.data.id}/history` });
+                  this.state = 'success';
+                  await this.loadProjects();
+                });
             } catch (err) {
               EventBus.$emit('i-snackbar', {
                 color: 'error',
@@ -1519,7 +1530,11 @@ export default {
       this.snackbarText = '';
 
       try {
-        await api.post('/api/auth/logout');
+        (await axios({
+          method: 'post',
+          url: '/api/auth/logout',
+          responseType: 'json',
+        }));
 
         socket.stop();
 

@@ -1,5 +1,5 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <ContentSkeleton :loading="tasks === null" type="table">
+  <div v-if="tasks != null">
 
     <NewTaskDialog
       v-model="newTaskDialog"
@@ -57,13 +57,13 @@
 
       <template v-slot:item.actions="{ item }">
         <v-btn-toggle dense :value-comparator="() => false">
-      <v-btn @click="createTask(item)" :aria-label="`Re-run task ${item.id}`">
-        <v-icon aria-hidden="true">mdi-replay</v-icon>
-      </v-btn>
+          <v-btn @click="createTask(item)">
+            <v-icon>mdi-replay</v-icon>
+          </v-btn>
         </v-btn-toggle>
       </template>
     </v-data-table>
-  </ContentSkeleton>
+  </div>
 </template>
 <style lang="scss">
 .TaskListTable td {
@@ -71,19 +71,17 @@
 }
 </style>
 <script>
-import { api } from '@/lib/apiClient';
+import axios from 'axios';
 import TaskStatus from '@/components/TaskStatus.vue';
 import TaskLink from '@/components/TaskLink.vue';
 import { TEMPLATE_TYPE_ACTION_TITLES, TEMPLATE_TYPE_ICONS } from '@/lib/constants';
 import NewTaskDialog from '@/components/NewTaskDialog.vue';
-import ContentSkeleton from '@/components/ContentSkeleton.vue';
 
 export default {
   components: {
     NewTaskDialog,
     TaskStatus,
     TaskLink,
-    ContentSkeleton,
   },
   props: {
     template: Object,
@@ -147,10 +145,11 @@ export default {
   methods: {
     async loadData() {
       this.tasks = null;
-      const response = await api.get(
-        `/api/project/${this.template.project_id}/templates/${this.template.id}/tasks/last?limit=${this.limit || 200}`,
-      );
-      this.tasks = response.data;
+      this.tasks = (await axios({
+        method: 'get',
+        url: `/api/project/${this.template.project_id}/templates/${this.template.id}/tasks/last?limit=${this.limit || 200}`,
+        responseType: 'json',
+      })).data;
     },
 
     getActionButtonTitle() {

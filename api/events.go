@@ -7,9 +7,6 @@ import (
 )
 
 // nolint: gocyclo
-// getEvents retrieves events from the database based on user permissions and project context
-// If a project is specified in the context, it returns events for that project
-// Otherwise, it returns events for the current user
 func getEvents(w http.ResponseWriter, r *http.Request, limit int) {
 	user := helpers.GetFromContext(r, "user").(*db.User)
 	projectObj, exists := helpers.GetOkFromContext(r, "project")
@@ -42,12 +39,10 @@ func getEvents(w http.ResponseWriter, r *http.Request, limit int) {
 	helpers.WriteJSON(w, http.StatusOK, events)
 }
 
-// getLastEvents retrieves the last 200 events for the current user or project
 func getLastEvents(w http.ResponseWriter, r *http.Request) {
 	getEvents(w, r, 200)
 }
 
-// getAllEvents retrieves all events for the current user or project without limit
 func getAllEvents(w http.ResponseWriter, r *http.Request) {
 	getEvents(w, r, 0)
 }

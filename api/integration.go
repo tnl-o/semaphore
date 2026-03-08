@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/semaphoreui/semaphore/pkg/conv"
@@ -367,13 +366,8 @@ func Extract(extractValues []db.IntegrationExtractValue, h http.Header, payload 
 		case db.IntegrationExtractBodyValue:
 			switch extractValue.BodyDataType {
 			case db.IntegrationBodyDataJSON:
-				path := normalizeJSONPath(extractValue.Key)
-				raw := gojsonq.New().JSONString(string(payload)).Find(path)
-				if raw == nil {
-					result[extractValue.Variable] = ""
-					continue
-				}
-				result[extractValue.Variable] = fmt.Sprintf("%v", raw)
+				var extractedResult = fmt.Sprintf("%v", gojsonq.New().JSONString(string(payload)).Find(extractValue.Key))
+				result[extractValue.Variable] = extractedResult
 			case db.IntegrationBodyDataString:
 				result[extractValue.Variable] = string(payload)
 			}
@@ -396,8 +390,7 @@ func ExtractAsAnyForTaskParams(extractValues []db.IntegrationExtractValue, h htt
 			switch extractValue.BodyDataType {
 			case db.IntegrationBodyDataJSON:
 				// Query the JSON payload for the key using gojsonq
-				path := normalizeJSONPath(extractValue.Key)
-				rawValue := gojsonq.New().JSONString(string(payload)).Find(path)
+				rawValue := gojsonq.New().JSONString(string(payload)).Find(extractValue.Key)
 				result[extractValue.Variable] = rawValue
 
 			case db.IntegrationBodyDataString:
@@ -407,24 +400,4 @@ func ExtractAsAnyForTaskParams(extractValues []db.IntegrationExtractValue, h htt
 		}
 	}
 	return result
-}
-
-func normalizeJSONPath(path string) string {
-	if path == "" {
-		return path
-	}
-
-	parts := strings.Split(path, ".")
-	for i, part := range parts {
-		if part == "" {
-			continue
-		}
-		if part[0] == '[' {
-			continue
-		}
-		if _, err := strconv.Atoi(part); err == nil {
-			parts[i] = fmt.Sprintf("[%s]", part)
-		}
-	}
-	return strings.Join(parts, ".")
 }

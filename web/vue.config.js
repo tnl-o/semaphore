@@ -23,20 +23,6 @@ module.exports = {
         args[0].minify = false;
         return args;
       });
-
-    // TypeScript support
-    config.resolve.extensions
-      .merge(['.ts', '.tsx']);
-
-    config.module
-      .rule('ts')
-      .test(/\.tsx?$/)
-      .use('ts-loader')
-      .loader('ts-loader')
-      .options({
-        appendTsSuffixTo: [/\.vue$/],
-        transpileOnly: true,
-      });
   },
   transpileDependencies: [
     'vuetify',

@@ -16,12 +16,7 @@ func getMD5Hash(filepath string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer func() {
-		if closeErr := file.Close(); closeErr != nil {
-			// Log error but don't fail the function if close fails
-			// This is a cleanup operation for file reading
-		}
-	}()
+	defer file.Close() //nolint:errcheck
 
 	hash := md5.New()
 	if _, err := io.Copy(hash, file); err != nil {

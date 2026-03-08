@@ -38,13 +38,7 @@ func (c *UsersController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		logger := helpers.Logger(r)
-		logger.WithError(err).WithFields(log.Fields{
-			"context": "user_management",
-			"action":  "get_users",
-		}).Error("Failed to get users")
-		helpers.WriteError(w, err)
-		return
+		panic(err)
 	}
 
 	if currentUser.Admin {
@@ -72,12 +66,7 @@ func (c *UsersController) AddUser(w http.ResponseWriter, r *http.Request) {
 
 	editor := helpers.GetFromContext(r, "user").(*db.User)
 	if !editor.Admin {
-		logger := helpers.Logger(r)
-		logger.WithFields(log.Fields{
-			"context":         "user_management",
-			"editor_username": editor.Username,
-			"action":          "create_user",
-		}).Warn("User is not permitted to create users")
+		log.Warn(editor.Username + " is not permitted to create users")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -107,12 +96,7 @@ func (c *UsersController) AddUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		logger := helpers.Logger(r)
-		logger.WithError(err).WithFields(log.Fields{
-			"context":         "user_management",
-			"editor_username": editor.Username,
-			"action":          "create_user",
-		}).Warn("Failed to create user")
+		log.Warn(editor.Username + " is not created: " + err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -167,13 +151,7 @@ func getUserMiddleware(next http.Handler) http.Handler {
 		editor := helpers.GetFromContext(r, "user").(*db.User)
 
 		if !editor.Admin && editor.ID != user.ID {
-			logger := helpers.Logger(r)
-			logger.WithFields(log.Fields{
-				"context":         "user_management",
-				"editor_username": editor.Username,
-				"target_user_id":  user.ID,
-				"action":          "edit_user",
-			}).Warn("User is not permitted to edit users")
+			log.Warn(editor.Username + " is not permitted to edit users")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
@@ -193,13 +171,7 @@ func (c *UsersController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !editor.Admin && (user.Pro && !targetUser.Pro) {
-		logger := helpers.Logger(r)
-		logger.WithFields(log.Fields{
-			"context":         "user_management",
-			"editor_username": editor.Username,
-			"target_user_id":  targetUser.ID,
-			"action":          "mark_pro",
-		}).Warn("User is not permitted to mark users as Pro")
+		log.Warn(editor.Username + " is not permitted to mark users as Pro")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -220,47 +192,26 @@ func (c *UsersController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !editor.Admin && editor.ID != targetUser.ID {
-		logger := helpers.Logger(r)
-		logger.WithFields(log.Fields{
-			"context":         "user_management",
-			"editor_username": editor.Username,
-			"target_user_id":  targetUser.ID,
-			"action":          "edit_user",
-		}).Warn("User is not permitted to edit users")
+		log.Warn(editor.Username + " is not permitted to edit users")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	if editor.ID == targetUser.ID && targetUser.Admin != user.Admin {
-		logger := helpers.Logger(r)
-		logger.WithFields(log.Fields{
-			"context": "user_management",
-			"user_id": editor.ID,
-			"action":  "edit_own_role",
-		}).Warn("User can't edit his own role")
+		log.Warn("User can't edit his own role")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	if targetUser.External && targetUser.Username != user.Username {
-		logger := helpers.Logger(r)
-		logger.WithFields(log.Fields{
-			"context": "user_management",
-			"user_id": targetUser.ID,
-			"action":  "edit_external_username",
-		}).Warn("Username is not editable for external users")
+		log.Warn("Username is not editable for external users")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	user.ID = targetUser.ID
 	if err := helpers.Store(r).UpdateUser(user); err != nil {
-		logger := helpers.Logger(r)
-		logger.WithError(err).WithFields(log.Fields{
-			"context": "user_management",
-			"user_id": user.ID,
-			"action":  "update_user",
-		}).Error("Failed to update user")
+		log.Error(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -277,24 +228,13 @@ func updateUserPassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !editor.Admin && editor.ID != user.ID {
-		logger := helpers.Logger(r)
-		logger.WithFields(log.Fields{
-			"context":         "user_management",
-			"editor_username": editor.Username,
-			"target_user_id":  user.ID,
-			"action":          "edit_password",
-		}).Warn("User is not permitted to edit users")
+		log.Warn(editor.Username + " is not permitted to edit users")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	if user.External {
-		logger := helpers.Logger(r)
-		logger.WithFields(log.Fields{
-			"context": "user_management",
-			"user_id": user.ID,
-			"action":  "edit_external_password",
-		}).Warn("Password is not editable for external users")
+		log.Warn("Password is not editable for external users")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -317,13 +257,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	editor := helpers.GetFromContext(r, "user").(*db.User)
 
 	if !editor.Admin && editor.ID != user.ID {
-		logger := helpers.Logger(r)
-		logger.WithFields(log.Fields{
-			"context":         "user_management",
-			"editor_username": editor.Username,
-			"target_user_id":  user.ID,
-			"action":          "delete_user",
-		}).Warn("User is not permitted to delete users")
+		log.Warn(editor.Username + " is not permitted to delete users")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}

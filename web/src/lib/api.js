@@ -1,7 +1,7 @@
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 
 export async function loadProjectResources(name) {
-  return (await apiClient({
+  return (await axios({
     method: 'get',
     url: `/api/project/${this.projectId}/${name}`,
     responseType: 'json',

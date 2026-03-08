@@ -1,0 +1,241 @@
+//! Template CRUD - операции с шаблонами
+//!
+//! Аналог db/sql/template.go из Go версии (часть 1: CRUD)
+//! 
+//! DEPRECATED: Используйте модули sqlite::template, postgres::template, mysql::template
+
+use crate::db::sql::types::SqlDb;
+use crate::error::{Error, Result};
+use crate::models::*;
+use sqlx::Row;
+
+impl SqlDb {
+    /// Получает все шаблоны проекта
+    pub async fn get_templates(&self, project_id: i32) -> Result<Vec<Template>> {
+        match self.get_dialect() {
+            crate::db::sql::types::SqlDialect::SQLite => {
+                let pool = self.get_sqlite_pool().ok_or(Error::Other("SQLite pool not found".to_string()))?;
+                crate::db::sql::sqlite::template::get_templates(pool, project_id).await
+            }
+            crate::db::sql::types::SqlDialect::PostgreSQL => {
+                let pool = self.get_postgres_pool().ok_or(Error::Other("PostgreSQL pool not found".to_string()))?;
+                crate::db::sql::postgres::template::get_templates(pool, project_id).await
+            }
+            crate::db::sql::types::SqlDialect::MySQL => {
+                let pool = self.get_mysql_pool().ok_or(Error::Other("MySQL pool not found".to_string()))?;
+                crate::db::sql::mysql::template::get_templates(pool, project_id).await
+            }
+        }
+    }
+
+    /// Получает шаблон по ID
+    pub async fn get_template(&self, project_id: i32, template_id: i32) -> Result<Template> {
+        match self.get_dialect() {
+            crate::db::sql::types::SqlDialect::SQLite => {
+                let pool = self.get_sqlite_pool().ok_or(Error::Other("SQLite pool not found".to_string()))?;
+                crate::db::sql::sqlite::template::get_template(pool, project_id, template_id).await
+            }
+            crate::db::sql::types::SqlDialect::PostgreSQL => {
+                let pool = self.get_postgres_pool().ok_or(Error::Other("PostgreSQL pool not found".to_string()))?;
+                crate::db::sql::postgres::template::get_template(pool, project_id, template_id).await
+            }
+            crate::db::sql::types::SqlDialect::MySQL => {
+                let pool = self.get_mysql_pool().ok_or(Error::Other("MySQL pool not found".to_string()))?;
+                crate::db::sql::mysql::template::get_template(pool, project_id, template_id).await
+            }
+        }
+    }
+
+    /// Создаёт новый шаблон
+    pub async fn create_template(&self, mut template: Template) -> Result<Template> {
+        match self.get_dialect() {
+            crate::db::sql::types::SqlDialect::SQLite => {
+                let pool = self.get_sqlite_pool().ok_or(Error::Other("SQLite pool not found".to_string()))?;
+                crate::db::sql::sqlite::template::create_template(pool, template).await
+            }
+            crate::db::sql::types::SqlDialect::PostgreSQL => {
+                let pool = self.get_postgres_pool().ok_or(Error::Other("PostgreSQL pool not found".to_string()))?;
+                crate::db::sql::postgres::template::create_template(pool, template).await
+            }
+            crate::db::sql::types::SqlDialect::MySQL => {
+                let pool = self.get_mysql_pool().ok_or(Error::Other("MySQL pool not found".to_string()))?;
+                crate::db::sql::mysql::template::create_template(pool, template).await
+            }
+        }
+    }
+
+    /// Обновляет шаблон
+    pub async fn update_template(&self, template: Template) -> Result<()> {
+        match self.get_dialect() {
+            crate::db::sql::types::SqlDialect::SQLite => {
+                let pool = self.get_sqlite_pool().ok_or(Error::Other("SQLite pool not found".to_string()))?;
+                crate::db::sql::sqlite::template::update_template(pool, template).await
+            }
+            crate::db::sql::types::SqlDialect::PostgreSQL => {
+                let pool = self.get_postgres_pool().ok_or(Error::Other("PostgreSQL pool not found".to_string()))?;
+                crate::db::sql::postgres::template::update_template(pool, template).await
+            }
+            crate::db::sql::types::SqlDialect::MySQL => {
+                let pool = self.get_mysql_pool().ok_or(Error::Other("MySQL pool not found".to_string()))?;
+                crate::db::sql::mysql::template::update_template(pool, template).await
+            }
+        }
+    }
+
+    /// Удаляет шаблон
+    pub async fn delete_template(&self, project_id: i32, template_id: i32) -> Result<()> {
+        match self.get_dialect() {
+            crate::db::sql::types::SqlDialect::SQLite => {
+                let pool = self.get_sqlite_pool().ok_or(Error::Other("SQLite pool not found".to_string()))?;
+                crate::db::sql::sqlite::template::delete_template(pool, project_id, template_id).await
+            }
+            crate::db::sql::types::SqlDialect::PostgreSQL => {
+                let pool = self.get_postgres_pool().ok_or(Error::Other("PostgreSQL pool not found".to_string()))?;
+                crate::db::sql::postgres::template::delete_template(pool, project_id, template_id).await
+            }
+            crate::db::sql::types::SqlDialect::MySQL => {
+                let pool = self.get_mysql_pool().ok_or(Error::Other("MySQL pool not found".to_string()))?;
+                crate::db::sql::mysql::template::delete_template(pool, project_id, template_id).await
+            }
+        }
+    }
+}
+
+// Legacy code removed - now uses decomposed modules
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use chrono::Utc;
+
+    async fn create_test_db() -> SqlDb {
+        let (db_path, _temp) = crate::db::sql::init::test_sqlite_url();
+        
+        let db = SqlDb::connect_sqlite(&db_path).await.unwrap();
+        
+        // Создаём таблицу template
+        sqlx::query(
+            "CREATE TABLE IF NOT EXISTS template (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                project_id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                playbook TEXT NOT NULL,
+                arguments TEXT,
+                type TEXT NOT NULL,
+                app TEXT NOT NULL DEFAULT 'ansible',
+                git_branch TEXT DEFAULT '',
+                deleted INTEGER NOT NULL DEFAULT 0,
+                inventory_id INTEGER,
+                repository_id INTEGER,
+                environment_id INTEGER,
+                start_version TEXT,
+                build_version TEXT,
+                description TEXT,
+                survey_vars TEXT,
+                vaults TEXT,
+                tasks INTEGER NOT NULL DEFAULT 0,
+                vault_key_id INTEGER,
+                become_key_id INTEGER,
+                created DATETIME NOT NULL
+            )"
+        )
+        .execute(db.get_sqlite_pool().unwrap())
+        .await
+        .unwrap();
+        
+        db
+    }
+
+    #[tokio::test]
+    async fn test_create_and_get_template() {
+        let db = create_test_db().await;
+        
+        let mut template = Template::default();
+        template.project_id = 1;
+        template.name = "Test Template".to_string();
+        template.playbook = "test.yml".to_string();
+        template.r#type = TemplateType::Task;
+        template.created = Utc::now();
+        
+        let created = db.create_template(template.clone()).await.unwrap();
+        assert!(created.id > 0);
+        
+        let retrieved = db.get_template(1, created.id).await.unwrap();
+        assert_eq!(retrieved.name, "Test Template");
+        assert_eq!(retrieved.playbook, "test.yml");
+        
+        // Cleanup
+        let _ = db.close().await;
+    }
+
+    #[tokio::test]
+    async fn test_get_templates() {
+        let db = create_test_db().await;
+        
+        // Создаём несколько шаблонов
+        for i in 0..5 {
+            let mut template = Template::default();
+            template.project_id = 1;
+            template.name = format!("Template {}", i);
+            template.playbook = format!("test{}.yml", i);
+            template.r#type = TemplateType::Task;
+            template.created = Utc::now();
+            db.create_template(template).await.unwrap();
+        }
+        
+        let templates = db.get_templates(1).await.unwrap();
+        assert!(templates.len() >= 5);
+        
+        // Cleanup
+        let _ = db.close().await;
+    }
+
+    #[tokio::test]
+    async fn test_update_template() {
+        let db = create_test_db().await;
+        
+        let mut template = Template::default();
+        template.project_id = 1;
+        template.name = "Test Template".to_string();
+        template.playbook = "test.yml".to_string();
+        template.r#type = TemplateType::Task;
+        template.created = Utc::now();
+        
+        let created = db.create_template(template).await.unwrap();
+        
+        let mut updated = created.clone();
+        updated.name = "Updated Template".to_string();
+        updated.playbook = "updated.yml".to_string();
+        
+        db.update_template(updated).await.unwrap();
+        
+        let retrieved = db.get_template(1, created.id).await.unwrap();
+        assert_eq!(retrieved.name, "Updated Template");
+        assert_eq!(retrieved.playbook, "updated.yml");
+        
+        // Cleanup
+        let _ = db.close().await;
+    }
+
+    #[tokio::test]
+    async fn test_delete_template() {
+        let db = create_test_db().await;
+        
+        let mut template = Template::default();
+        template.project_id = 1;
+        template.name = "Test Template".to_string();
+        template.playbook = "test.yml".to_string();
+        template.r#type = TemplateType::Task;
+        template.created = Utc::now();
+        
+        let created = db.create_template(template).await.unwrap();
+        
+        db.delete_template(1, created.id).await.unwrap();
+        
+        let result = db.get_template(1, created.id).await;
+        assert!(result.is_err());
+        
+        // Cleanup
+        let _ = db.close().await;
+    }
+}

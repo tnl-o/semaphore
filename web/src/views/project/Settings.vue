@@ -165,7 +165,8 @@
 <script>
 import EventBus from '@/event-bus';
 import ProjectForm from '@/components/ProjectForm.vue';
-import apiClient from '@/lib/apiClient';
+import { getErrorMessage } from '@/lib/error';
+import axios from 'axios';
 import YesNoDialog from '@/components/YesNoDialog.vue';
 import delay from '@/lib/delay';
 import DashboardMenu from '@/components/DashboardMenu.vue';
@@ -191,21 +192,27 @@ export default {
     async sendTestNotification() {
       this.testNotificationProgress = true;
       try {
-        await apiClient({
+        await axios({
           method: 'post',
           url: `/api/project/${this.projectId}/notifications/test`,
           responseType: 'json',
         });
-        // Using toast helper instead of EventBus directly
-        const { toast } = await import('@/lib/toast');
-        toast.success('Test notification sent.');
+        EventBus.$emit('i-snackbar', {
+          color: 'success',
+          text: 'Test notification sent.',
+        });
       } catch (err) {
-        const { toast } = await import('@/lib/toast');
-        if (err.response && err.response.status === 409) {
-          toast.warning('Please allow alerts for the project and save it.');
+        let msg;
+        if (err.response.status === 409) {
+          msg = 'Please allow alerts for the project and save it.';
         } else {
-          toast.apiError(err);
+          msg = getErrorMessage(err);
         }
+
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: msg,
+        });
       } finally {
         this.testNotificationProgress = false;
       }
@@ -215,9 +222,11 @@ export default {
       EventBus.$emit('i-show-drawer');
     },
 
-    async onError(e) {
-      const { toast } = await import('@/lib/toast');
-      toast.error(e.message);
+    onError(e) {
+      EventBus.$emit('i-snackbar', {
+        color: 'error',
+        text: e.message,
+      });
     },
 
     onSave(e) {
@@ -236,7 +245,7 @@ export default {
       await delay(1000);
 
       try {
-        await apiClient({
+        await axios({
           method: 'delete',
           url: `/api/project/${this.projectId}/cache`,
           transformResponse: (res) => res, // Necessary to not parse json
@@ -245,12 +254,15 @@ export default {
 
         await delay(1000);
 
-        // Using toast helper instead of EventBus directly
-        const { toast } = await import('@/lib/toast');
-        toast.success('Project cache cleaned.');
+        EventBus.$emit('i-snackbar', {
+          color: 'success',
+          text: 'Project cache cleaned.',
+        });
       } catch (err) {
-        const { toast } = await import('@/lib/toast');
-        toast.apiError(err);
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(err),
+        });
       } finally {
         this.clearCacheProgress = false;
       }
@@ -261,7 +273,7 @@ export default {
       await delay(1000);
 
       try {
-        const backup = await apiClient({
+        const backup = await axios({
           method: 'get',
           url: `/api/project/${this.projectId}/backup`,
           transformResponse: (res) => res, // Necessary to not parse json
@@ -276,11 +288,15 @@ export default {
 
         await delay(1000);
 
-        const { toast } = await import('@/lib/toast');
-        toast.success('Project exported.');
+        EventBus.$emit('i-snackbar', {
+          color: 'success',
+          text: 'Project exported.',
+        });
       } catch (err) {
-        const { toast } = await import('@/lib/toast');
-        toast.apiError(err);
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(err),
+        });
       } finally {
         this.backupProgress = false;
       }
@@ -288,7 +304,7 @@ export default {
 
     async deleteProject() {
       try {
-        await apiClient({
+        await axios({
           method: 'delete',
           url: `/api/project/${this.projectId}`,
           responseType: 'json',
@@ -300,8 +316,10 @@ export default {
           },
         });
       } catch (err) {
-        const { toast } = await import('@/lib/toast');
-        toast.apiError(err);
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(err),
+        });
       }
     },
   },

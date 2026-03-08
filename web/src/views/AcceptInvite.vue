@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import { getErrorMessage } from '@/lib/error';
 import delay from '@/lib/delay';
 
@@ -87,7 +87,7 @@ export default {
       await delay(2000);
 
       try {
-        const res = (await apiClient({
+        const res = (await axios({
           method: 'post',
           url: '/api/invites/accept',
           responseType: 'json',

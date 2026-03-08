@@ -117,7 +117,7 @@
 import ItemListPageBase from '@/components/ItemListPageBase';
 import ScheduleForm from '@/components/ScheduleForm.vue';
 import TaskList from '@/components/TaskList.vue';
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 
 export default {
   components: { TaskList, ScheduleForm },
@@ -132,7 +132,7 @@ export default {
   },
   methods: {
     async setActive(scheduleId, active) {
-      await apiClient({
+      await axios({
         method: 'put',
         url: `/api/project/${this.projectId}/schedules/${scheduleId}/active`,
         responseType: 'json',

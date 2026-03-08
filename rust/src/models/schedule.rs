@@ -1,0 +1,28 @@
+//! Модель расписания
+
+use serde::{Deserialize, Serialize};
+use sqlx::FromRow;
+
+/// Расписание - автоматический запуск задач
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+pub struct Schedule {
+    pub id: i32,
+    pub template_id: i32,
+    pub project_id: i32,
+    pub cron: String,
+    pub cron_format: Option<String>,
+    pub name: String,
+    pub active: bool,
+    pub last_commit_hash: Option<String>,
+    pub repository_id: Option<i32>,
+    pub created: Option<String>,
+}
+
+/// Расписание с дополнительными полями
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+pub struct ScheduleWithTpl {
+    #[serde(flatten)]
+    pub schedule: Schedule,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tpl_playbook: Option<String>,
+}

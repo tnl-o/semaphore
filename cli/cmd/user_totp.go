@@ -42,8 +42,7 @@ var totpEnableCmd = &cobra.Command{
 		user, err := store.GetUserByLoginOrEmail(targetUserArgs.login, "")
 
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to get user: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		if user.Totp != nil {
@@ -62,20 +61,17 @@ var totpEnableCmd = &cobra.Command{
 		})
 
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to generate TOTP key: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		code, hash, err := util.GenerateRecoveryCode()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to generate recovery code: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		totp, err := store.AddTotpVerification(user.ID, key.URL(), hash)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to add TOTP verification: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		fmt.Println()
@@ -110,8 +106,7 @@ var totpDisableCmd = &cobra.Command{
 		user, err := store.GetUserByLoginOrEmail(targetUserArgs.login, "")
 
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to get user: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		if user.Totp == nil {
@@ -121,8 +116,7 @@ var totpDisableCmd = &cobra.Command{
 
 		err = store.DeleteTotpVerification(user.ID, user.Totp.ID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to delete TOTP verification: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 	},
 }
@@ -142,8 +136,7 @@ var totpShowCmd = &cobra.Command{
 		user, err := store.GetUserByLoginOrEmail(targetUserArgs.login, "")
 
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to get user: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		if user.Totp == nil {

@@ -67,8 +67,7 @@ var userAddCmd = &cobra.Command{
 				External: targetUserArgs.external,
 			},
 		}); err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to create user: %v\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 
 		fmt.Printf("User %s <%s> added!\n", targetUserArgs.login, targetUserArgs.email)

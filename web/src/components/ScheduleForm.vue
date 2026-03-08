@@ -280,7 +280,7 @@
 
 <script>
 import ItemFormBase from '@/components/ItemFormBase';
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 
 import { CronExpression, CronExpressionParser, CronFieldCollection } from 'cron-parser';
 import { getErrorMessage } from '@/lib/error';
@@ -466,7 +466,7 @@ export default {
     this.showInfo = localStorage.getItem('schedule_hide_info') !== '1';
     this.rawCron = localStorage.getItem('schedule__raw_cron') !== '1';
 
-    this.templates = (await apiClient({
+    this.templates = (await axios({
       method: 'get',
       url: `/api/project/${this.projectId}/templates`,
       responseType: 'json',

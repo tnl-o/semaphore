@@ -26,7 +26,7 @@
   </v-card>
 </template>
 <script>
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import LineChart from '@/components/LineChart.vue';
 
 export default {
@@ -95,7 +95,7 @@ export default {
     this.users = [{
       text: 'All users',
       value: null,
-    }, ...(await apiClient({
+    }, ...(await axios({
       method: 'get',
       url: `/api/project/${this.projectId}/users`,
       responseType: 'json',
@@ -119,7 +119,7 @@ export default {
         url += `&user_id=${this.user}`;
       }
 
-      this.stats = (await apiClient({
+      this.stats = (await axios({
         method: 'get',
         url,
         responseType: 'json',

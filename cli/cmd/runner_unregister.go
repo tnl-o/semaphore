@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/semaphoreui/semaphore/util"
 	"github.com/spf13/cobra"
 )
@@ -18,8 +15,7 @@ func unregisterRunner() {
 	taskPool := createRunnerJobPool()
 	err := taskPool.Unregister()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: Failed to unregister runner: %v\n", err)
-		os.Exit(1)
+		panic(err)
 	}
 }
 

@@ -188,6 +188,36 @@ const routes = [
   },
 ];
 
+// Динамически загружаем маршруты из плагинов
+// Временно отключено - плагины пока не имеют frontend компонентов
+// Функция будет активирована когда плагины будут иметь frontend компоненты
+async function loadPluginRoutes() {
+  try {
+    // const { loadPlugins } = await import('@/lib/plugins');
+    // const plugins = await loadPlugins();
+    const plugins = [];
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const plugin of plugins) {
+      if (plugin.menu_items && Array.isArray(plugin.menu_items)) {
+        // eslint-disable-next-line no-restricted-syntax, no-unused-vars
+        for (const menuItem of plugin.menu_items) {
+          if (menuItem.path && menuItem.component) {
+            // Плагины пока не поддерживают frontend компоненты
+            // Когда поддержка будет добавлена, здесь будет динамический импорт
+            console.warn(`Plugin routes not yet supported: ${plugin.name}`);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load plugin routes:', err);
+  }
+}
+
+// Загружаем маршруты плагинов перед созданием роутера
+loadPluginRoutes();
+
 const router = new VueRouter({
   mode: 'history',
   routes,

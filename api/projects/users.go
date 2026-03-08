@@ -78,8 +78,8 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 func AddUser(w http.ResponseWriter, r *http.Request) {
 	project := helpers.GetFromContext(r, "project").(db.Project)
 	var projectUser struct {
-		UserID int                `json:"user_id" validate:"required,min=1"`
-		Role   db.ProjectUserRole `json:"role" validate:"required"`
+		UserID int                `json:"user_id" binding:"required"`
+		Role   db.ProjectUserRole `json:"role"`
 	}
 
 	if !helpers.Bind(w, r, &projectUser) {

@@ -1,4 +1,4 @@
-import { api } from '@/lib/apiClient';
+import axios from 'axios';
 import { getErrorMessage } from '@/lib/error';
 import ProjectMixin from '@/components/ProjectMixin';
 
@@ -158,16 +158,19 @@ export default {
       try {
         await this.beforeSave();
 
-        const method = this.isNew ? 'post' : 'put';
-        const url = this.isNew ? this.getItemsUrl() : this.getSingleItemUrl();
-        const requestOptions = this.getRequestOptions();
-        const response = await api[method](url, {
-          ...this.item,
-          project_id: this.projectId,
-          ...data,
-          ...(requestOptions.data || {}),
-        });
-        item = response.data;
+        item = (await axios({
+          method: this.isNew ? 'post' : 'put',
+          url: this.isNew
+            ? this.getItemsUrl()
+            : this.getSingleItemUrl(),
+          responseType: 'json',
+          data: {
+            ...this.item,
+            project_id: this.projectId,
+            ...data,
+          },
+          ...(this.getRequestOptions()),
+        })).data;
 
         await this.afterSave(item);
 

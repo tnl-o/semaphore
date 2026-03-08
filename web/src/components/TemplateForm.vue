@@ -509,7 +509,7 @@
 <script>
 /* eslint-disable import/no-extraneous-dependencies,import/extensions */
 
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 
 import ItemFormBase from '@/components/ItemFormBase';
 import 'codemirror/lib/codemirror.css';
@@ -887,7 +887,7 @@ export default {
         return;
       }
 
-      await apiClient({
+      await axios({
         method: 'post',
         url: `/api/project/${this.projectId}/schedules/validate`,
         responseType: 'json',
@@ -905,7 +905,7 @@ export default {
       if (newItem || this.schedules.length === 0) {
         if (this.cronFormat != null && this.cronFormat !== '' && this.cronVisible) {
           // new schedule
-          await apiClient({
+          await axios({
             method: 'post',
             url: `/api/project/${this.projectId}/schedules`,
             responseType: 'json',
@@ -922,14 +922,14 @@ export default {
         // do nothing
       } else if (this.cronFormat == null || this.cronFormat === '' || !this.cronVisible) {
         // drop schedule
-        await apiClient({
+        await axios({
           method: 'delete',
           url: `/api/project/${this.projectId}/schedules/${this.schedules[0].id}`,
           responseType: 'json',
         });
       } else {
         // update schedule
-        await apiClient({
+        await axios({
           method: 'put',
           url: `/api/project/${this.projectId}/schedules/${this.schedules[0].id}`,
           responseType: 'json',

@@ -132,12 +132,7 @@ type SchedulePool struct {
 func (p *SchedulePool) init() {
 	loc, err := time.LoadLocation(util.Config.Schedule.Timezone)
 	if err != nil {
-		log.WithError(err).WithFields(log.Fields{
-			"timezone": util.Config.Schedule.Timezone,
-			"context":  "schedule_pool",
-		}).Error("Failed to load timezone location, using UTC")
-		// Fallback to UTC if timezone is invalid
-		loc, _ = time.LoadLocation("UTC")
+		panic(err)
 	}
 	p.cron = cron.New(cron.WithLocation(loc))
 	p.locker = &sync.Mutex{}

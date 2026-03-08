@@ -103,7 +103,7 @@
   </div>
 </template>
 <script>
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 
 import { USER_PERMISSIONS } from '@/lib/constants';
 
@@ -122,7 +122,7 @@ export default {
   },
 
   async created() {
-    this.templates = (await apiClient({
+    this.templates = (await axios({
       method: 'get',
       url: `/api/project/${this.projectId}/templates`,
       responseType: 'json',

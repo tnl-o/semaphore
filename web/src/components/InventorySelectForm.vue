@@ -27,7 +27,7 @@
 <script>
 /* eslint-disable import/no-extraneous-dependencies,import/extensions */
 
-import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 import { getErrorMessage } from '@/lib/error';
 
 export default {
@@ -71,7 +71,7 @@ export default {
     async loadData() {
       this.formError = null;
       try {
-        this.items = (await apiClient({
+        this.items = (await axios({
           method: 'get',
           url: `/api/project/${this.projectId}/inventory?app=${this.app}`,
           responseType: 'json',
